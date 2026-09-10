@@ -222,8 +222,8 @@
             <h2 class="font-epilogue font-extrabold text-xl text-on-surface leading-tight">
               Selamat datang di ruang rahasia kita, <span class="text-primary italic font-handwriting text-2xl font-bold">Nadin!</span> ✨
             </h2>
-            <p class="text-xs text-on-surface-variant leading-relaxed">
-              Tempat menyimpan tawa, foto Polaroid, alunan lagu, dan bisikan surat cinta yang abadi.
+            <p class="text-xs text-on-surface-variant leading-relaxed italic font-medium">
+              “Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.”
             </p>
           </div>
 
@@ -240,15 +240,18 @@
         <div class="mt-4 pt-3.5 border-t border-white/60 grid grid-cols-3 gap-2 text-center">
           <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
             <p class="text-[10px] text-secondary font-medium">Hari Bersama</p>
-            <p class="font-epilogue font-extrabold text-base text-primary" id="daysCounter">382</p>
+            <p class="font-epilogue font-extrabold text-base text-primary" id="daysCounter">--</p>
+            <p class="text-[8px] text-secondary/80 font-medium">10 Mar 2025 💕</p>
           </div>
           <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
             <p class="text-[10px] text-secondary font-medium">Kenangan Foto</p>
-            <p class="font-epilogue font-extrabold text-base text-primary" id="memoriesCounter">5</p>
+            <p class="font-epilogue font-extrabold text-base text-primary" id="memoriesCounter">0</p>
+            <p class="text-[8px] text-secondary/80 font-medium">Scrapbook ✨</p>
           </div>
           <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
             <p class="text-[10px] text-secondary font-medium">Surat Rahasia</p>
             <p class="font-epilogue font-extrabold text-base text-primary" id="lettersCounter">3</p>
+            <p class="text-[8px] text-secondary/80 font-medium">Untuk Nadin 💌</p>
           </div>
         </div>
       </div>
@@ -969,48 +972,242 @@
   </div>
 
   <!-- MODAL 8: PHOTOBOOTH 4-CUT STUDIO -->
-  <div id="modalPhotobooth" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-surface rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-pink-200 max-h-[92vh] overflow-y-auto space-y-3.5">
-      <div class="flex items-center justify-between">
-        <h3 class="font-epilogue font-bold text-base text-on-surface">Purikura 4-Cut Studio 📸</h3>
-        <button onclick="closeModal('modalPhotobooth')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+  <div id="modalPhotobooth" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="bg-surface rounded-3xl max-w-md w-full p-4 md:p-5 shadow-2xl border border-pink-200 max-h-[94vh] overflow-y-auto space-y-3">
+      
+      <!-- VIEW 1: STUDIO KAMERA (LIVE CAPTURE) -->
+      <div id="photoboothCameraView" class="space-y-3">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-epilogue font-bold text-base text-on-surface flex items-center gap-1.5">
+              <span class="text-primary">📸</span> Purikura 4-Cut Studio
+            </h3>
+            <p class="text-[11px] text-secondary">Ambil 4 pose terbaikmu bersama Nadin!</p>
+          </div>
+          <button onclick="closePhotoboothModal()" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+
+        <!-- Camera Viewfinder -->
+        <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black shadow-inner border-2 border-pink-200">
+          <video id="photoboothVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+          
+          <!-- Countdown Overlay -->
+          <div id="photoboothCountdown" class="absolute inset-0 flex items-center justify-center text-7xl font-epilogue font-extrabold text-white drop-shadow-2xl hidden pointer-events-none animate-pulse">
+            3
+          </div>
+
+          <!-- Flash Pulse Overlay -->
+          <div id="photoboothFlash" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-150"></div>
+
+          <!-- Top Status Badge -->
+          <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+            <span id="photoboothSlotBadge" class="bg-black/60 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+              Pose 1 dari 4 🌸
+            </span>
+            <span id="photoboothCameraIndicator" class="bg-rose-500/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> REC
+            </span>
+          </div>
+
+          <!-- Guide Crosshair / Overlay -->
+          <div class="absolute inset-0 border-2 border-white/20 rounded-2xl pointer-events-none m-3"></div>
+        </div>
+
+        <!-- Hidden canvas for capturing frames -->
+        <canvas id="photoboothCaptureCanvas" class="hidden"></canvas>
+
+        <!-- 4 Mini Slots Preview Bar -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-secondary">Slot Pose (Pilih untuk foto ulang):</span>
+            <button onclick="resetPhotoboothCuts()" class="text-[10px] font-bold text-rose-500 hover:underline">Reset Semua</button>
+          </div>
+          <div class="grid grid-cols-4 gap-2">
+            <div id="slot-0" onclick="selectPhotoboothSlot(0)" class="aspect-[4/3] rounded-xl border-2 border-primary bg-pink-50 flex flex-col items-center justify-center cursor-pointer overflow-hidden relative shadow-xs transition-all">
+              <span class="text-[10px] font-bold text-primary">#1</span>
+            </div>
+            <div id="slot-1" onclick="selectPhotoboothSlot(1)" class="aspect-[4/3] rounded-xl border-2 border-dashed border-pink-200 bg-surface-container flex flex-col items-center justify-center cursor-pointer overflow-hidden relative shadow-xs transition-all">
+              <span class="text-[10px] font-bold text-secondary">#2</span>
+            </div>
+            <div id="slot-2" onclick="selectPhotoboothSlot(2)" class="aspect-[4/3] rounded-xl border-2 border-dashed border-pink-200 bg-surface-container flex flex-col items-center justify-center cursor-pointer overflow-hidden relative shadow-xs transition-all">
+              <span class="text-[10px] font-bold text-secondary">#3</span>
+            </div>
+            <div id="slot-3" onclick="selectPhotoboothSlot(3)" class="aspect-[4/3] rounded-xl border-2 border-dashed border-pink-200 bg-surface-container flex flex-col items-center justify-center cursor-pointer overflow-hidden relative shadow-xs transition-all">
+              <span class="text-[10px] font-bold text-secondary">#4</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shutter & Controls -->
+        <div class="space-y-2 pt-1">
+          <div class="flex items-center gap-2">
+            <button onclick="snapPhotoboothCountdown()" id="btnShutter" class="flex-1 py-3 rounded-2xl bg-primary text-white font-epilogue font-bold text-xs shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-lg">photo_camera</span>
+              <span id="shutterBtnLabel">Jepret Pose Ini (3 Detik) 📸</span>
+            </button>
+            <button onclick="togglePhotoboothCameraFacing()" class="w-12 h-12 rounded-2xl bg-surface-container text-secondary hover:text-primary hover:bg-pink-100 flex items-center justify-center transition-all border border-pink-200" title="Ganti Kamera Depan/Belakang">
+              <span class="material-symbols-outlined text-xl">flip_camera_ios</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="startAutoSeriesPhotobooth()" id="btnAutoSeries" class="py-2 px-3 rounded-xl bg-gradient-to-r from-pink-100 to-rose-100 text-primary text-[11px] font-bold hover:brightness-95 flex items-center justify-center gap-1 border border-pink-200">
+              <span class="material-symbols-outlined text-sm">auto_videocam</span>
+              Auto 4-Pose (3s per pose)
+            </button>
+            <button onclick="document.getElementById('photoboothFileInput').click()" class="py-2 px-3 rounded-xl bg-surface-container text-secondary text-[11px] font-bold hover:bg-pink-100 flex items-center justify-center gap-1 border border-outline-variant/30">
+              <span class="material-symbols-outlined text-sm">photo_library</span>
+              Pilih dari Galeri HP
+            </button>
+            <input type="file" id="photoboothFileInput" accept="image/*" class="hidden" onchange="handlePhotoboothFilePicked(event)"/>
+          </div>
+
+          <!-- Go to Strip Designer Button -->
+          <button onclick="showPhotoboothStripView()" id="btnGoToStrip" class="w-full mt-1 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-sm hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">view_carousel</span>
+            <span>Lihat Hasil & Desain Frame Strip &rarr;</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW 2: STRIP DESIGNER & DOWNLOAD -->
+      <div id="photoboothStripView" class="space-y-3.5 hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-pink-100 pb-2">
+          <button onclick="showPhotoboothCameraView()" class="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">
+            <span class="material-symbols-outlined text-sm">arrow_back</span> Kamera
+          </button>
+          <h3 class="font-epilogue font-bold text-sm text-on-surface">Desain Photo Strip 🎞️</h3>
+          <button onclick="closePhotoboothModal()" class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+            <span class="material-symbols-outlined text-xs">close</span>
+          </button>
+        </div>
+
+        <!-- Frame Color Picker -->
+        <div class="flex items-center justify-between text-xs bg-white/70 p-2.5 rounded-2xl border border-pink-100">
+          <span class="font-bold text-secondary">Warna Frame:</span>
+          <div class="flex gap-2">
+            <button onclick="setPhotoboothFrameColor('#ffd9e2')" class="w-6 h-6 rounded-full bg-[#ffd9e2] border-2 border-white shadow-xs" title="Sakura Pink"></button>
+            <button onclick="setPhotoboothFrameColor('#fff2b2')" class="w-6 h-6 rounded-full bg-[#fff2b2] border-2 border-white shadow-xs" title="Butter Cream"></button>
+            <button onclick="setPhotoboothFrameColor('#e5d4ed')" class="w-6 h-6 rounded-full bg-[#e5d4ed] border-2 border-white shadow-xs" title="Lilac Dream"></button>
+            <button onclick="setPhotoboothFrameColor('#d8f3dc')" class="w-6 h-6 rounded-full bg-[#d8f3dc] border-2 border-white shadow-xs" title="Matcha Mint"></button>
+            <button onclick="setPhotoboothFrameColor('#22191b')" class="w-6 h-6 rounded-full bg-[#22191b] border-2 border-white shadow-xs" title="Midnight Noir"></button>
+            <button onclick="setPhotoboothFrameColor('#ffffff')" class="w-6 h-6 rounded-full bg-[#ffffff] border-2 border-stone-300 shadow-xs" title="Pure White"></button>
+          </div>
+        </div>
+
+        <!-- Frame Custom Title -->
+        <div class="flex items-center gap-2">
+          <input type="text" id="stripHeaderInput" value="ADIB & NADIN · 10.03.2025" oninput="updateStripHeaderText()" placeholder="Judul Strip..." class="flex-1 px-3 py-1.5 bg-white rounded-xl border border-pink-200 text-xs font-bold text-on-surface focus:outline-none focus:border-primary"/>
+        </div>
+
+        <!-- The Photo Strip (Render Target) -->
+        <div class="py-2 flex justify-center">
+          <div id="photoboothStrip" class="w-52 p-3.5 rounded-2xl shadow-polaroid space-y-2.5 text-center transition-colors border border-white/60" style="background-color: #ffd9e2;">
+            
+            <!-- Strip Header -->
+            <div id="stripHeaderDisplay" class="text-[10px] font-epilogue font-extrabold text-primary tracking-widest uppercase">
+              ADIB & NADIN · 10.03.2025
+            </div>
+            
+            <!-- 4 Photos Display -->
+            <div class="space-y-2">
+              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80">
+                <img id="stripImg0" src="images/photobooth_friends.jpg" class="w-full h-full object-cover"/>
+              </div>
+              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80">
+                <img id="stripImg1" src="images/kyoto_coffee.jpg" class="w-full h-full object-cover"/>
+              </div>
+              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80">
+                <img id="stripImg2" src="images/rain_senopati.jpg" class="w-full h-full object-cover"/>
+              </div>
+              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80">
+                <img id="stripImg3" src="images/memory_cocoa.jpg" class="w-full h-full object-cover"/>
+              </div>
+            </div>
+
+            <!-- Strip Footer -->
+            <div class="pt-1 space-y-1">
+              <p class="text-[9px] font-bold text-primary tracking-wide">10 Maret 2025 💕 まる子</p>
+              <p id="stripQuoteDisplay" class="text-[10px] font-handwriting font-bold text-on-surface leading-tight px-1">
+                "Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strip Action Buttons -->
+        <div class="space-y-2 pt-1">
+          <button onclick="downloadPhotoStripHD()" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-clay-button hover:bg-primary-hover flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-sm">download</span> Unduh Photo Strip (HD PNG)
+          </button>
+          
+          <button onclick="saveStripToScrapbook()" class="w-full py-2 rounded-xl bg-pink-100 text-primary font-bold text-xs hover:bg-pink-200 flex items-center justify-center gap-1.5 transition-all">
+            <span class="material-symbols-outlined text-sm">bookmark_add</span> Simpan ke Scrapbook Kita 🌸
+          </button>
+
+          <button onclick="showPhotoboothCameraView()" class="w-full py-2 rounded-xl bg-surface-container text-secondary font-bold text-xs hover:bg-pink-50 flex items-center justify-center gap-1 transition-all">
+            <span class="material-symbols-outlined text-sm">replay</span> Ulangi / Foto Pose Baru
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 8B: MILESTONE TIMELINE -->
+  <div id="modalTimeline" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-pink-200 max-h-[88vh] overflow-y-auto space-y-4">
+      <div class="flex items-center justify-between border-b border-pink-100 pb-2">
+        <div>
+          <h3 class="font-epilogue font-bold text-base text-on-surface">Jejak Kisah Kita 👣</h3>
+          <p class="text-[11px] text-secondary">Perjalanan cinta Adib & Nadin</p>
+        </div>
+        <button onclick="closeModal('modalTimeline')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
           <span class="material-symbols-outlined text-sm">close</span>
         </button>
       </div>
 
-      <!-- Frame Color Selector -->
-      <div class="flex items-center justify-between text-xs">
-        <span class="font-bold text-secondary">Warna Frame Strip:</span>
-        <div class="flex gap-2">
-          <button onclick="setPhotoboothFrame('#ffd9e2')" class="w-6 h-6 rounded-full bg-[#ffd9e2] border-2 border-white shadow-xs" title="Sakura Pink"></button>
-          <button onclick="setPhotoboothFrame('#fff2b2')" class="w-6 h-6 rounded-full bg-[#fff2b2] border-2 border-white shadow-xs" title="Butter Cream"></button>
-          <button onclick="setPhotoboothFrame('#e5d4ed')" class="w-6 h-6 rounded-full bg-[#e5d4ed] border-2 border-white shadow-xs" title="Lavender"></button>
-          <button onclick="setPhotoboothFrame('#d8f3dc')" class="w-6 h-6 rounded-full bg-[#d8f3dc] border-2 border-white shadow-xs" title="Minty Match"></button>
-        </div>
-      </div>
-
-      <!-- Photo Strip Preview -->
-      <div id="photoboothStrip" class="mx-auto w-48 p-3 rounded-2xl shadow-polaroid space-y-2 text-center transition-colors" style="background-color: #ffd9e2;">
-        <div class="text-[10px] font-epilogue font-extrabold text-primary tracking-widest uppercase">NADIN & まる子 · 2026</div>
+      <!-- Timeline Items -->
+      <div class="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-pink-200 pl-6">
         
-        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs">
-          <img src="images/photobooth_friends.jpg" class="w-full h-full object-cover"/>
-        </div>
-        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs">
-          <img src="images/kyoto_coffee.jpg" class="w-full h-full object-cover"/>
-        </div>
-        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs">
-          <img src="images/rain_senopati.jpg" class="w-full h-full object-cover"/>
-        </div>
-        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs">
-          <img src="images/memory_cocoa.jpg" class="w-full h-full object-cover"/>
+        <!-- Item 1: 10 Maret 2025 -->
+        <div class="relative space-y-1">
+          <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-primary border-2 border-white shadow-xs"></div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-light text-primary">10 Maret 2025 💕</span>
+          <h4 class="font-epilogue font-bold text-xs text-on-surface">Hari Pertama Resmi Jadian</h4>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Hari ketika langkah kita mulai beriringan. Memulai lembar cerita baru yang penuh kehangatan, tawa, dan rasa syukur yang tak pernah habis.
+          </p>
         </div>
 
-        <div class="pt-1 text-[11px] font-handwriting font-bold text-on-surface">"Forever Sweet Memories ✨"</div>
+        <!-- Item 2: Ngelipir di Veteran -->
+        <div class="relative space-y-1">
+          <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-rose-400 border-2 border-white shadow-xs"></div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600">Awal Pertemuan 🌸</span>
+          <h4 class="font-epilogue font-bold text-xs text-on-surface">Ngelipir di Veteran & Go Public</h4>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Momen awal ketemu, foto berdua pertama yang di-post buat go public. Senyum manis yang bikin kangen sampai hari ini.
+          </p>
+        </div>
+
+        <!-- Item 3: Hari Ini & Seterusnya -->
+        <div class="relative space-y-1">
+          <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-xs"></div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Hari Ini & Selamanya ✨</span>
+          <h4 class="font-epilogue font-bold text-xs text-on-surface"><span id="timelineDaysCount">--</span> Hari Bersama</h4>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed italic">
+            “Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.”
+          </p>
+        </div>
+
       </div>
 
-      <button onclick="downloadPhotoStrip()" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-clay-button hover:bg-primary-hover flex items-center justify-center gap-1.5">
-        <span class="material-symbols-outlined text-sm">download</span> Simpan Photo Strip
+      <button onclick="closeModal('modalTimeline')" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-clay-button hover:bg-primary-hover">
+        Tutup Jejak Kisah 🌸
       </button>
     </div>
   </div>
@@ -2004,22 +2201,492 @@
       }
     }
 
-    // Photobooth 4-Cut Studio
+    // ==================== RELATIONSHIP COUNTER (10 MARET 2025) ====================
+    function updateRelationshipStats() {
+      // Pacaran sejak: 10 Maret 2025
+      const startDate = new Date(2025, 2, 10); // 10 Maret 2025 (bulan 2 = Maret)
+      const now = new Date();
+      const diffTime = now.getTime() - startDate.getTime();
+      const diffDays = Math.max(1, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+
+      const counterEl = document.getElementById('daysCounter');
+      if (counterEl) counterEl.textContent = diffDays;
+
+      const timelineEl = document.getElementById('timelineDaysCount');
+      if (timelineEl) timelineEl.textContent = diffDays;
+    }
+
+    function openTimelineModal() {
+      updateRelationshipStats();
+      document.getElementById('modalTimeline').classList.remove('hidden');
+      document.getElementById('modalTimeline').classList.add('flex');
+    }
+
+    // ==================== PURIKURA 4-CUT CAMERA & STUDIO ====================
+    let photoboothStream = null;
+    let photoboothFacing = 'user'; // 'user' (depan) or 'environment' (belakang)
+    let photoboothActiveSlot = 0;
+    let photoboothCuts = [null, null, null, null];
+    let photoboothFrameColor = '#ffd9e2';
+    let isCountingDown = false;
+    let isAutoSeriesActive = false;
+
     function openPhotoboothModal() {
       document.getElementById('modalPhotobooth').classList.remove('hidden');
       document.getElementById('modalPhotobooth').classList.add('flex');
+      showPhotoboothCameraView();
     }
 
-    function setPhotoboothFrame(colorHex) {
-      document.getElementById('photoboothStrip').style.backgroundColor = colorHex;
+    function closePhotoboothModal() {
+      stopPhotoboothCamera();
+      closeModal('modalPhotobooth');
     }
 
-    function downloadPhotoStrip() {
-      alert('Photo strip siap disimpan! Foto tersimpan ke galeri Nadin ✨');
+    async function startPhotoboothCamera() {
+      stopPhotoboothCamera();
+      const videoEl = document.getElementById('photoboothVideo');
+      if (!videoEl) return;
+
+      try {
+        const constraints = {
+          video: {
+            facingMode: photoboothFacing,
+            width: { ideal: 1280 },
+            height: { ideal: 960 }
+          },
+          audio: false
+        };
+        photoboothStream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoEl.srcObject = photoboothStream;
+        await videoEl.play();
+        const indicator = document.getElementById('photoboothCameraIndicator');
+        if (indicator) {
+          indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> LIVE';
+          indicator.className = 'bg-rose-500/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1';
+        }
+      } catch (err) {
+        console.warn('Camera access note:', err);
+        const indicator = document.getElementById('photoboothCameraIndicator');
+        if (indicator) {
+          indicator.textContent = '📁 Galeri Only';
+          indicator.className = 'bg-amber-600/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-full';
+        }
+      }
     }
 
-    // Daily Quotes Rotating
+    function stopPhotoboothCamera() {
+      if (photoboothStream) {
+        photoboothStream.getTracks().forEach(t => t.stop());
+        photoboothStream = null;
+      }
+      const videoEl = document.getElementById('photoboothVideo');
+      if (videoEl) videoEl.srcObject = null;
+    }
+
+    function togglePhotoboothCameraFacing() {
+      photoboothFacing = (photoboothFacing === 'user') ? 'environment' : 'user';
+      startPhotoboothCamera();
+    }
+
+    function selectPhotoboothSlot(idx) {
+      photoboothActiveSlot = idx;
+      updatePhotoboothSlotUI();
+    }
+
+    function updatePhotoboothSlotUI() {
+      const badge = document.getElementById('photoboothSlotBadge');
+      if (badge) badge.textContent = `Pose ${photoboothActiveSlot + 1} dari 4 🌸`;
+
+      const shutterLabel = document.getElementById('shutterBtnLabel');
+      if (shutterLabel) shutterLabel.textContent = `Jepret Pose #${photoboothActiveSlot + 1} (Hitung 3s) 📸`;
+
+      for (let i = 0; i < 4; i++) {
+        const slotEl = document.getElementById(`slot-${i}`);
+        if (!slotEl) continue;
+        if (photoboothCuts[i]) {
+          slotEl.className = `aspect-[4/3] rounded-xl border-2 ${i === photoboothActiveSlot ? 'border-primary ring-2 ring-primary/40' : 'border-pink-300'} bg-white flex items-center justify-center cursor-pointer overflow-hidden relative shadow-xs`;
+          slotEl.innerHTML = `
+            <img src="${photoboothCuts[i]}" class="w-full h-full object-cover"/>
+            <span class="absolute top-1 left-1 bg-black/60 text-white text-[9px] font-bold px-1 rounded">#${i+1}</span>
+          `;
+        } else {
+          slotEl.className = `aspect-[4/3] rounded-xl border-2 ${i === photoboothActiveSlot ? 'border-primary bg-pink-100 ring-2 ring-primary/40' : 'border-dashed border-pink-200 bg-surface-container'} flex flex-col items-center justify-center cursor-pointer overflow-hidden relative shadow-xs`;
+          slotEl.innerHTML = `
+            <span class="text-[10px] font-bold ${i === photoboothActiveSlot ? 'text-primary' : 'text-secondary'}">#${i+1}</span>
+            <span class="text-[9px] text-secondary/70">${i === photoboothActiveSlot ? 'Aktif' : 'Kosong'}</span>
+          `;
+        }
+      }
+    }
+
+    function snapPhotoboothCountdown(onDone) {
+      if (isCountingDown) return;
+      isCountingDown = true;
+
+      const countdownEl = document.getElementById('photoboothCountdown');
+      const shutterBtn = document.getElementById('btnShutter');
+      if (shutterBtn) shutterBtn.disabled = true;
+
+      let count = 3;
+      if (countdownEl) {
+        countdownEl.textContent = count;
+        countdownEl.classList.remove('hidden');
+      }
+      playCozyChime();
+
+      const timer = setInterval(() => {
+        count--;
+        if (count > 0) {
+          if (countdownEl) countdownEl.textContent = count;
+          playCozyChime();
+        } else {
+          clearInterval(timer);
+          if (countdownEl) countdownEl.classList.add('hidden');
+          
+          // Flash effect
+          const flash = document.getElementById('photoboothFlash');
+          if (flash) {
+            flash.style.opacity = '1';
+            setTimeout(() => { flash.style.opacity = '0'; }, 150);
+          }
+
+          // Capture image
+          capturePhotoboothFrame();
+          isCountingDown = false;
+          if (shutterBtn) shutterBtn.disabled = false;
+          if (onDone) onDone();
+        }
+      }, 900);
+    }
+
+    function capturePhotoboothFrame() {
+      const video = document.getElementById('photoboothVideo');
+      const canvas = document.getElementById('photoboothCaptureCanvas');
+      if (!video || !canvas) return;
+
+      const vW = video.videoWidth || 640;
+      const vH = video.videoHeight || 480;
+
+      const targetAspect = 4 / 3;
+      let sW, sH, sX, sY;
+
+      if (vW / vH > targetAspect) {
+        sH = vH;
+        sW = vH * targetAspect;
+        sX = (vW - sW) / 2;
+        sY = 0;
+      } else {
+        sW = vW;
+        sH = vW / targetAspect;
+        sX = 0;
+        sY = (vH - sH) / 2;
+      }
+
+      canvas.width = 800;
+      canvas.height = 600;
+      const ctx = canvas.getContext('2d');
+
+      // Mirror if front camera
+      if (photoboothFacing === 'user') {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(video, sX, sY, sW, sH, 0, 0, canvas.width, canvas.height);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      photoboothCuts[photoboothActiveSlot] = dataUrl;
+
+      const stripImg = document.getElementById(`stripImg${photoboothActiveSlot}`);
+      if (stripImg) stripImg.src = dataUrl;
+
+      // Advance to next slot
+      const nextEmpty = photoboothCuts.findIndex((c, i) => !c && i > photoboothActiveSlot);
+      if (nextEmpty !== -1) {
+        photoboothActiveSlot = nextEmpty;
+      } else {
+        const anyEmpty = photoboothCuts.findIndex(c => !c);
+        if (anyEmpty !== -1) photoboothActiveSlot = anyEmpty;
+      }
+
+      updatePhotoboothSlotUI();
+    }
+
+    function startAutoSeriesPhotobooth() {
+      if (isAutoSeriesActive) return;
+      isAutoSeriesActive = true;
+      photoboothActiveSlot = 0;
+      updatePhotoboothSlotUI();
+
+      const runStep = (slotIdx) => {
+        if (slotIdx >= 4) {
+          isAutoSeriesActive = false;
+          showPhotoboothStripView();
+          return;
+        }
+        photoboothActiveSlot = slotIdx;
+        updatePhotoboothSlotUI();
+        snapPhotoboothCountdown(() => {
+          setTimeout(() => {
+            runStep(slotIdx + 1);
+          }, 800);
+        });
+      };
+
+      runStep(0);
+    }
+
+    function handlePhotoboothFilePicked(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 800;
+          canvas.height = 600;
+          const ctx = canvas.getContext('2d');
+          
+          const targetAspect = 4 / 3;
+          let sW, sH, sX, sY;
+          if (img.width / img.height > targetAspect) {
+            sH = img.height;
+            sW = img.height * targetAspect;
+            sX = (img.width - sW) / 2;
+            sY = 0;
+          } else {
+            sW = img.width;
+            sH = img.width / targetAspect;
+            sX = 0;
+            sY = (img.height - sH) / 2;
+          }
+
+          ctx.drawImage(img, sX, sY, sW, sH, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          photoboothCuts[photoboothActiveSlot] = dataUrl;
+
+          const stripImg = document.getElementById(`stripImg${photoboothActiveSlot}`);
+          if (stripImg) stripImg.src = dataUrl;
+
+          // Next empty slot
+          const nextEmpty = photoboothCuts.findIndex((c, i) => !c && i > photoboothActiveSlot);
+          if (nextEmpty !== -1) {
+            photoboothActiveSlot = nextEmpty;
+          }
+          updatePhotoboothSlotUI();
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    }
+
+    function resetPhotoboothCuts() {
+      if (!confirm('Kosongkan semua 4 slot pose?')) return;
+      photoboothCuts = [null, null, null, null];
+      photoboothActiveSlot = 0;
+      updatePhotoboothSlotUI();
+    }
+
+    function showPhotoboothCameraView() {
+      document.getElementById('photoboothCameraView').classList.remove('hidden');
+      document.getElementById('photoboothStripView').classList.add('hidden');
+      startPhotoboothCamera();
+      updatePhotoboothSlotUI();
+    }
+
+    function showPhotoboothStripView() {
+      stopPhotoboothCamera();
+      document.getElementById('photoboothCameraView').classList.add('hidden');
+      document.getElementById('photoboothStripView').classList.remove('hidden');
+
+      const defaultFallbacks = [
+        'images/photobooth_friends.jpg',
+        'images/kyoto_coffee.jpg',
+        'images/rain_senopati.jpg',
+        'images/memory_cocoa.jpg'
+      ];
+
+      for (let i = 0; i < 4; i++) {
+        const stripImg = document.getElementById(`stripImg${i}`);
+        if (stripImg) {
+          stripImg.src = photoboothCuts[i] || defaultFallbacks[i];
+        }
+      }
+    }
+
+    function setPhotoboothFrameColor(colorHex) {
+      photoboothFrameColor = colorHex;
+      const strip = document.getElementById('photoboothStrip');
+      if (strip) strip.style.backgroundColor = colorHex;
+    }
+
+    function updateStripHeaderText() {
+      const input = document.getElementById('stripHeaderInput');
+      const display = document.getElementById('stripHeaderDisplay');
+      if (input && display) {
+        display.textContent = input.value.trim() || 'ADIB & NADIN · 10.03.2025';
+      }
+    }
+
+    // High-Resolution Canvas Generator
+    function generatePhotoboothCanvas(callback) {
+      const width = 800;
+      const height = 2400;
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      // Background Frame
+      ctx.fillStyle = photoboothFrameColor;
+      ctx.fillRect(0, 0, width, height);
+
+      // Header Text
+      ctx.fillStyle = (photoboothFrameColor === '#22191b') ? '#ffd9e2' : '#ad2b57';
+      ctx.font = 'bold 36px "Epilogue", sans-serif';
+      ctx.textAlign = 'center';
+      const headerText = document.getElementById('stripHeaderInput')?.value.trim() || 'ADIB & NADIN · 10.03.2025';
+      ctx.fillText(headerText.toUpperCase(), width / 2, 85);
+
+      const marginX = 65;
+      const photoW = width - (marginX * 2); // 670
+      const photoH = photoW * 0.75; // 502.5 (aspect 4:3)
+      const startY = 125;
+      const gapY = 32;
+
+      const defaultFallbacks = [
+        'images/photobooth_friends.jpg',
+        'images/kyoto_coffee.jpg',
+        'images/rain_senopati.jpg',
+        'images/memory_cocoa.jpg'
+      ];
+
+      let loadedCount = 0;
+      const images = [];
+
+      for (let i = 0; i < 4; i++) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === 4) {
+            renderAllPhotosOnCanvas();
+          }
+        };
+        img.src = photoboothCuts[i] || defaultFallbacks[i];
+        images.push(img);
+      }
+
+      function renderAllPhotosOnCanvas() {
+        for (let i = 0; i < 4; i++) {
+          const y = startY + i * (photoH + gapY);
+          
+          // White card border behind each photo
+          ctx.save();
+          ctx.shadowColor = 'rgba(0,0,0,0.08)';
+          ctx.shadowBlur = 15;
+          ctx.shadowOffsetY = 6;
+          ctx.fillStyle = '#ffffff';
+          drawRoundedRect(ctx, marginX - 6, y - 6, photoW + 12, photoH + 12, 22);
+          ctx.fill();
+          ctx.restore();
+
+          // Clip rounded photo
+          ctx.save();
+          drawRoundedRect(ctx, marginX, y, photoW, photoH, 18);
+          ctx.clip();
+          ctx.drawImage(images[i], marginX, y, photoW, photoH);
+          ctx.restore();
+        }
+
+        // Footer Text
+        const footerY = startY + 4 * (photoH + gapY) + 35;
+        ctx.fillStyle = (photoboothFrameColor === '#22191b') ? '#ffd9e2' : '#ad2b57';
+        ctx.font = 'bold 26px "Epilogue", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('10 Maret 2025 💕 まる子', width / 2, footerY);
+
+        ctx.fillStyle = (photoboothFrameColor === '#22191b') ? '#faeeed' : '#22191b';
+        ctx.font = 'bold 24px "Caveat", cursive';
+        const quoteText = '“Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan,';
+        const quoteText2 = 'melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.”';
+        ctx.fillText(quoteText, width / 2, footerY + 44);
+        ctx.fillText(quoteText2, width / 2, footerY + 80);
+
+        callback(canvas.toDataURL('image/png'));
+      }
+    }
+
+    function drawRoundedRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y + radius, x, y);
+      ctx.closePath();
+    }
+
+    function downloadPhotoStripHD() {
+      generatePhotoboothCanvas(async (dataUrl) => {
+        try {
+          const res = await fetch(dataUrl);
+          const blob = await res.blob();
+          const file = new File([blob], `purikura_4cut_${Date.now()}.png`, { type: 'image/png' });
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Purikura 4-Cut Adib & Nadin',
+              text: 'Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.'
+            });
+            return;
+          }
+        } catch (e) {}
+
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `purikura_4cut_${Date.now()}.png`;
+        a.click();
+        alert('Photo strip berhasil diunduh ke galeri! ✨');
+      });
+    }
+
+    async function saveStripToScrapbook() {
+      generatePhotoboothCanvas(async (dataUrl) => {
+        const title = 'Purikura 4-Cut Studio';
+        const story = 'Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.';
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        const newMem = {
+          id: 'mem-' + Date.now(),
+          title,
+          date: todayStr,
+          image: dataUrl,
+          story,
+          likes: 1
+        };
+
+        memories.unshift(newMem);
+        setStored('nadin_memories', memories);
+        renderMemoriesGrid();
+        renderHomeHighlights();
+        await syncToServer();
+        alert('Photo strip berhasil tersimpan ke Scrapbook kenangan kita! 🌸');
+        closePhotoboothModal();
+        switchTab('memories');
+      });
+    }
+
+    // Daily Quotes Rotating with user favorite quote
     const DAILY_QUOTES = [
+      '"Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan."',
       '"Semoga segala yang rumit di kepalamu luruh satu persatu, digantikan hangat teh manis dan rasa cukup."',
       '"Di antara riuhnya isi dunia, kamu adalah satu-satunya sudut paling tenang tempat hatiku pulang."',
       '"Tidak perlu terburu-buru, hal-hal baik selalu butuh waktu untuk mekar dengan indah."',
@@ -2085,6 +2752,7 @@
 
     // Initialize View on DOM Ready
     window.addEventListener('DOMContentLoaded', () => {
+      updateRelationshipStats();
       renderHomeHighlights();
       renderMemoriesGrid();
       renderJournals();
