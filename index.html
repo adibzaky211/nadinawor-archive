@@ -928,11 +928,16 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary text-xl">album</span>
-          <h3 class="font-epilogue font-bold text-base text-on-surface">Playlist Nadin</h3>
+          <h3 class="font-epilogue font-bold text-base text-on-surface">Playlist Kita 🎵</h3>
         </div>
-        <button onclick="closeModal('modalPlaylist')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
-          <span class="material-symbols-outlined text-sm">close</span>
-        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="shufflePlaylist()" class="text-[11px] font-bold text-primary bg-pink-100 hover:bg-pink-200 px-2.5 py-1 rounded-full flex items-center gap-1 transition-all" title="Acak urutan lagu">
+            <span class="material-symbols-outlined text-xs">shuffle</span> Acak
+          </button>
+          <button onclick="closeModal('modalPlaylist')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
       </div>
 
       <!-- Turntable Vinyl Display -->
@@ -2047,7 +2052,7 @@
 
     // The Vault (PIN Lock System)
     let enteredPin = '';
-    const CORRECT_PIN = '1234';
+    const CORRECT_PIN = '2021';
 
     function openVaultModal() {
       enteredPin = '';
@@ -2089,7 +2094,7 @@
         document.getElementById('vaultLockState').classList.add('hidden');
         document.getElementById('vaultUnlockedState').classList.remove('hidden');
       } else {
-        alert('PIN salah! Coba 1234 🌸');
+        alert('PIN salah! Coba tahun spesial kita: 2021 🌸');
         enteredPin = '';
         updatePinDots();
       }
@@ -2102,18 +2107,44 @@
       document.getElementById('vaultUnlockedState').classList.add('hidden');
     }
 
-    // Playlist & Web Audio Lofi Synthesizer
+    // Playlist & Web Audio Lofi Synthesizer (20 Lagu Romantis, Lucu & Kekinian)
     const PLAYLIST_TRACKS = [
-      { title: 'Rayuan Perempuan Gila', artist: 'Nadin Amizah', mood: 'Cozy & Honest' },
-      { title: 'Bertaut', artist: 'Nadin Amizah', mood: 'Warm & Nostalgic' },
-      { title: 'Sorai', artist: 'Nadin Amizah', mood: 'Gentle Love' },
-      { title: 'Taruh', artist: 'Nadin Amizah', mood: 'Pure Feelings' },
-      { title: 'Seperti Tulang', artist: 'Nadin Amizah', mood: 'Midnight Reflection' }
+      { title: 'Kita Bikin Romantis', artist: "MALIQ & D'Essentials", mood: 'Gemes & Ceria 🌸' },
+      { title: 'Rayuan Perempuan Gila', artist: 'Nadin Amizah', mood: 'Cozy & Honest 💕' },
+      { title: 'Gala Bunga Matahari', artist: 'Sal Priadi', mood: 'Paling Manis 🌻' },
+      { title: 'Kupu-Kupu', artist: 'Tiara Andini', mood: 'Centil Kasmaran ✨' },
+      { title: 'Untungnya, Hidup Harus Berjalan', artist: 'Bernadya', mood: 'Peluk Hangat 🤍' },
+      { title: 'Satu-Satu', artist: 'Idgitaf', mood: 'Terima Apa Adanya 🥰' },
+      { title: 'Nanti Kita Seperti Ini', artist: 'Batas Senja', mood: 'Masa Depan Berdua 🏡' },
+      { title: 'Dan...', artist: 'Sheila On 7', mood: 'Romantis Sepanjang Masa 🎸' },
+      { title: 'Tampar', artist: 'Juicy Luicy', mood: 'Galau-Galau Lucu 🤭' },
+      { title: 'Jatuh Cinta', artist: 'HIVI!', mood: 'Deg-degan Pas Ketemu 💓' },
+      { title: 'Bertaut', artist: 'Nadin Amizah', mood: 'Warm & Nostalgic ☕' },
+      { title: 'Lover', artist: 'Taylor Swift', mood: 'Bucin Maksimal 💖' },
+      { title: 'Monokrom', artist: 'Tulus', mood: 'Kenangan Manis Foto 📷' },
+      { title: 'Sialan', artist: 'Juicy Luicy ft. Adrian Khalif', mood: 'Kepincut Tiap Hari 🙈' },
+      { title: 'Penjaga Hati', artist: 'Nadhif Basalamah', mood: 'Janji Setia Selalu 💍' },
+      { title: 'Anugerah Terindah yang Pernah Kumiliki', artist: 'Sheila On 7', mood: 'Kamu Paling Berharga ✨' },
+      { title: 'Komang', artist: 'Raim Laode', mood: 'Wanita Tercantik 🌸' },
+      { title: 'Sorai', artist: 'Nadin Amizah', mood: 'Gentle Love 🌿' },
+      { title: 'Taruh', artist: 'Nadin Amizah', mood: 'Pure Feelings 💌' },
+      { title: 'Melompat Lebih Tinggi', artist: 'Sheila On 7', mood: 'Petualangan Berdua 🚀' }
     ];
     let currentTrackIdx = 0;
     let isAudioPlaying = false;
     let audioCtx = null;
     let audioInterval = null;
+
+    function shufflePlaylist() {
+      for (let i = PLAYLIST_TRACKS.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [PLAYLIST_TRACKS[i], PLAYLIST_TRACKS[j]] = [PLAYLIST_TRACKS[j], PLAYLIST_TRACKS[i]];
+      }
+      currentTrackIdx = 0;
+      updateTrackDisplay();
+      renderPlaylistTracks();
+      playCozyChime();
+    }
 
     function openPlaylistModal() {
       renderPlaylistTracks();
@@ -2126,14 +2157,14 @@
       if (!list) return;
       list.innerHTML = PLAYLIST_TRACKS.map((t, idx) => `
         <div onclick="selectTrack(${idx})" class="flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-colors ${idx === currentTrackIdx ? 'bg-primary-light/50 border border-primary/30' : 'hover:bg-surface-container'}">
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-bold ${idx === currentTrackIdx ? 'text-primary' : 'text-secondary'}">${idx + 1}</span>
+          <div class="flex items-center gap-2.5">
+            <span class="text-xs font-bold w-5 text-center ${idx === currentTrackIdx ? 'text-primary' : 'text-secondary'}">${idx + 1}</span>
             <div>
               <p class="text-xs font-bold text-on-surface leading-tight">${t.title}</p>
-              <p class="text-[10px] text-secondary">${t.artist}</p>
+              <p class="text-[10px] text-secondary flex items-center gap-1.5"><span>${t.artist}</span> · <span class="text-primary font-medium">${t.mood}</span></p>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-primary">${idx === currentTrackIdx ? '🎵 Sedang Main' : ''}</span>
+          <span class="text-[10px] font-bold text-primary">${idx === currentTrackIdx ? '🎵 Playing' : ''}</span>
         </div>
       `).join('');
     }
@@ -2159,8 +2190,10 @@
 
     function updateTrackDisplay() {
       const track = PLAYLIST_TRACKS[currentTrackIdx];
-      document.getElementById('homeSongTitle').textContent = track.title;
-      document.getElementById('playlistTrackTitle').textContent = track.title;
+      const homeSong = document.getElementById('homeSongTitle');
+      const playlistTrack = document.getElementById('playlistTrackTitle');
+      if (homeSong) homeSong.textContent = track.title;
+      if (playlistTrack) playlistTrack.textContent = `${track.title} - ${track.artist}`;
     }
 
     // Cozy Web Audio Chime Melody
