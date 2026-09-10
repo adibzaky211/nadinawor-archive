@@ -315,8 +315,8 @@
                 <span class="w-0.5 h-1 bg-primary rounded-full"></span>
               </span>
             </div>
-            <p class="text-xs font-bold text-on-surface truncate" id="homeSongTitle">Rayuan Perempuan Gila</p>
-            <p class="text-[11px] text-secondary truncate">Nadin Amizah · Cozy Melody</p>
+            <p class="text-xs font-bold text-on-surface truncate" id="homeSongTitle">About You</p>
+            <p class="text-[11px] text-secondary truncate" id="homeSongSubtitle">The 1975 · Romantic Indie 💕</p>
           </div>
         </div>
 
@@ -955,43 +955,85 @@
     </div>
   </div>
 
-  <!-- MODAL 7: PLAYLIST & SOUNDTRACK ROOM -->
+  <!-- MODAL 7: PLAYLIST & SOUNDTRACK ROOM (10 LAGU REAL AUDIO LANGSUNG BUNYI) -->
   <div id="modalPlaylist" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-surface rounded-3xl max-w-sm w-full shadow-2xl border border-pink-200 overflow-hidden">
+    <!-- Native Audio Player (100% Reliable Playback, No Login, No Block) -->
+    <audio id="mainAudioPlayer" preload="auto"></audio>
+
+    <div class="bg-surface rounded-3xl max-w-sm w-full shadow-2xl border border-pink-200 overflow-hidden flex flex-col max-h-[92vh]">
       
       <!-- Header -->
-      <div class="flex items-center justify-between px-5 pt-5 pb-3">
+      <div class="flex items-center justify-between px-5 pt-4 pb-2.5 border-b border-pink-100/60">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary text-xl">album</span>
           <h3 class="font-epilogue font-bold text-base text-on-surface">Playlist Kita 🎵</h3>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="shufflePlaylist()" class="text-[11px] font-bold text-primary bg-pink-100 hover:bg-pink-200 px-2.5 py-1 rounded-full flex items-center gap-1 transition-all">
+          <button onclick="shufflePlaylist()" class="text-[11px] font-bold text-primary bg-pink-100 hover:bg-pink-200 px-2.5 py-1 rounded-full flex items-center gap-1 transition-all active:scale-95">
             <span class="material-symbols-outlined text-xs">shuffle</span> Acak
           </button>
-          <button onclick="closeModal('modalPlaylist')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary">
+          <button onclick="closeModal('modalPlaylist')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary transition-colors">
             <span class="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
       </div>
 
-      <!-- Spotify Embed Player (REAL MUSIC - bisa diputar langsung!) -->
-      <div class="px-4 pb-3">
-        <iframe id="spotifyEmbed"
-          src="https://open.spotify.com/embed/track/1fDFHXcykq4iw8Gg7s5hG9?utm_source=generator&theme=0"
-          width="100%"
-          height="152"
-          frameBorder="0"
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy"
-          style="border-radius:14px;"
-        ></iframe>
+      <!-- Now Playing Card -->
+      <div class="p-4 bg-gradient-to-b from-pink-50/80 to-surface border-b border-pink-100/50">
+        <div class="flex items-center gap-3.5 mb-3">
+          <!-- Album Art with Vinyl Badge -->
+          <div class="relative w-16 h-16 rounded-2xl overflow-hidden shadow-md border border-pink-200/80 flex-shrink-0 bg-stone-900">
+            <img id="modalCoverArt" src="music/about_you.jpg" alt="Cover" class="w-full h-full object-cover">
+            <div id="modalVinylBadge" class="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center hidden">
+              <span class="material-symbols-outlined text-white text-base animate-spin">graphic_eq</span>
+            </div>
+          </div>
+
+          <!-- Track Info -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5 mb-0.5">
+              <span id="modalMoodBadge" class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full truncate">Romantic Indie 💕</span>
+            </div>
+            <h4 id="modalTrackTitle" class="font-bold text-sm text-on-surface truncate">About You</h4>
+            <p id="modalTrackArtist" class="text-xs text-secondary truncate">The 1975</p>
+          </div>
+
+          <!-- Spotify Link Button -->
+          <a id="modalSpotifyLink" href="https://open.spotify.com/track/1fDFHXcykq4iw8Gg7s5hG9" target="_blank" rel="noopener noreferrer" title="Buka Full di Spotify" class="w-8 h-8 rounded-full bg-[#1ed760]/10 hover:bg-[#1ed760]/20 flex items-center justify-center text-[#1ed760] transition-transform active:scale-90 flex-shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1ed760"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          </a>
+        </div>
+
+        <!-- Progress Bar & Time -->
+        <div class="space-y-1 mb-2">
+          <input type="range" id="audioProgressBar" min="0" max="100" value="0" class="w-full h-1.5 bg-pink-200 rounded-lg appearance-none cursor-pointer accent-primary" oninput="seekAudio(this.value)">
+          <div class="flex justify-between text-[10px] text-secondary font-mono">
+            <span id="currentTimeDisplay">0:00</span>
+            <span id="durationDisplay">0:30</span>
+          </div>
+        </div>
+
+        <!-- Player Controls -->
+        <div class="flex items-center justify-center gap-4">
+          <button onclick="prevTrack()" class="w-9 h-9 rounded-full bg-surface-container hover:bg-pink-100 text-secondary hover:text-primary flex items-center justify-center transition-all active:scale-90 shadow-xs">
+            <span class="material-symbols-outlined text-lg">skip_previous</span>
+          </button>
+          <button onclick="togglePlayPause()" id="modalPlayBtn" class="w-12 h-12 rounded-full bg-primary hover:bg-primary-hover text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all active:scale-95">
+            <span id="modalPlayIcon" class="material-symbols-outlined text-2xl">play_arrow</span>
+          </button>
+          <button onclick="nextTrack()" class="w-9 h-9 rounded-full bg-surface-container hover:bg-pink-100 text-secondary hover:text-primary flex items-center justify-center transition-all active:scale-90 shadow-xs">
+            <span class="material-symbols-outlined text-lg">skip_next</span>
+          </button>
+        </div>
       </div>
 
       <!-- Track List -->
-      <div class="px-4 pb-5">
-        <p class="text-[10px] font-bold text-secondary uppercase tracking-wider mb-2">Pilih Lagu</p>
-        <div class="space-y-1.5 max-h-52 overflow-y-auto no-scrollbar" id="playlistTrackList">
+      <div class="px-4 pt-2.5 pb-4 overflow-hidden flex flex-col flex-1">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[10px] font-bold text-secondary uppercase tracking-wider">10 Lagu Pilihan (Langsung Bunyi)</p>
+          <span class="text-[10px] text-primary font-medium">Klik untuk putar</span>
+        </div>
+        <div class="space-y-1.5 overflow-y-auto no-scrollbar max-h-52 flex-1" id="playlistTrackList">
           <!-- Rendered by JS -->
         </div>
       </div>
@@ -2149,25 +2191,206 @@
       document.getElementById('vaultUnlockedState').classList.add('hidden');
     }
 
-    // ==================== PLAYLIST - 10 LAGU NYATA SPOTIFY ====================
-    // Track IDs Spotify yang terverifikasi
+    // ==================== PLAYLIST - 10 LAGU REAL AUDIO (LANGSUNG BUNYI) ====================
     const PLAYLIST_TRACKS = [
-      { title: 'About You', artist: 'The 1975', mood: 'Romantic Indie 💕', spotifyId: '1fDFHXcykq4iw8Gg7s5hG9' },
-      { title: 'Iris', artist: 'Goo Goo Dolls', mood: 'Timeless Love 🌹', spotifyId: '6Qyc6fS4DsMcB2mMa9Pa7N' },
-      { title: 'Dunia Yang Nanti', artist: 'Raim Laode', mood: 'Manis Banget 🌸', spotifyId: '6F5T6sY73o1iRz1OaM6w1E' },
-      { title: 'Thinking of You', artist: 'Katy Perry', mood: 'Selalu Teringat 💭', spotifyId: '0u6n6p0g95V8Y72T036XGz' },
-      { title: 'Teh Hijau', artist: 'Tulus', mood: 'Hangat & Santai 🍵', spotifyId: '0p89J8oHjZ3zNf9b1O8c4N' },
-      { title: 'Bertaut', artist: 'Nadin Amizah', mood: 'Warm & Nostalgic ☕', spotifyId: '4jVp8WkUfP418f7R7u622u' },
-      { title: 'Rayuan Perempuan Gila', artist: 'Nadin Amizah', mood: 'Cozy & Honest 💕', spotifyId: '6TqVj9s545sD4fJ6o55353' },
-      { title: 'Gala Bunga Matahari', artist: 'Sal Priadi', mood: 'Paling Manis 🌻', spotifyId: '6UjT2kFhC8R007g2Vf43N2' },
-      { title: 'Komang', artist: 'Raim Laode', mood: 'Wanita Tercantik 🌸', spotifyId: '6S8H65rY9w0S2v526S3S7z' },
-      { title: 'Lover', artist: 'Taylor Swift', mood: 'Bucin Maksimal 💖', spotifyId: '1dGr1c8CrxDpV6fSyY2k8u' }
+      {
+        id: 'about_you',
+        title: 'About You',
+        artist: 'The 1975',
+        mood: 'Romantic Indie 💕',
+        file: 'music/about_you.m4a',
+        cover: 'music/about_you.jpg',
+        spotifyUrl: 'https://open.spotify.com/track/1fDFHXcykq4iw8Gg7s5hG9'
+      },
+      {
+        id: 'iris',
+        title: 'Iris',
+        artist: 'The Goo Goo Dolls',
+        mood: 'Timeless Love 🌹',
+        file: 'music/iris.m4a',
+        cover: 'music/iris.jpg',
+        spotifyUrl: 'https://open.spotify.com/track/6Qyc6fS4DsZjB2mRW9DsQs'
+      },
+      {
+        id: 'dunia_yang_nanti',
+        title: 'Dunia Yang Nanti',
+        artist: 'Raim Laode',
+        mood: 'Manis Banget 🌸',
+        file: 'music/dunia_yang_nanti.m4a',
+        cover: 'music/dunia_yang_nanti.jpg',
+        spotifyUrl: 'https://open.spotify.com/search/Raim%20Laode%20Dunia%20Yang%20Nanti'
+      },
+      {
+        id: 'thinking_of_you',
+        title: 'Thinking of You',
+        artist: 'Katy Perry',
+        mood: 'Selalu Teringat 💭',
+        file: 'music/thinking_of_you.m4a',
+        cover: 'music/thinking_of_you.jpg',
+        spotifyUrl: 'https://open.spotify.com/search/Katy%20Perry%20Thinking%20of%20You'
+      },
+      {
+        id: 'teh_hijau',
+        title: 'Teh Hijau',
+        artist: 'Tulus',
+        mood: 'Hangat & Santai 🍵',
+        file: 'music/teh_hijau.m4a',
+        cover: 'music/teh_hijau.jpg',
+        spotifyUrl: 'https://open.spotify.com/search/Tulus%20Teh%20Hijau'
+      },
+      {
+        id: 'bertaut',
+        title: 'Bertaut',
+        artist: 'Nadin Amizah',
+        mood: 'Warm & Nostalgic ☕',
+        file: 'music/bertaut.m4a',
+        cover: 'music/bertaut.jpg',
+        spotifyUrl: 'https://open.spotify.com/search/Nadin%20Amizah%20Bertaut'
+      },
+      {
+        id: 'rayuan_perempuan_gila',
+        title: 'Rayuan Perempuan Gila',
+        artist: 'Nadin Amizah',
+        mood: 'Cozy & Honest 💕',
+        file: 'music/rayuan_perempuan_gila.m4a',
+        cover: 'music/rayuan_perempuan_gila.jpg',
+        spotifyUrl: 'https://open.spotify.com/search/Nadin%20Amizah%20Rayuan%20Perempuan%20Gila'
+      },
+      {
+        id: 'gala_bunga_matahari',
+        title: 'Gala Bunga Matahari',
+        artist: 'Sal Priadi',
+        mood: 'Paling Manis 🌻',
+        file: 'music/gala_bunga_matahari.m4a',
+        cover: 'music/gala_bunga_matahari.jpg',
+        spotifyUrl: 'https://open.spotify.com/search/Sal%20Priadi%20Gala%20Bunga%20Matahari'
+      },
+      {
+        id: 'komang',
+        title: 'Komang',
+        artist: 'Raim Laode',
+        mood: 'Wanita Tercantik 🌸',
+        file: 'music/komang.m4a',
+        cover: 'music/komang.jpg',
+        spotifyUrl: 'https://open.spotify.com/search/Raim%20Laode%20Komang'
+      },
+      {
+        id: 'lover',
+        title: 'Lover',
+        artist: 'Taylor Swift',
+        mood: 'Bucin Maksimal 💖',
+        file: 'music/lover.m4a',
+        cover: 'music/lover.jpg',
+        spotifyUrl: 'https://open.spotify.com/search/Taylor%20Swift%20Lover'
+      }
     ];
+
     let currentTrackIdx = 0;
     let isAudioPlaying = false;
+    let mainAudio = null;
 
-    function getSpotifyEmbedUrl(spotifyId) {
-      return `https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0`;
+    function initAudioPlayer() {
+      if (mainAudio) return;
+      mainAudio = document.getElementById('mainAudioPlayer');
+      if (!mainAudio) return;
+
+      mainAudio.addEventListener('timeupdate', () => {
+        if (!mainAudio.duration) return;
+        const progress = (mainAudio.currentTime / mainAudio.duration) * 100;
+        const progressBar = document.getElementById('audioProgressBar');
+        if (progressBar) progressBar.value = progress;
+        
+        const curEl = document.getElementById('currentTimeDisplay');
+        if (curEl) curEl.textContent = formatAudioTime(mainAudio.currentTime);
+      });
+
+      mainAudio.addEventListener('loadedmetadata', () => {
+        const durEl = document.getElementById('durationDisplay');
+        if (durEl) durEl.textContent = formatAudioTime(mainAudio.duration);
+      });
+
+      mainAudio.addEventListener('ended', () => {
+        nextTrack();
+      });
+
+      mainAudio.addEventListener('play', () => {
+        setPlayingUI(true);
+      });
+
+      mainAudio.addEventListener('pause', () => {
+        setPlayingUI(false);
+      });
+    }
+
+    function formatAudioTime(secs) {
+      if (isNaN(secs) || secs < 0) return '0:00';
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function seekAudio(val) {
+      if (!mainAudio) mainAudio = document.getElementById('mainAudioPlayer');
+      if (!mainAudio || !mainAudio.duration) return;
+      mainAudio.currentTime = (val / 100) * mainAudio.duration;
+    }
+
+    function loadTrack(idx, autoPlay = true) {
+      currentTrackIdx = idx;
+      const track = PLAYLIST_TRACKS[idx];
+      if (!mainAudio) initAudioPlayer();
+      if (mainAudio) {
+        mainAudio.src = track.file;
+        mainAudio.load();
+        if (autoPlay) {
+          mainAudio.play().then(() => {
+            setPlayingUI(true);
+          }).catch(err => {
+            console.log('Playback error:', err);
+            setPlayingUI(false);
+          });
+        }
+      }
+      updateTrackDisplay();
+      renderPlaylistTracks();
+    }
+
+    function togglePlayPause() {
+      if (!mainAudio) initAudioPlayer();
+      if (!mainAudio) return;
+
+      if (mainAudio.paused) {
+        if (!mainAudio.src || mainAudio.src === '' || mainAudio.src.endsWith('/')) {
+          loadTrack(currentTrackIdx, true);
+        } else {
+          mainAudio.play().then(() => {
+            setPlayingUI(true);
+          }).catch(e => {
+            loadTrack(currentTrackIdx, true);
+          });
+        }
+      } else {
+        mainAudio.pause();
+        setPlayingUI(false);
+      }
+    }
+
+    function toggleAudioPlayback() {
+      togglePlayPause();
+    }
+
+    function selectTrack(idx) {
+      loadTrack(idx, true);
+    }
+
+    function prevTrack() {
+      const prevIdx = (currentTrackIdx - 1 + PLAYLIST_TRACKS.length) % PLAYLIST_TRACKS.length;
+      loadTrack(prevIdx, true);
+    }
+
+    function nextTrack() {
+      const nextIdx = (currentTrackIdx + 1) % PLAYLIST_TRACKS.length;
+      loadTrack(nextIdx, true);
     }
 
     function shufflePlaylist() {
@@ -2175,17 +2398,59 @@
         const j = Math.floor(Math.random() * (i + 1));
         [PLAYLIST_TRACKS[i], PLAYLIST_TRACKS[j]] = [PLAYLIST_TRACKS[j], PLAYLIST_TRACKS[i]];
       }
-      currentTrackIdx = 0;
-      updateTrackDisplay();
-      renderPlaylistTracks();
+      loadTrack(0, true);
+    }
+
+    function updateTrackDisplay() {
+      const track = PLAYLIST_TRACKS[currentTrackIdx];
+      if (!track) return;
+
+      // Home player updates
+      const homeSong = document.getElementById('homeSongTitle');
+      if (homeSong) homeSong.textContent = track.title;
+      const homeSub = document.getElementById('homeSongSubtitle');
+      if (homeSub) homeSub.textContent = `${track.artist} · ${track.mood}`;
+
+      // Modal player updates
+      const modalCover = document.getElementById('modalCoverArt');
+      if (modalCover) modalCover.src = track.cover;
+      const modalTitle = document.getElementById('modalTrackTitle');
+      if (modalTitle) modalTitle.textContent = track.title;
+      const modalArtist = document.getElementById('modalTrackArtist');
+      if (modalArtist) modalArtist.textContent = track.artist;
+      const modalMood = document.getElementById('modalMoodBadge');
+      if (modalMood) modalMood.textContent = track.mood;
+      const modalSpotify = document.getElementById('modalSpotifyLink');
+      if (modalSpotify) modalSpotify.href = track.spotifyUrl;
+    }
+
+    function setPlayingUI(playing) {
+      isAudioPlaying = playing;
+      const vinylHome = document.getElementById('homeVinylDisk');
+      const homePlayIcon = document.getElementById('homePlayIcon');
+      const modalPlayIcon = document.getElementById('modalPlayIcon');
+      const modalVinylBadge = document.getElementById('modalVinylBadge');
+      const eq = document.getElementById('equalizerBars');
+
+      if (playing) {
+        if (vinylHome) vinylHome.classList.remove('spin-vinyl-paused');
+        if (homePlayIcon) homePlayIcon.textContent = 'pause';
+        if (modalPlayIcon) modalPlayIcon.textContent = 'pause';
+        if (modalVinylBadge) modalVinylBadge.classList.remove('hidden');
+        if (eq) eq.classList.add('animate-pulse');
+      } else {
+        if (vinylHome) vinylHome.classList.add('spin-vinyl-paused');
+        if (homePlayIcon) homePlayIcon.textContent = 'play_arrow';
+        if (modalPlayIcon) modalPlayIcon.textContent = 'play_arrow';
+        if (modalVinylBadge) modalVinylBadge.classList.add('hidden');
+        if (eq) eq.classList.remove('animate-pulse');
+      }
     }
 
     function openPlaylistModal() {
       renderPlaylistTracks();
       updateTrackDisplay();
-      // Set Spotify embed ke lagu pertama
-      const embed = document.getElementById('spotifyEmbed');
-      if (embed) embed.src = getSpotifyEmbedUrl(PLAYLIST_TRACKS[0].spotifyId);
+      initAudioPlayer();
       document.getElementById('modalPlaylist').classList.remove('hidden');
       document.getElementById('modalPlaylist').classList.add('flex');
     }
@@ -2194,70 +2459,29 @@
       const list = document.getElementById('playlistTrackList');
       if (!list) return;
       list.innerHTML = PLAYLIST_TRACKS.map((t, idx) => `
-        <div onclick="selectTrack(${idx})" class="flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all ${idx === currentTrackIdx ? 'bg-[#1ed76020] border border-[#1ed760]/30' : 'hover:bg-surface-container'}">
-          <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center" style="background:#1ed760">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="black"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        <div onclick="selectTrack(${idx})" class="flex items-center justify-between p-2.5 rounded-2xl cursor-pointer transition-all ${idx === currentTrackIdx ? 'bg-primary/10 border border-primary/30 shadow-xs' : 'hover:bg-surface-container border border-transparent'}">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="relative w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 bg-stone-800 border border-pink-100">
+              <img src="${t.cover}" alt="${t.title}" class="w-full h-full object-cover">
+              ${idx === currentTrackIdx && isAudioPlaying ? `
+                <div class="absolute inset-0 bg-primary/40 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-white text-xs animate-bounce">equalizer</span>
+                </div>
+              ` : ''}
             </div>
-            <div>
-              <p class="text-xs font-bold text-on-surface leading-tight">${t.title}</p>
-              <p class="text-[10px] text-secondary">${t.artist} · <span class="text-primary font-medium">${t.mood}</span></p>
+            <div class="min-w-0">
+              <p class="text-xs font-bold ${idx === currentTrackIdx ? 'text-primary' : 'text-on-surface'} truncate leading-tight">${t.title}</p>
+              <p class="text-[10px] text-secondary truncate">${t.artist} · <span class="text-primary/80 font-medium">${t.mood}</span></p>
             </div>
           </div>
-          <span class="text-[11px] flex-shrink-0">${idx === currentTrackIdx ? '🎵' : ''}</span>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            ${idx === currentTrackIdx && isAudioPlaying ? `
+              <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+            ` : ''}
+            <span class="text-[11px] font-bold ${idx === currentTrackIdx ? 'text-primary' : 'text-secondary/60'}">0${idx + 1}</span>
+          </div>
         </div>
       `).join('');
-    }
-
-    function selectTrack(idx) {
-      currentTrackIdx = idx;
-      updateTrackDisplay();
-      renderPlaylistTracks();
-      // Ganti Spotify embed ke lagu yang dipilih
-      const embed = document.getElementById('spotifyEmbed');
-      if (embed) embed.src = getSpotifyEmbedUrl(PLAYLIST_TRACKS[idx].spotifyId);
-      setPlayingUI(true);
-    }
-
-    function prevTrack() {
-      currentTrackIdx = (currentTrackIdx - 1 + PLAYLIST_TRACKS.length) % PLAYLIST_TRACKS.length;
-      updateTrackDisplay();
-      renderPlaylistTracks();
-      const embed = document.getElementById('spotifyEmbed');
-      if (embed) embed.src = getSpotifyEmbedUrl(PLAYLIST_TRACKS[currentTrackIdx].spotifyId);
-    }
-
-    function nextTrack() {
-      currentTrackIdx = (currentTrackIdx + 1) % PLAYLIST_TRACKS.length;
-      updateTrackDisplay();
-      renderPlaylistTracks();
-      const embed = document.getElementById('spotifyEmbed');
-      if (embed) embed.src = getSpotifyEmbedUrl(PLAYLIST_TRACKS[currentTrackIdx].spotifyId);
-    }
-
-    function updateTrackDisplay() {
-      const track = PLAYLIST_TRACKS[currentTrackIdx];
-      const homeSong = document.getElementById('homeSongTitle');
-      if (homeSong) homeSong.textContent = track.title;
-    }
-
-    function setPlayingUI(playing) {
-      isAudioPlaying = playing;
-      const vinylHome = document.getElementById('homeVinylDisk');
-      const homePlayIcon = document.getElementById('homePlayIcon');
-      if (playing) {
-        if (vinylHome) vinylHome.classList.remove('spin-vinyl-paused');
-        if (homePlayIcon) homePlayIcon.textContent = 'pause';
-      } else {
-        if (vinylHome) vinylHome.classList.add('spin-vinyl-paused');
-        if (homePlayIcon) homePlayIcon.textContent = 'play_arrow';
-      }
-    }
-
-    function toggleAudioPlayback() {
-      // Home play button: buka modal playlist
-      openPlaylistModal();
-      switchTab('more');
     }
 
     // ==================== RELATIONSHIP COUNTER (10 MARET 2025) ====================
@@ -2855,6 +3079,8 @@
       renderLetters();
       renderChatThread();
       fetchServerData();
+      initAudioPlayer();
+      updateTrackDisplay();
     });
   </script>
 </body>
