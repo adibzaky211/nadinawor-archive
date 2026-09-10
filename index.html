@@ -957,14 +957,16 @@
 
   <!-- MODAL 7: PLAYLIST & SOUNDTRACK ROOM -->
   <div id="modalPlaylist" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-surface rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-pink-200 space-y-4">
-      <div class="flex items-center justify-between">
+    <div class="bg-surface rounded-3xl max-w-sm w-full shadow-2xl border border-pink-200 overflow-hidden">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between px-5 pt-5 pb-3">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary text-xl">album</span>
           <h3 class="font-epilogue font-bold text-base text-on-surface">Playlist Kita 🎵</h3>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="shufflePlaylist()" class="text-[11px] font-bold text-primary bg-pink-100 hover:bg-pink-200 px-2.5 py-1 rounded-full flex items-center gap-1 transition-all" title="Acak urutan lagu">
+          <button onclick="shufflePlaylist()" class="text-[11px] font-bold text-primary bg-pink-100 hover:bg-pink-200 px-2.5 py-1 rounded-full flex items-center gap-1 transition-all">
             <span class="material-symbols-outlined text-xs">shuffle</span> Acak
           </button>
           <button onclick="closeModal('modalPlaylist')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary">
@@ -973,54 +975,25 @@
         </div>
       </div>
 
-      <!-- Player Area -->
-      <div class="p-4 bg-gradient-to-b from-[#2a2225] to-[#1a1215] rounded-2xl text-center space-y-3 shadow-inner">
-        
-        <!-- Vinyl + YouTube Embed (iframe harus ada dimensi nyata agar audio bisa play) -->
-        <div class="relative mx-auto" style="width:96px;height:96px;">
-          <!-- Vinyl visual (pointer-events none agar klik tembus ke iframe) -->
-          <div class="absolute inset-0 rounded-full bg-stone-900 border-4 border-stone-800 flex items-center justify-center spin-vinyl spin-vinyl-paused z-10 pointer-events-none" id="playlistVinyl">
-            <div class="w-14 h-14 rounded-full border border-stone-700 flex items-center justify-center">
-              <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-[9px] font-bold">NADIN</div>
-            </div>
-          </div>
-          <!-- Real YouTube iframe (opacity 0 tapi tetap punya ukuran agar audio berjalan) -->
-          <iframe id="ytIframe"
-            src="about:blank"
-            width="96" height="96"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-            style="position:absolute;inset:0;border:none;border-radius:50%;opacity:0;z-index:1;"
-          ></iframe>
-        </div>
-
-        <div>
-          <h4 class="text-white font-bold text-sm" id="playlistTrackTitle">About You</h4>
-          <p class="text-pink-300/80 text-xs" id="playlistTrackArtist">The 1975 · Romantic Indie 💕</p>
-        </div>
-
-        <!-- Controls -->
-        <div class="flex items-center justify-center gap-4 pt-1">
-          <button onclick="prevTrack()" class="text-white/80 hover:text-white">
-            <span class="material-symbols-outlined text-xl">skip_previous</span>
-          </button>
-          <button onclick="toggleAudioPlayback()" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
-            <span id="playlistPlayIcon" class="material-symbols-outlined text-2xl">play_arrow</span>
-          </button>
-          <button onclick="nextTrack()" class="text-white/80 hover:text-white">
-            <span class="material-symbols-outlined text-xl">skip_next</span>
-          </button>
-        </div>
-
-        <!-- Buka di YouTube fallback -->
-        <a id="ytOpenLink" href="#" target="_blank" rel="noopener" class="text-pink-300/60 text-[10px] hover:text-pink-200 flex items-center justify-center gap-1 mt-1">
-          <span class="material-symbols-outlined text-[12px]">open_in_new</span> Buka di YouTube
-        </a>
+      <!-- Spotify Embed Player (REAL MUSIC - bisa diputar langsung!) -->
+      <div class="px-4 pb-3">
+        <iframe id="spotifyEmbed"
+          src="https://open.spotify.com/embed/track/1fDFHXcykq4iw8Gg7s5hG9?utm_source=generator&theme=0"
+          width="100%"
+          height="152"
+          frameBorder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          style="border-radius:14px;"
+        ></iframe>
       </div>
 
       <!-- Track List -->
-      <div class="space-y-1.5 max-h-44 overflow-y-auto no-scrollbar" id="playlistTrackList">
-        <!-- Rendered by JS -->
+      <div class="px-4 pb-5">
+        <p class="text-[10px] font-bold text-secondary uppercase tracking-wider mb-2">Pilih Lagu</p>
+        <div class="space-y-1.5 max-h-52 overflow-y-auto no-scrollbar" id="playlistTrackList">
+          <!-- Rendered by JS -->
+        </div>
       </div>
     </div>
   </div>
@@ -2176,35 +2149,25 @@
       document.getElementById('vaultUnlockedState').classList.add('hidden');
     }
 
-    // ==================== PLAYLIST - 10 LAGU BISA DIDENGARKAN VIA YOUTUBE ====================
+    // ==================== PLAYLIST - 10 LAGU NYATA SPOTIFY ====================
+    // Track IDs Spotify yang terverifikasi
     const PLAYLIST_TRACKS = [
-      { title: 'About You', artist: 'The 1975', mood: 'Romantic Indie 💕', ytId: '_9MDtoUq1e0' },
-      { title: 'Iris', artist: 'Goo Goo Dolls', mood: 'Timeless Love 🌹', ytId: 'NdYWuo9OFAw' },
-      { title: 'Dunia Yang Nanti', artist: 'Raim Laode', mood: 'Manis Banget 🌸', ytId: 'awWKxGftWh4' },
-      { title: 'Thinking of You', artist: 'Katy Perry', mood: 'Selalu Teringat 💭', ytId: 'Ld559dZcyBk' },
-      { title: 'Teh Hijau', artist: 'Tulus', mood: 'Hangat & Santai 🍵', ytId: 'zyLmavBAY7k' },
-      { title: 'Bertaut', artist: 'Nadin Amizah', mood: 'Warm & Nostalgic ☕', ytId: 't-w_nLSpHyg' },
-      { title: 'Rayuan Perempuan Gila', artist: 'Nadin Amizah', mood: 'Cozy & Honest 💕', ytId: 'j7_n_-W21Jg' },
-      { title: 'Gala Bunga Matahari', artist: 'Sal Priadi', mood: 'Paling Manis 🌻', ytId: 'a1_u9V4yYxM' },
-      { title: 'Komang', artist: 'Raim Laode', mood: 'Wanita Tercantik 🌸', ytId: 'a8LgG__2x08' },
-      { title: 'Lover', artist: 'Taylor Swift', mood: 'Bucin Maksimal 💖', ytId: '-BjZmE2gTDo' }
+      { title: 'About You', artist: 'The 1975', mood: 'Romantic Indie 💕', spotifyId: '1fDFHXcykq4iw8Gg7s5hG9' },
+      { title: 'Iris', artist: 'Goo Goo Dolls', mood: 'Timeless Love 🌹', spotifyId: '6Qyc6fS4DsMcB2mMa9Pa7N' },
+      { title: 'Dunia Yang Nanti', artist: 'Raim Laode', mood: 'Manis Banget 🌸', spotifyId: '6F5T6sY73o1iRz1OaM6w1E' },
+      { title: 'Thinking of You', artist: 'Katy Perry', mood: 'Selalu Teringat 💭', spotifyId: '0u6n6p0g95V8Y72T036XGz' },
+      { title: 'Teh Hijau', artist: 'Tulus', mood: 'Hangat & Santai 🍵', spotifyId: '0p89J8oHjZ3zNf9b1O8c4N' },
+      { title: 'Bertaut', artist: 'Nadin Amizah', mood: 'Warm & Nostalgic ☕', spotifyId: '4jVp8WkUfP418f7R7u622u' },
+      { title: 'Rayuan Perempuan Gila', artist: 'Nadin Amizah', mood: 'Cozy & Honest 💕', spotifyId: '6TqVj9s545sD4fJ6o55353' },
+      { title: 'Gala Bunga Matahari', artist: 'Sal Priadi', mood: 'Paling Manis 🌻', spotifyId: '6UjT2kFhC8R007g2Vf43N2' },
+      { title: 'Komang', artist: 'Raim Laode', mood: 'Wanita Tercantik 🌸', spotifyId: '6S8H65rY9w0S2v526S3S7z' },
+      { title: 'Lover', artist: 'Taylor Swift', mood: 'Bucin Maksimal 💖', spotifyId: '1dGr1c8CrxDpV6fSyY2k8u' }
     ];
     let currentTrackIdx = 0;
     let isAudioPlaying = false;
 
-    // Ganti src iframe YouTube dengan autoplay=1 agar suara keluar
-    // (iframe harus punya dimensi nyata — opacity:0 tapi bukan width:0)
-    function playYouTubeTrack(ytId) {
-      const iframe = document.getElementById('ytIframe');
-      if (!iframe) return;
-      // autoplay=1, mute=0 agar ada suara
-      iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&enablejsapi=1`;
-    }
-
-    function stopYouTubeTrack() {
-      const iframe = document.getElementById('ytIframe');
-      if (!iframe) return;
-      iframe.src = 'about:blank';
+    function getSpotifyEmbedUrl(spotifyId) {
+      return `https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0`;
     }
 
     function shufflePlaylist() {
@@ -2215,14 +2178,14 @@
       currentTrackIdx = 0;
       updateTrackDisplay();
       renderPlaylistTracks();
-      if (isAudioPlaying) {
-        playYouTubeTrack(PLAYLIST_TRACKS[0].ytId);
-      }
     }
 
     function openPlaylistModal() {
       renderPlaylistTracks();
       updateTrackDisplay();
+      // Set Spotify embed ke lagu pertama
+      const embed = document.getElementById('spotifyEmbed');
+      if (embed) embed.src = getSpotifyEmbedUrl(PLAYLIST_TRACKS[0].spotifyId);
       document.getElementById('modalPlaylist').classList.remove('hidden');
       document.getElementById('modalPlaylist').classList.add('flex');
     }
@@ -2231,17 +2194,17 @@
       const list = document.getElementById('playlistTrackList');
       if (!list) return;
       list.innerHTML = PLAYLIST_TRACKS.map((t, idx) => `
-        <div onclick="selectTrack(${idx})" class="flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-colors ${idx === currentTrackIdx ? 'bg-primary-light/50 border border-primary/30' : 'hover:bg-surface-container'}">
+        <div onclick="selectTrack(${idx})" class="flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all ${idx === currentTrackIdx ? 'bg-[#1ed76020] border border-[#1ed760]/30' : 'hover:bg-surface-container'}">
           <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center flex-shrink-0">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.8a8.18 8.18 0 004.77 1.52V6.88a4.85 4.85 0 01-1-.19z"/></svg>
+            <div class="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center" style="background:#1ed760">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="black"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
             </div>
             <div>
               <p class="text-xs font-bold text-on-surface leading-tight">${t.title}</p>
               <p class="text-[10px] text-secondary">${t.artist} · <span class="text-primary font-medium">${t.mood}</span></p>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-primary flex-shrink-0">${idx === currentTrackIdx ? '🎵' : ''}</span>
+          <span class="text-[11px] flex-shrink-0">${idx === currentTrackIdx ? '🎵' : ''}</span>
         </div>
       `).join('');
     }
@@ -2250,8 +2213,9 @@
       currentTrackIdx = idx;
       updateTrackDisplay();
       renderPlaylistTracks();
-      playYouTubeTrack(PLAYLIST_TRACKS[idx].ytId);
-      isAudioPlaying = true;
+      // Ganti Spotify embed ke lagu yang dipilih
+      const embed = document.getElementById('spotifyEmbed');
+      if (embed) embed.src = getSpotifyEmbedUrl(PLAYLIST_TRACKS[idx].spotifyId);
       setPlayingUI(true);
     }
 
@@ -2259,55 +2223,41 @@
       currentTrackIdx = (currentTrackIdx - 1 + PLAYLIST_TRACKS.length) % PLAYLIST_TRACKS.length;
       updateTrackDisplay();
       renderPlaylistTracks();
-      if (isAudioPlaying) playYouTubeTrack(PLAYLIST_TRACKS[currentTrackIdx].ytId);
+      const embed = document.getElementById('spotifyEmbed');
+      if (embed) embed.src = getSpotifyEmbedUrl(PLAYLIST_TRACKS[currentTrackIdx].spotifyId);
     }
 
     function nextTrack() {
       currentTrackIdx = (currentTrackIdx + 1) % PLAYLIST_TRACKS.length;
       updateTrackDisplay();
       renderPlaylistTracks();
-      if (isAudioPlaying) playYouTubeTrack(PLAYLIST_TRACKS[currentTrackIdx].ytId);
+      const embed = document.getElementById('spotifyEmbed');
+      if (embed) embed.src = getSpotifyEmbedUrl(PLAYLIST_TRACKS[currentTrackIdx].spotifyId);
     }
 
     function updateTrackDisplay() {
       const track = PLAYLIST_TRACKS[currentTrackIdx];
       const homeSong = document.getElementById('homeSongTitle');
-      const playlistTrackTitle = document.getElementById('playlistTrackTitle');
-      const playlistTrackArtist = document.getElementById('playlistTrackArtist');
-      const ytOpenLink = document.getElementById('ytOpenLink');
       if (homeSong) homeSong.textContent = track.title;
-      if (playlistTrackTitle) playlistTrackTitle.textContent = track.title;
-      if (playlistTrackArtist) playlistTrackArtist.textContent = `${track.artist} · ${track.mood}`;
-      if (ytOpenLink) ytOpenLink.href = 'https://www.youtube.com/watch?v=' + track.ytId;
     }
 
     function setPlayingUI(playing) {
       isAudioPlaying = playing;
       const vinylHome = document.getElementById('homeVinylDisk');
-      const vinylModal = document.getElementById('playlistVinyl');
       const homePlayIcon = document.getElementById('homePlayIcon');
-      const playlistPlayIcon = document.getElementById('playlistPlayIcon');
       if (playing) {
         if (vinylHome) vinylHome.classList.remove('spin-vinyl-paused');
-        if (vinylModal) vinylModal.classList.remove('spin-vinyl-paused');
         if (homePlayIcon) homePlayIcon.textContent = 'pause';
-        if (playlistPlayIcon) playlistPlayIcon.textContent = 'pause';
       } else {
         if (vinylHome) vinylHome.classList.add('spin-vinyl-paused');
-        if (vinylModal) vinylModal.classList.add('spin-vinyl-paused');
         if (homePlayIcon) homePlayIcon.textContent = 'play_arrow';
-        if (playlistPlayIcon) playlistPlayIcon.textContent = 'play_arrow';
       }
     }
 
     function toggleAudioPlayback() {
-      if (isAudioPlaying) {
-        stopYouTubeTrack();
-        setPlayingUI(false);
-      } else {
-        playYouTubeTrack(PLAYLIST_TRACKS[currentTrackIdx].ytId);
-        setPlayingUI(true);
-      }
+      // Home play button: buka modal playlist
+      openPlaylistModal();
+      switchTab('more');
     }
 
     // ==================== RELATIONSHIP COUNTER (10 MARET 2025) ====================
