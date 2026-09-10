@@ -1047,12 +1047,22 @@
 
   <!-- ==================== JAVASCRIPT LOGIC ==================== -->
   <script>
-    // Register Service Worker for PWA
+    // Register Service Worker for PWA with Auto-Update Check
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(err => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+          reg.update(); // Force checking for latest version on every load
+        }).catch(err => {
           console.log('SW registration note:', err);
         });
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
       });
     }
 
@@ -1155,19 +1165,9 @@
       } catch (e) {}
     }
 
-    // Automatically purge old template memories and leftover test photos
-    const CLEAN_VERSION = 'v15_clean_all';
-    if (localStorage.getItem('nadin_clean_ver') !== CLEAN_VERSION) {
-      localStorage.removeItem('nadin_memories');
-      localStorage.setItem('nadin_clean_ver', CLEAN_VERSION);
-    }
-
     function isCleanMemory(m) {
       if (!m || !m.id) return false;
       if (['mem-1', 'mem-2', 'mem-3', 'mem-4', 'mem-5'].includes(m.id)) return false;
-      const t = (m.title || '').toLowerCase();
-      if (t.includes('ngelipir') || t.includes('melipir') || t.includes('veteran')) return false;
-      if (t.includes('dieng') || t.includes('kyoto') || t.includes('senopati') || t.includes('lodaya') || t.includes('malang')) return false;
       return true;
     }
 
