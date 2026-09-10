@@ -992,7 +992,7 @@
 
         <!-- Camera Viewfinder -->
         <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black shadow-inner border-2 border-pink-200">
-          <video id="photoboothVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+          <video id="photoboothVideo" autoplay playsinline muted class="w-full h-full object-cover transition-transform duration-200" style="transform: scaleX(-1);"></video>
           
           <!-- Countdown Overlay -->
           <div id="photoboothCountdown" class="absolute inset-0 flex items-center justify-center text-7xl font-epilogue font-extrabold text-white drop-shadow-2xl hidden pointer-events-none animate-pulse">
@@ -1007,9 +1007,14 @@
             <span id="photoboothSlotBadge" class="bg-black/60 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-full border border-white/20">
               Pose 1 dari 4 🌸
             </span>
-            <span id="photoboothCameraIndicator" class="bg-rose-500/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> REC
-            </span>
+            <div class="flex items-center gap-1.5 pointer-events-auto">
+              <button onclick="togglePhotoboothMirror()" id="photoboothMirrorBadge" class="bg-black/60 hover:bg-black/80 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-white/20 cursor-pointer transition-all">
+                🪞 Mirror: ON
+              </button>
+              <span id="photoboothCameraIndicator" class="bg-rose-500/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> REC
+              </span>
+            </div>
           </div>
 
           <!-- Guide Crosshair / Overlay -->
@@ -1048,8 +1053,13 @@
               <span class="material-symbols-outlined text-lg">photo_camera</span>
               <span id="shutterBtnLabel">Jepret Pose Ini (3 Detik) 📸</span>
             </button>
-            <button onclick="togglePhotoboothCameraFacing()" class="w-12 h-12 rounded-2xl bg-surface-container text-secondary hover:text-primary hover:bg-pink-100 flex items-center justify-center transition-all border border-pink-200" title="Ganti Kamera Depan/Belakang">
-              <span class="material-symbols-outlined text-xl">flip_camera_ios</span>
+            <button onclick="togglePhotoboothMirror()" id="btnToggleMirror" class="w-12 h-12 rounded-2xl bg-primary-light/60 text-primary hover:bg-primary-light flex flex-col items-center justify-center transition-all border border-primary/40 shadow-xs" title="Mirror Kamera (Cermin On/Off)">
+              <span class="material-symbols-outlined text-base">swap_horiz</span>
+              <span class="text-[8px] font-bold">Mirror</span>
+            </button>
+            <button onclick="togglePhotoboothCameraFacing()" class="w-12 h-12 rounded-2xl bg-surface-container text-secondary hover:text-primary hover:bg-pink-100 flex flex-col items-center justify-center transition-all border border-pink-200" title="Ganti Kamera Depan/Belakang">
+              <span class="material-symbols-outlined text-base">flip_camera_ios</span>
+              <span class="text-[8px] font-bold">Flip</span>
             </button>
           </div>
 
@@ -2225,6 +2235,7 @@
     // ==================== PURIKURA 4-CUT CAMERA & STUDIO ====================
     let photoboothStream = null;
     let photoboothFacing = 'user'; // 'user' (depan) or 'environment' (belakang)
+    let photoboothMirror = true; // mirror aktif secara default untuk kamera depan
     let photoboothActiveSlot = 0;
     let photoboothCuts = [null, null, null, null];
     let photoboothFrameColor = '#ffd9e2';
@@ -2259,6 +2270,8 @@
         photoboothStream = await navigator.mediaDevices.getUserMedia(constraints);
         videoEl.srcObject = photoboothStream;
         await videoEl.play();
+        updatePhotoboothMirrorUI();
+
         const indicator = document.getElementById('photoboothCameraIndicator');
         if (indicator) {
           indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> LIVE';
@@ -2285,7 +2298,41 @@
 
     function togglePhotoboothCameraFacing() {
       photoboothFacing = (photoboothFacing === 'user') ? 'environment' : 'user';
+      // Default: mirror aktif di kamera depan, mati di kamera belakang
+      photoboothMirror = (photoboothFacing === 'user');
       startPhotoboothCamera();
+      updatePhotoboothMirrorUI();
+    }
+
+    function togglePhotoboothMirror() {
+      photoboothMirror = !photoboothMirror;
+      updatePhotoboothMirrorUI();
+    }
+
+    function updatePhotoboothMirrorUI() {
+      const videoEl = document.getElementById('photoboothVideo');
+      if (videoEl) {
+        videoEl.style.transform = photoboothMirror ? 'scaleX(-1)' : 'scaleX(1)';
+      }
+
+      const mirrorBtn = document.getElementById('btnToggleMirror');
+      if (mirrorBtn) {
+        if (photoboothMirror) {
+          mirrorBtn.className = 'w-12 h-12 rounded-2xl bg-primary-light/80 text-primary hover:bg-primary-light flex flex-col items-center justify-center transition-all border border-primary/50 shadow-xs scale-105';
+          mirrorBtn.title = 'Mirror Aktif (Klik untuk nonaktifkan)';
+        } else {
+          mirrorBtn.className = 'w-12 h-12 rounded-2xl bg-surface-container text-secondary hover:text-primary hover:bg-pink-100 flex flex-col items-center justify-center transition-all border border-pink-200';
+          mirrorBtn.title = 'Mirror Nonaktif (Klik untuk aktifkan)';
+        }
+      }
+
+      const mirrorBadge = document.getElementById('photoboothMirrorBadge');
+      if (mirrorBadge) {
+        mirrorBadge.textContent = photoboothMirror ? '🪞 Mirror: ON' : '📷 Mirror: OFF';
+        mirrorBadge.className = photoboothMirror 
+          ? 'bg-primary/80 hover:bg-primary backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-white/30 cursor-pointer transition-all shadow-xs'
+          : 'bg-black/60 hover:bg-black/80 backdrop-blur-xs text-stone-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-white/20 cursor-pointer transition-all';
+      }
     }
 
     function selectPhotoboothSlot(idx) {
@@ -2386,8 +2433,8 @@
       canvas.height = 600;
       const ctx = canvas.getContext('2d');
 
-      // Mirror if front camera
-      if (photoboothFacing === 'user') {
+      // Mirror if user toggled mirror ON
+      if (photoboothMirror) {
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
       }
