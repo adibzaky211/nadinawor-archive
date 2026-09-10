@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <title>FOR YOU · まる子's Pink Scrapbook for Nadin</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#ad2b57"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Nadin"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" href="icons/icon-192.png"/>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Caveat:wght@600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Firebase SDK (Cloud Realtime Database 24/7) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#ad2b57",
+            "primary-hover": "#8e1f44",
+            "primary-light": "#ffd9e2",
+            "primary-container": "#ffd9e2",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#3b0017",
+            surface: "#fff8f7",
+            "surface-container": "#faeeed",
+            "surface-container-high": "#f5e7e6",
+            "surface-container-highest": "#eedfdc",
+            "surface-card": "rgba(255, 255, 255, 0.92)",
+            "on-surface": "#22191b",
+            "on-surface-variant": "#524345",
+            outline: "#857376",
+            "outline-variant": "#d7c1c4",
+            accent: "#f4a261",
+            secondary: "#75565f",
+            "secondary-container": "#ffd9e2"
+          },
+          fontFamily: {
+            epilogue: ['Epilogue', 'sans-serif'],
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+            handwriting: ['Caveat', 'cursive']
+          },
+          boxShadow: {
+            clay: '0 10px 25px -5px rgba(173, 43, 87, 0.12), 0 8px 10px -6px rgba(173, 43, 87, 0.08), inset 0 2px 4px rgba(255, 255, 255, 0.8)',
+            'clay-card': '0 12px 24px -4px rgba(173, 43, 87, 0.08), 0 6px 12px -2px rgba(173, 43, 87, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.9)',
+            'clay-button': '0 6px 16px -2px rgba(173, 43, 87, 0.35), inset 0 2px 2px rgba(255, 255, 255, 0.4)',
+            polaroid: '0 14px 28px rgba(120, 60, 80, 0.14), 0 4px 10px rgba(0,0,0,0.06)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Paper & Scrapbook Aesthetics */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #fff8f7;
+      color: #22191b;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .dark body {
+      background-color: #1a1114;
+      color: #faeeed;
+    }
+
+    /* Subtle Paper Texture Pattern */
+    .bg-paper-dots {
+      background-image: radial-gradient(#ad2b5715 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    .bg-notebook-lines {
+      background-image: repeating-linear-gradient(transparent, transparent 27px, #e8cfd4 28px);
+    }
+
+    /* Washi Tape Accent */
+    .washi-tape {
+      position: absolute;
+      height: 18px;
+      width: 70px;
+      background: rgba(255, 217, 226, 0.85);
+      backdrop-filter: blur(2px);
+      border-left: 2px dashed rgba(173, 43, 87, 0.3);
+      border-right: 2px dashed rgba(173, 43, 87, 0.3);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      z-index: 10;
+    }
+
+    .washi-tape-yellow {
+      background: rgba(255, 238, 186, 0.88);
+      border-left: 2px dashed rgba(199, 148, 26, 0.3);
+      border-right: 2px dashed rgba(199, 148, 26, 0.3);
+    }
+
+    /* Vinyl Spinning Animation */
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spin-vinyl {
+      animation: spin-slow 8s linear infinite;
+    }
+    .spin-vinyl-paused {
+      animation-play-state: paused;
+    }
+
+    /* Hide scrollbars but allow smooth touch scroll */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Floating Maruko bounce */
+    @keyframes gentle-bounce {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(1.5deg); }
+    }
+    .animate-gentle-bounce {
+      animation: gentle-bounce 3.2s ease-in-out infinite;
+    }
+
+    /* Screen Transition */
+    .app-screen {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out;
+    }
+    .app-screen.active {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-surface bg-paper-dots selection:bg-primary-light selection:text-primary">
+
+  <!-- ==================== TOP APP BAR ==================== -->
+  <header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 px-4 py-3 transition-colors">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      
+      <!-- Mascot / Brand -->
+      <div class="flex items-center gap-2.5">
+        <div class="relative w-10 h-10 rounded-full overflow-hidden p-0.5 bg-gradient-to-tr from-primary to-accent shadow-sm">
+          <img src="maruko_figurine.jpg" alt="Maruko" class="w-full h-full object-cover rounded-full bg-white"/>
+          <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-epilogue font-bold text-base text-on-surface leading-tight">FOR NADIN</h1>
+            <span class="text-[10px] font-semibold bg-primary-light text-primary px-1.5 py-0.5 rounded-full">まる子</span>
+          </div>
+          <p class="text-[11px] text-on-surface-variant flex items-center gap-1">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+            <span id="headerStatusText">Private Editorial Archive</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Icons -->
+      <div class="flex items-center gap-1.5">
+        <!-- Live Clock Pill -->
+        <div class="px-2.5 py-1 rounded-full bg-surface-container text-[11px] font-medium text-secondary flex items-center gap-1 border border-outline-variant/30 shadow-sm">
+          <span class="material-symbols-outlined text-[14px] text-primary">schedule</span>
+          <span id="liveClock">09:00</span>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggleBtn" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30" title="Ubah Tema">
+          <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+        </button>
+
+        <!-- Sync Button -->
+        <button id="syncStatusBtn" onclick="manualSync()" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-emerald-600 hover:text-primary transition-colors border border-outline-variant/30 relative" title="Sinkronisasi Data HP & Laptop">
+          <span class="material-symbols-outlined text-[17px]" id="syncIcon">cloud_done</span>
+          <span class="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+  <main class="flex-1 max-w-md w-full mx-auto pb-24 px-4 pt-3">
+
+    <!-- ======================================================== -->
+    <!-- SCREEN 1: HOME (3D Maruko Pink Scrapbook)               -->
+    <!-- ======================================================== -->
+    <section id="screen-home" class="app-screen active space-y-4">
+      
+      <!-- Welcome Hero Card with 3D Maruko Figurine -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#ffd9e2] via-[#faeeed] to-[#fff0f4] p-5 shadow-clay border border-[#f2ced6]">
+        <div class="washi-tape -top-2 right-12 rotate-3"></div>
+        
+        <div class="flex items-start justify-between">
+          <div class="space-y-1.5 max-w-[62%]">
+            <div class="inline-flex items-center gap-1 text-[11px] font-bold tracking-wide uppercase text-primary bg-white/70 px-2 py-0.5 rounded-full shadow-xs">
+              <span class="material-symbols-outlined text-[13px]">favorite</span>
+              Our Private Diary
+            </div>
+            <h2 class="font-epilogue font-extrabold text-xl text-on-surface leading-tight">
+              Selamat datang di ruang rahasia kita, <span class="text-primary italic font-handwriting text-2xl font-bold">Nadin!</span> ✨
+            </h2>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Tempat menyimpan tawa, foto Polaroid, alunan lagu, dan bisikan surat cinta yang abadi.
+            </p>
+          </div>
+
+          <!-- 3D Maruko Figurine Sticker -->
+          <div class="relative w-28 h-28 -mr-1 -mt-1 flex-shrink-0 animate-gentle-bounce">
+            <img src="maruko_figurine.jpg" alt="Maruko 3D Figurine" class="w-full h-full object-cover rounded-2xl shadow-polaroid border-2 border-white transform rotate-2"/>
+            <div class="absolute -bottom-2 -left-2 bg-white px-2 py-0.5 rounded-full text-[10px] font-bold text-primary shadow-sm border border-pink-100 flex items-center gap-0.5">
+              <span>🌸</span> まる子
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Relationship Counters -->
+        <div class="mt-4 pt-3.5 border-t border-white/60 grid grid-cols-3 gap-2 text-center">
+          <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
+            <p class="text-[10px] text-secondary font-medium">Hari Bersama</p>
+            <p class="font-epilogue font-extrabold text-base text-primary" id="daysCounter">382</p>
+          </div>
+          <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
+            <p class="text-[10px] text-secondary font-medium">Kenangan Foto</p>
+            <p class="font-epilogue font-extrabold text-base text-primary" id="memoriesCounter">5</p>
+          </div>
+          <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
+            <p class="text-[10px] text-secondary font-medium">Surat Rahasia</p>
+            <p class="font-epilogue font-extrabold text-base text-primary" id="lettersCounter">3</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Shortcuts -->
+      <div class="grid grid-cols-4 gap-2.5">
+        <button onclick="switchTab('memories'); openAddMemoryModal();" class="flex flex-col items-center gap-1 p-2.5 rounded-2xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-pink-50 text-primary flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl">add_photo_alternate</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface">Foto Baru</span>
+        </button>
+
+        <button onclick="switchTab('journal'); openAddDiaryModal();" class="flex flex-col items-center gap-1 p-2.5 rounded-2xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl">edit_note</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface">Tulis Diary</span>
+        </button>
+
+        <button onclick="switchTab('pesan')" class="flex flex-col items-center gap-1 p-2.5 rounded-2xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl">mark_email_unread</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface">Buka Surat</span>
+        </button>
+
+        <button onclick="switchTab('more'); openVaultModal();" class="flex flex-col items-center gap-1 p-2.5 rounded-2xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl">lock</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface">Brankas</span>
+        </button>
+      </div>
+
+      <!-- Today's Soundtrack Mini Player Widget -->
+      <div class="rounded-2xl bg-white/90 border border-outline-variant/40 p-3.5 shadow-clay-card flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <!-- Spinning Vinyl Disk -->
+          <div class="relative w-12 h-12 flex-shrink-0 cursor-pointer" onclick="toggleAudioPlayback()">
+            <div id="homeVinylDisk" class="w-full h-full rounded-full bg-stone-900 border-2 border-stone-800 flex items-center justify-center spin-vinyl spin-vinyl-paused shadow-md">
+              <!-- Grooves -->
+              <div class="w-7 h-7 rounded-full border border-stone-700/60 flex items-center justify-center">
+                <div class="w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
+              </div>
+            </div>
+            <button class="absolute -bottom-1 -right-1 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center shadow-xs">
+              <span id="homePlayIcon" class="material-symbols-outlined text-[13px]">play_arrow</span>
+            </button>
+          </div>
+
+          <!-- Song Info -->
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[10px] font-bold text-primary uppercase tracking-wider">Soundtrack Hari Ini</span>
+              <span class="flex gap-0.5 items-end h-2.5" id="equalizerBars">
+                <span class="w-0.5 h-1.5 bg-primary rounded-full"></span>
+                <span class="w-0.5 h-2.5 bg-primary rounded-full"></span>
+                <span class="w-0.5 h-1 bg-primary rounded-full"></span>
+              </span>
+            </div>
+            <p class="text-xs font-bold text-on-surface truncate" id="homeSongTitle">Rayuan Perempuan Gila</p>
+            <p class="text-[11px] text-secondary truncate">Nadin Amizah · Cozy Melody</p>
+          </div>
+        </div>
+
+        <button onclick="switchTab('more'); openPlaylistModal();" class="text-primary hover:bg-primary-light/40 p-2 rounded-xl transition-colors">
+          <span class="material-symbols-outlined text-lg">queue_music</span>
+        </button>
+      </div>
+
+      <!-- Quote of the Day Card -->
+      <div class="relative bg-amber-50/70 border border-amber-200/60 rounded-2xl p-4 shadow-sm">
+        <div class="washi-tape-yellow washi-tape -top-2.5 left-8 -rotate-2"></div>
+        <div class="flex items-start gap-2.5">
+          <span class="text-xl">🍵</span>
+          <div>
+            <p class="font-handwriting text-lg text-amber-950 font-bold leading-snug" id="dailyQuoteText">
+              "Semoga segala yang rumit di kepalamu luruh satu persatu, digantikan hangat teh manis dan rasa cukup."
+            </p>
+            <p class="text-[10px] font-semibold text-amber-700/80 mt-1">Catatan kecil untuk Nadin · <button onclick="rotateDailyQuote()" class="underline hover:text-amber-900">ganti kata-kata</button></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Memories / Polaroid Highlights -->
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-primary text-lg">auto_awesome</span>
+            <h3 class="font-epilogue font-bold text-sm text-on-surface">Sorotan Kenangan Manis</h3>
+          </div>
+          <button onclick="switchTab('memories')" class="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
+            Lihat Semua <span class="material-symbols-outlined text-xs">chevron_right</span>
+          </button>
+        </div>
+
+        <!-- Polaroid Horizontal Scroll -->
+        <div class="flex gap-3.5 overflow-x-auto no-scrollbar py-2 -mx-4 px-4" id="homePolaroidList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Companion Note / Letter Peek -->
+      <div class="rounded-2xl bg-white/95 border border-outline-variant/30 p-4 shadow-clay-card flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-pink-100 border border-pink-200">
+          <img src="images/maruko_companion.jpg" alt="Companion" class="w-full h-full object-cover"/>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold text-on-surface">Surat Terakhir untukmu</h4>
+            <span class="text-[10px] text-secondary font-medium">Baru saja</span>
+          </div>
+          <p class="text-[11px] text-on-surface-variant truncate mt-0.5">"Terima kasih sudah bertahan dengan sangat baik minggu ini..."</p>
+        </div>
+        <button onclick="switchTab('pesan')" class="px-3 py-1.5 bg-primary-light text-primary text-xs font-bold rounded-xl hover:bg-primary hover:text-white transition-all">
+          Baca
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN 2: MEMORIES (Photo Scrapbook Gallery)            -->
+    <!-- ======================================================== -->
+    <section id="screen-memories" class="app-screen space-y-4">
+      
+      <!-- Section Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="font-epilogue font-extrabold text-xl text-on-surface">Scrapbook Kenangan</h2>
+          <p class="text-xs text-secondary">Koleksi foto Polaroid & cerita perjalanan kita</p>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="clearAllMemories()" class="p-2 rounded-full text-secondary hover:text-rose-500 hover:bg-pink-100 transition-all" title="Bersihkan Semua Foto">
+            <span class="material-symbols-outlined text-base">delete_sweep</span>
+          </button>
+          <button onclick="openAddMemoryModal()" class="flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-sm">add_photo_alternate</span>
+            <span>Tambah</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrapbook Grid of Polaroids -->
+      <div class="grid grid-cols-2 gap-3.5 pt-1" id="memoriesGridContainer">
+        <!-- Rendered by JS with interactive polaroids -->
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN 3: JOURNAL (3D Maruko Diary & Notes)             -->
+    <!-- ======================================================== -->
+    <section id="screen-journal" class="app-screen space-y-4">
+      
+      <!-- Section Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="font-epilogue font-extrabold text-xl text-on-surface">Catatan & Buku Harian</h2>
+          <p class="text-xs text-secondary">Tumpukan pikiran hangat dan doa-doa baik</p>
+        </div>
+        <button onclick="openAddDiaryModal()" class="flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-sm">edit</span>
+          <span>Tulis Baru</span>
+        </button>
+      </div>
+
+      <!-- Search & Mood Bar -->
+      <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <span class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-sm">search</span>
+          <input type="text" id="journalSearchInput" oninput="searchJournals(this.value)" placeholder="Cari tulisan atau perasaan..." class="w-full bg-white/90 border border-outline-variant/40 rounded-xl pl-8 pr-3 py-2 text-xs text-on-surface placeholder:text-secondary/60 focus:outline-none focus:border-primary"/>
+        </div>
+      </div>
+
+      <!-- Journal Entries (Notebook Style) -->
+      <div class="space-y-3.5" id="journalEntriesContainer">
+        <!-- Rendered by JS -->
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN 4: PESAN KITA (Surat & Chat Rahasia)             -->
+    <!-- ======================================================== -->
+    <section id="screen-pesan" class="app-screen space-y-4">
+      
+      <!-- Section Header -->
+      <div>
+        <h2 class="font-epilogue font-extrabold text-xl text-on-surface">Pesan Rahasia Kita</h2>
+        <p class="text-xs text-secondary">Surat tersegel dan ruang bisik rahasia khusus berdua</p>
+      </div>
+
+      <!-- Sub Tabs: Surat vs Chat -->
+      <div class="flex p-1 bg-surface-container rounded-2xl border border-outline-variant/30">
+        <button id="tabBtnLetters" onclick="switchPesanSubTab('letters')" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">mail</span>
+          Surat Tersegel (<span id="letterCountBadge">3</span>)
+        </button>
+        <button id="tabBtnChat" onclick="switchPesanSubTab('chat')" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">chat_bubble</span>
+          Whisper Chat 💬
+        </button>
+      </div>
+
+      <!-- SUB TAB A: SEALED LETTERS -->
+      <div id="subtab-letters" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-secondary">Surat yang belum / sudah kamu buka:</span>
+          <button onclick="openNewLetterModal()" class="text-xs font-bold text-primary hover:underline flex items-center gap-0.5">
+            <span class="material-symbols-outlined text-xs">add</span> Tulis Surat
+          </button>
+        </div>
+
+        <div class="space-y-3" id="lettersContainer">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- SUB TAB B: WHISPER CHAT -->
+      <div id="subtab-chat" class="hidden flex flex-col h-[520px] rounded-3xl bg-white/95 border border-outline-variant/40 shadow-clay overflow-hidden">
+        <!-- Chat Header -->
+        <div class="px-4 py-3 bg-gradient-to-r from-pink-100/90 to-rose-100/90 border-b border-pink-200/60 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <img src="maruko_figurine.jpg" alt="Maruko" class="w-8 h-8 rounded-full object-cover border-2 border-white"/>
+            <div>
+              <p class="text-xs font-bold text-on-surface leading-tight">Maruko's Whisper Room</p>
+              <p class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap mendengar ceritamu
+              </p>
+            </div>
+          </div>
+          <span class="text-xs text-primary font-handwriting text-base font-bold">rahasia berdua 🔒</span>
+        </div>
+
+        <!-- Quick Reply Prompts -->
+        <div class="px-3 py-1.5 bg-pink-50/50 border-b border-pink-100 flex gap-1.5 overflow-x-auto no-scrollbar">
+          <button onclick="sendQuickChatMessage('Aku kangen banget hari ini 💕')" class="px-2.5 py-1 rounded-full bg-white text-[11px] font-medium text-primary border border-pink-200 hover:bg-pink-100 whitespace-nowrap shadow-xs">
+            Aku kangen 💕
+          </button>
+          <button onclick="sendQuickChatMessage('Lagi denger lagu apa sekarang? 🎶')" class="px-2.5 py-1 rounded-full bg-white text-[11px] font-medium text-secondary border border-pink-200 hover:bg-pink-100 whitespace-nowrap shadow-xs">
+            Lagu favorit 🎶
+          </button>
+          <button onclick="sendQuickChatMessage('Hari ini lumayan bikin capek yaa 🥺')" class="px-2.5 py-1 rounded-full bg-white text-[11px] font-medium text-secondary border border-pink-200 hover:bg-pink-100 whitespace-nowrap shadow-xs">
+            Lagi lelah 🥺
+          </button>
+          <button onclick="sendQuickChatMessage('Peluk hangat virtual buat Nadin! 🤗')" class="px-2.5 py-1 rounded-full bg-white text-[11px] font-medium text-rose-600 border border-pink-200 hover:bg-pink-100 whitespace-nowrap shadow-xs">
+            Peluk jauh 🤗
+          </button>
+        </div>
+
+        <!-- Chat Bubble Thread -->
+        <div id="chatMessageThread" class="flex-1 p-3.5 overflow-y-auto space-y-2.5 text-xs">
+          <!-- Chat messages rendered here -->
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div class="p-2.5 bg-white border-t border-outline-variant/30 flex items-center gap-2">
+          <input type="text" id="chatTextInput" onkeydown="if(event.key==='Enter') sendChatMessage()" placeholder="Ketik pesan manis untuk Nadin..." class="flex-1 bg-surface-container px-3.5 py-2 rounded-xl text-xs text-on-surface placeholder:text-secondary/60 focus:outline-none focus:ring-1 focus:ring-primary"/>
+          <button onclick="sendChatMessage()" class="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs hover:bg-primary-hover active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-sm">send</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN 5: MORE (Vault, Playlist, Photobooth & Setting)   -->
+    <!-- ======================================================== -->
+    <section id="screen-more" class="app-screen space-y-4">
+      
+      <!-- Profile & Archive Badge -->
+      <div class="rounded-3xl bg-gradient-to-r from-pink-100 via-rose-50 to-pink-100 border border-pink-200/80 p-4 shadow-clay flex items-center gap-3.5">
+        <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-sm flex-shrink-0 bg-white">
+          <img src="images/maruko_companion.jpg" alt="Companion" class="w-full h-full object-cover"/>
+        </div>
+        <div class="space-y-1">
+          <div class="inline-block bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">ARCHIVE ID #NADIN-2026</div>
+          <h2 class="font-epilogue font-bold text-base text-on-surface">For You: Nadin's Vault</h2>
+          <p class="text-xs text-secondary leading-tight">Private editorial memories curated with love & まる子 aesthetic</p>
+        </div>
+      </div>
+
+      <!-- Feature Menu Grid -->
+      <div class="grid grid-cols-2 gap-3">
+        
+        <!-- Feature 1: The Vault (Brankas Rahasia) -->
+        <div onclick="openVaultModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-xl">lock</span>
+          </div>
+          <h3 class="font-epilogue font-bold text-sm text-on-surface">The Vault</h3>
+          <p class="text-[11px] text-secondary mt-0.5">Brankas foto & catatan terkunci dengan PIN</p>
+          <span class="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-2 group-hover:translate-x-1 transition-transform">
+            Buka Brankas 🔒 &rarr;
+          </span>
+        </div>
+
+        <!-- Feature 2: Playlist Lagu -->
+        <div onclick="openPlaylistModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
+          <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-xl">album</span>
+          </div>
+          <h3 class="font-epilogue font-bold text-sm text-on-surface">Playlist Lagu</h3>
+          <p class="text-[11px] text-secondary mt-0.5">Pemutar vinyl & lagu kenangan Nadin</p>
+          <span class="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-2 group-hover:translate-x-1 transition-transform">
+            Buka Player 🎶 &rarr;
+          </span>
+        </div>
+
+        <!-- Feature 3: Vintage Photobooth -->
+        <div onclick="openPhotoboothModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-xl">photo_camera</span>
+          </div>
+          <h3 class="font-epilogue font-bold text-sm text-on-surface">Photobooth 4-Cut</h3>
+          <p class="text-[11px] text-secondary mt-0.5">Bikin photo-strip gaya purikura Jepang</p>
+          <span class="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-2 group-hover:translate-x-1 transition-transform">
+            Bikin Strip 📸 &rarr;
+          </span>
+        </div>
+
+        <!-- Feature 4: Memory Timeline -->
+        <div onclick="openTimelineModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-xl">timeline</span>
+          </div>
+          <h3 class="font-epilogue font-bold text-sm text-on-surface">Milestone Timeline</h3>
+          <p class="text-[11px] text-secondary mt-0.5">Perjalanan kisah dari hari pertama</p>
+          <span class="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-2 group-hover:translate-x-1 transition-transform">
+            Lihat Jejak 👣 &rarr;
+          </span>
+        </div>
+
+      </div>
+
+      <!-- App Status & PWA Card -->
+      <div class="rounded-2xl bg-white/90 border border-outline-variant/30 p-4 space-y-3">
+        <h3 class="font-epilogue font-bold text-xs text-on-surface uppercase tracking-wider">Aplikasi & Penyimpanan</h3>
+        
+        <div class="flex items-center justify-between text-xs py-1 border-b border-outline-variant/20">
+          <span class="text-secondary flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Mode Offline (PWA)
+          </span>
+          <span class="font-bold text-emerald-600">Tersedia & Aktif</span>
+        </div>
+
+        <div class="flex items-center justify-between text-xs py-1 border-b border-outline-variant/20">
+          <span class="text-secondary">Penyimpanan Lokal</span>
+          <span class="font-bold text-on-surface" id="storageUsedStatus">Tersimpan di Browser</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button onclick="exportDataBackup()" class="px-3 py-2 rounded-xl bg-surface-container text-secondary text-xs font-bold border border-outline-variant/40 hover:bg-pink-100 transition-colors flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-sm">download</span> Ekspor Data
+          </button>
+          <button onclick="promptPWAInstall()" id="installPwaBtn" class="px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-clay-button hover:bg-primary-hover transition-colors flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-sm">install_mobile</span> Pasang di HP
+          </button>
+        </div>
+        <button onclick="forcePurgeAndReload()" class="w-full mt-2 px-3 py-2 rounded-xl bg-pink-50 text-primary text-xs font-bold border border-pink-200 hover:bg-pink-100 transition-colors flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-sm">sync</span> Bersihkan Cache & Sinkronkan Ulang
+        </button>
+      </div>
+
+      <!-- About Footer -->
+      <div class="text-center text-[11px] text-secondary/80 pt-2 pb-6 space-y-1">
+        <p class="font-epilogue font-bold text-primary">Nadin's Private Editorial Archive · v1.2</p>
+        <p>Dibuat dengan segenap rasa sayang, peluk hangat, dan まる子's aesthetic 🌸</p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== BOTTOM NAVIGATION DOCK ==================== -->
+  <nav class="fixed bottom-3 left-0 right-0 z-40 max-w-md mx-auto px-4 pointer-events-none">
+    <div class="pointer-events-auto bg-white/92 dark:bg-stone-900/92 backdrop-blur-lg border border-pink-200/80 dark:border-stone-800 rounded-3xl p-1.5 shadow-clay flex items-center justify-around">
+      
+      <!-- Nav Item: Home -->
+      <button onclick="switchTab('home')" class="nav-tab-btn flex-1 flex flex-col items-center gap-0.5 py-1.5 text-primary transition-transform active:scale-95" data-tab="home">
+        <span class="material-symbols-outlined text-2xl font-variation-fill">cottage</span>
+        <span class="text-[10px] font-bold">Home</span>
+      </button>
+
+      <!-- Nav Item: Memories -->
+      <button onclick="switchTab('memories')" class="nav-tab-btn flex-1 flex flex-col items-center gap-0.5 py-1.5 text-secondary hover:text-primary transition-transform active:scale-95" data-tab="memories">
+        <span class="material-symbols-outlined text-2xl">photo_library</span>
+        <span class="text-[10px] font-bold">Memories</span>
+      </button>
+
+      <!-- Central Add Quick Button -->
+      <button onclick="openQuickActionSheet()" class="w-11 h-11 -mt-5 rounded-full bg-gradient-to-tr from-primary to-rose-400 text-white shadow-clay-button flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white">
+        <span class="material-symbols-outlined text-2xl">add</span>
+      </button>
+
+      <!-- Nav Item: Journal -->
+      <button onclick="switchTab('journal')" class="nav-tab-btn flex-1 flex flex-col items-center gap-0.5 py-1.5 text-secondary hover:text-primary transition-transform active:scale-95" data-tab="journal">
+        <span class="material-symbols-outlined text-2xl">auto_stories</span>
+        <span class="text-[10px] font-bold">Journal</span>
+      </button>
+
+      <!-- Nav Item: More -->
+      <button onclick="switchTab('more')" class="nav-tab-btn flex-1 flex flex-col items-center gap-0.5 py-1.5 text-secondary hover:text-primary transition-transform active:scale-95" data-tab="more">
+        <span class="material-symbols-outlined text-2xl">apps</span>
+        <span class="text-[10px] font-bold">More</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- ==================== MODALS & POPUPS ==================== -->
+
+  <!-- MODAL 1: ADD MEMORY POLAROID -->
+  <div id="modalAddMemory" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-pink-200 max-h-[90vh] overflow-y-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-epilogue font-bold text-base text-on-surface">Tambah Foto Kenangan 📸</h3>
+        <button onclick="closeModal('modalAddMemory')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <!-- Import Foto Area with Live Preview -->
+        <div>
+          <label class="block font-bold text-secondary mb-1.5">Impor Foto Kenangan:</label>
+          <div onclick="document.getElementById('newMemoryFileInput').click()" class="cursor-pointer border-2 border-dashed border-pink-300 hover:border-primary rounded-2xl p-4 text-center bg-white/70 hover:bg-pink-50/50 transition-all">
+            <div id="photoPreviewContainer" class="hidden w-full aspect-square rounded-xl overflow-hidden mb-2 bg-stone-100 shadow-sm">
+              <img id="newMemoryPreviewImg" src="" class="w-full h-full object-cover"/>
+            </div>
+            <div id="photoUploadPrompt" class="py-3 space-y-1">
+              <span class="material-symbols-outlined text-3xl text-primary">add_a_photo</span>
+              <p class="text-xs font-bold text-on-surface">Pilih / Ambil Foto dari HP</p>
+              <p class="text-[10px] text-secondary">Ketuk di sini untuk mengimpor foto</p>
+            </div>
+          </div>
+          <input type="file" id="newMemoryFileInput" accept="image/*" class="hidden"/>
+          <input type="hidden" id="newMemorySelectedImg" value=""/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-secondary mb-1">Judul Kenangan:</label>
+          <input type="text" id="newMemoryTitle" placeholder="Contoh: Senja di sudut kafe..." class="w-full bg-white border border-outline-variant/40 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-secondary mb-1">Tanggal:</label>
+          <input type="date" id="newMemoryDate" class="w-full bg-white border border-outline-variant/40 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-secondary mb-1">Cerita & Catatan Manis:</label>
+          <textarea id="newMemoryStory" rows="4" placeholder="Tuliskan apa yang kamu rasakan atau cerita tentang foto ini..." class="w-full bg-white border border-outline-variant/40 rounded-xl p-3 text-xs focus:outline-none focus:border-primary"></textarea>
+        </div>
+
+        <button onclick="saveNewMemory()" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all">
+          Simpan ke Scrapbook 🌸
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: POLAROID DETAIL VIEW -->
+  <div id="modalMemoryDetail" class="fixed inset-0 z-50 bg-black/65 backdrop-blur-xs hidden items-center justify-center p-4" onclick="closeModal('modalMemoryDetail')">
+    <div class="relative bg-white rounded-2xl max-w-xs w-full p-4 shadow-polaroid border border-stone-100 transform rotate-1" onclick="event.stopPropagation()">
+      <div class="washi-tape -top-2 left-1/2 -translate-x-1/2 rotate-1"></div>
+      
+      <div class="w-full aspect-square rounded-lg overflow-hidden bg-stone-100 mb-3 relative">
+        <img id="detailMemoryImg" src="" alt="Memory" class="w-full h-full object-cover"/>
+        <button id="detailLikeBtn" onclick="toggleDetailLike()" class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-white/90 text-primary flex items-center justify-center shadow-md">
+          <span class="material-symbols-outlined text-lg">favorite</span>
+        </button>
+      </div>
+
+      <div class="space-y-1 text-center">
+        <p class="font-handwriting text-2xl font-bold text-on-surface leading-tight" id="detailMemoryTitle"></p>
+        <p class="text-[11px] text-secondary font-medium" id="detailMemoryDate"></p>
+        <p class="text-xs text-on-surface-variant font-handwriting text-lg leading-snug pt-1 text-left px-1" id="detailMemoryStory"></p>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-stone-200/60 flex items-center justify-between text-xs">
+        <button onclick="deleteCurrentMemory()" class="text-xs font-bold text-rose-500 hover:text-rose-700 flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">delete</span> Hapus Foto
+        </button>
+        <button onclick="closeModal('modalMemoryDetail')" class="text-xs font-bold text-secondary hover:text-on-surface">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: ADD DIARY ENTRY -->
+  <div id="modalAddDiary" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-[#fffdfa] rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-amber-200/80 max-h-[90vh] overflow-y-auto space-y-3.5">
+      <div class="flex items-center justify-between">
+        <h3 class="font-epilogue font-bold text-base text-amber-950">Tulis Catatan Harian 📖</h3>
+        <button onclick="closeModal('modalAddDiary')" class="w-8 h-8 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-amber-900 mb-1">Judul Catatan:</label>
+          <input type="text" id="newDiaryTitle" placeholder="Misal: Tentang sore yang tenang..." class="w-full bg-white border border-amber-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-amber-900 mb-1">Mood Hari Ini:</label>
+            <select id="newDiaryMood" class="w-full bg-white border border-amber-200 rounded-xl px-2 py-2 text-xs">
+              <option value="🌸 Bahagia">🌸 Bahagia</option>
+              <option value="🍵 Tenang">🍵 Tenang</option>
+              <option value="✨ Bersyukur">✨ Bersyukur</option>
+              <option value="🌧️ Melow">🌧️ Melow</option>
+              <option value="🍓 Manis">🍓 Manis</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-amber-900 mb-1">Cuaca:</label>
+            <select id="newDiaryWeather" class="w-full bg-white border border-amber-200 rounded-xl px-2 py-2 text-xs">
+              <option value="☀️ Cerah Hangat">☀️ Cerah Hangat</option>
+              <option value="⛅ Berawan Sejuk">⛅ Berawan Sejuk</option>
+              <option value="🌧️ Gerimis Syahdu">🌧️ Gerimis Syahdu</option>
+              <option value="🌙 Malam Tenang">🌙 Malam Tenang</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-amber-900 mb-1">Isi Halaman Diary:</label>
+          <textarea id="newDiaryContent" rows="6" placeholder="Curahkan apa saja yang ada di hatimu hari ini..." class="w-full bg-white bg-notebook-lines border border-amber-200 rounded-xl p-3 text-xs leading-7 focus:outline-none focus:border-amber-500"></textarea>
+        </div>
+
+        <button onclick="saveNewDiary()" class="w-full py-2.5 rounded-xl bg-amber-700 text-white font-bold text-xs shadow-md hover:bg-amber-800 transition-all">
+          Simpan ke Buku Harian ✨
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: LETTER DETAIL (Surat Terbuka) -->
+  <div id="modalOpenLetter" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4" onclick="closeModal('modalOpenLetter')">
+    <div class="bg-[#fff9fb] border-2 border-pink-200 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="text-center space-y-1">
+        <span class="inline-block text-2xl">💌</span>
+        <h3 class="font-epilogue font-extrabold text-lg text-primary" id="openLetterTitle">Surat Tersegel</h3>
+        <p class="text-[11px] text-secondary font-medium" id="openLetterDate"></p>
+      </div>
+
+      <div class="bg-white/90 p-4 rounded-2xl border border-pink-100 shadow-inner">
+        <p class="font-handwriting text-lg text-on-surface leading-relaxed whitespace-pre-line" id="openLetterBody"></p>
+      </div>
+
+      <div class="flex items-center justify-between pt-2">
+        <span class="text-xs font-handwriting text-base font-bold text-primary">Tertanda, dengan segenap cinta ❤️</span>
+        <button onclick="closeModal('modalOpenLetter')" class="px-4 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-xs">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: WRITE NEW LETTER -->
+  <div id="modalNewLetter" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-pink-200 space-y-3.5">
+      <div class="flex items-center justify-between">
+        <h3 class="font-epilogue font-bold text-base text-on-surface">Tulis Surat Baru 💌</h3>
+        <button onclick="closeModal('modalNewLetter')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-secondary mb-1">Judul / Pengantar Surat:</label>
+          <input type="text" id="newLetterTitle" placeholder="Misal: Untuk Nadin di hari ulang tahun..." class="w-full bg-white border border-outline-variant/40 rounded-xl px-3 py-2 text-xs"/>
+        </div>
+
+        <div>
+          <label class="block font-bold text-secondary mb-1">Isi Surat:</label>
+          <textarea id="newLetterBody" rows="5" placeholder="Tuliskan kata-kata yang ingin kamu bisikkan padanya..." class="w-full bg-white border border-outline-variant/40 rounded-xl p-3 text-xs"></textarea>
+        </div>
+
+        <button onclick="saveNewLetter()" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-clay-button hover:bg-primary-hover">
+          Segel Surat dengan Lilin 🌸
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 6: THE VAULT (Brankas Rahasia) -->
+  <div id="modalVault" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-purple-300 space-y-4 text-center">
+      
+      <!-- Lock Screen State -->
+      <div id="vaultLockState" class="space-y-4">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center shadow-inner">
+          <span class="material-symbols-outlined text-3xl">lock</span>
+        </div>
+        <div>
+          <h3 class="font-epilogue font-bold text-lg text-on-surface">Nadin's Secret Vault</h3>
+          <p class="text-xs text-secondary mt-1">Masukkan 4 digit PIN rahasia untuk membuka</p>
+          <p class="text-[10px] text-purple-600 font-semibold mt-0.5">(Petunjuk PIN awal: 1 2 3 4)</p>
+        </div>
+
+        <!-- PIN Dots Display -->
+        <div class="flex justify-center gap-3 py-1">
+          <span id="pinDot0" class="w-3.5 h-3.5 rounded-full border-2 border-purple-400 bg-transparent transition-all"></span>
+          <span id="pinDot1" class="w-3.5 h-3.5 rounded-full border-2 border-purple-400 bg-transparent transition-all"></span>
+          <span id="pinDot2" class="w-3.5 h-3.5 rounded-full border-2 border-purple-400 bg-transparent transition-all"></span>
+          <span id="pinDot3" class="w-3.5 h-3.5 rounded-full border-2 border-purple-400 bg-transparent transition-all"></span>
+        </div>
+
+        <!-- Keypad -->
+        <div class="grid grid-cols-3 gap-2 max-w-[220px] mx-auto pt-2">
+          <button onclick="pressPin('1')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">1</button>
+          <button onclick="pressPin('2')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">2</button>
+          <button onclick="pressPin('3')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">3</button>
+          <button onclick="pressPin('4')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">4</button>
+          <button onclick="pressPin('5')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">5</button>
+          <button onclick="pressPin('6')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">6</button>
+          <button onclick="pressPin('7')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">7</button>
+          <button onclick="pressPin('8')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">8</button>
+          <button onclick="pressPin('9')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">9</button>
+          <button onclick="closeModal('modalVault')" class="h-11 rounded-2xl text-xs font-bold text-secondary hover:bg-purple-50">Batal</button>
+          <button onclick="pressPin('0')" class="h-11 rounded-2xl bg-white text-base font-bold text-on-surface shadow-xs hover:bg-purple-50 active:scale-95">0</button>
+          <button onclick="clearPin()" class="h-11 rounded-2xl text-xs font-bold text-purple-700 hover:bg-purple-50">Hapus</button>
+        </div>
+      </div>
+
+      <!-- Unlocked Vault Content State -->
+      <div id="vaultUnlockedState" class="hidden space-y-4 text-left max-h-[75vh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-2 border-b border-purple-200">
+          <div class="flex items-center gap-1.5 text-purple-800 font-bold text-sm">
+            <span class="material-symbols-outlined text-lg">lock_open</span>
+            Brankas Terbuka!
+          </div>
+          <button onclick="lockVault()" class="text-xs font-bold text-secondary hover:text-purple-700">Kunci Lagi</button>
+        </div>
+
+        <!-- Secret Photo Strip -->
+        <div class="bg-white p-3 rounded-2xl shadow-md border border-purple-100 space-y-2">
+          <p class="text-xs font-bold text-on-surface flex items-center gap-1">
+            <span>✨</span> Foto Rahasia Bersama
+          </p>
+          <div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-100">
+            <img src="images/photobooth_friends.jpg" alt="Secret Memories" class="w-full h-full object-cover"/>
+          </div>
+          <p class="text-[11px] font-handwriting text-base text-secondary">"Momen paling berharga yang selalu kujaga diam-diam."</p>
+        </div>
+
+        <!-- Secret Promise List -->
+        <div class="bg-purple-50/80 p-3.5 rounded-2xl border border-purple-200/70 space-y-2">
+          <p class="text-xs font-bold text-purple-900">Janji Rahasia Kita:</p>
+          <ul class="text-xs text-purple-950 space-y-1.5">
+            <li class="flex items-center gap-2"><span>🌸</span> Liburan bareng ke Kyoto melihat sakura</li>
+            <li class="flex items-center gap-2"><span>☕</span> Bikin kedai kopi kecil berdua</li>
+            <li class="flex items-center gap-2"><span>🎵</span> Nonton konser Nadin Amizah dari baris paling depan</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 7: PLAYLIST & SOUNDTRACK ROOM -->
+  <div id="modalPlaylist" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-pink-200 space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-xl">album</span>
+          <h3 class="font-epilogue font-bold text-base text-on-surface">Playlist Nadin</h3>
+        </div>
+        <button onclick="closeModal('modalPlaylist')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <!-- Turntable Vinyl Display -->
+      <div class="p-4 bg-gradient-to-b from-[#2a2225] to-[#1a1215] rounded-2xl text-center space-y-3 shadow-inner">
+        <div class="w-24 h-24 mx-auto rounded-full bg-stone-900 border-4 border-stone-800 flex items-center justify-center spin-vinyl" id="playlistVinyl">
+          <div class="w-14 h-14 rounded-full border border-stone-700 flex items-center justify-center">
+            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-[9px] font-bold">
+              NADIN
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm" id="playlistTrackTitle">Rayuan Perempuan Gila</h4>
+          <p class="text-pink-300/80 text-xs">Nadin Amizah · Akustik Hangat</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-center gap-4 pt-1">
+          <button onclick="prevTrack()" class="text-white/80 hover:text-white">
+            <span class="material-symbols-outlined text-xl">skip_previous</span>
+          </button>
+          <button onclick="toggleAudioPlayback()" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
+            <span id="playlistPlayIcon" class="material-symbols-outlined text-2xl">play_arrow</span>
+          </button>
+          <button onclick="nextTrack()" class="text-white/80 hover:text-white">
+            <span class="material-symbols-outlined text-xl">skip_next</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Track List -->
+      <div class="space-y-1.5 max-h-40 overflow-y-auto" id="playlistTrackList">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 8: PHOTOBOOTH 4-CUT STUDIO -->
+  <div id="modalPhotobooth" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-pink-200 max-h-[92vh] overflow-y-auto space-y-3.5">
+      <div class="flex items-center justify-between">
+        <h3 class="font-epilogue font-bold text-base text-on-surface">Purikura 4-Cut Studio 📸</h3>
+        <button onclick="closeModal('modalPhotobooth')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <!-- Frame Color Selector -->
+      <div class="flex items-center justify-between text-xs">
+        <span class="font-bold text-secondary">Warna Frame Strip:</span>
+        <div class="flex gap-2">
+          <button onclick="setPhotoboothFrame('#ffd9e2')" class="w-6 h-6 rounded-full bg-[#ffd9e2] border-2 border-white shadow-xs" title="Sakura Pink"></button>
+          <button onclick="setPhotoboothFrame('#fff2b2')" class="w-6 h-6 rounded-full bg-[#fff2b2] border-2 border-white shadow-xs" title="Butter Cream"></button>
+          <button onclick="setPhotoboothFrame('#e5d4ed')" class="w-6 h-6 rounded-full bg-[#e5d4ed] border-2 border-white shadow-xs" title="Lavender"></button>
+          <button onclick="setPhotoboothFrame('#d8f3dc')" class="w-6 h-6 rounded-full bg-[#d8f3dc] border-2 border-white shadow-xs" title="Minty Match"></button>
+        </div>
+      </div>
+
+      <!-- Photo Strip Preview -->
+      <div id="photoboothStrip" class="mx-auto w-48 p-3 rounded-2xl shadow-polaroid space-y-2 text-center transition-colors" style="background-color: #ffd9e2;">
+        <div class="text-[10px] font-epilogue font-extrabold text-primary tracking-widest uppercase">NADIN & まる子 · 2026</div>
+        
+        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs">
+          <img src="images/photobooth_friends.jpg" class="w-full h-full object-cover"/>
+        </div>
+        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs">
+          <img src="images/kyoto_coffee.jpg" class="w-full h-full object-cover"/>
+        </div>
+        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs">
+          <img src="images/rain_senopati.jpg" class="w-full h-full object-cover"/>
+        </div>
+        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs">
+          <img src="images/memory_cocoa.jpg" class="w-full h-full object-cover"/>
+        </div>
+
+        <div class="pt-1 text-[11px] font-handwriting font-bold text-on-surface">"Forever Sweet Memories ✨"</div>
+      </div>
+
+      <button onclick="downloadPhotoStrip()" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-clay-button hover:bg-primary-hover flex items-center justify-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">download</span> Simpan Photo Strip
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 9: QUICK ACTION SHEET -->
+  <div id="modalQuickAction" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-end justify-center" onclick="closeModal('modalQuickAction')">
+    <div class="bg-surface rounded-t-3xl max-w-md w-full p-5 shadow-2xl border-t border-pink-200 space-y-3" onclick="event.stopPropagation()">
+      <div class="w-12 h-1.5 bg-outline-variant/60 rounded-full mx-auto mb-2"></div>
+      <h3 class="font-epilogue font-bold text-sm text-center text-on-surface">Apa yang ingin kamu simpan sekarang? 🌸</h3>
+
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <button onclick="closeModal('modalQuickAction'); switchTab('memories'); openAddMemoryModal();" class="p-3 rounded-2xl bg-white border border-pink-100 flex items-center gap-3 shadow-xs hover:border-primary">
+          <div class="w-9 h-9 rounded-xl bg-pink-100 text-primary flex items-center justify-center"><span class="material-symbols-outlined text-lg">add_a_photo</span></div>
+          <div class="text-left"><p class="text-xs font-bold text-on-surface">Foto Polaroid</p><p class="text-[10px] text-secondary">Upload kenangan</p></div>
+        </button>
+
+        <button onclick="closeModal('modalQuickAction'); switchTab('journal'); openAddDiaryModal();" class="p-3 rounded-2xl bg-white border border-pink-100 flex items-center gap-3 shadow-xs hover:border-primary">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center"><span class="material-symbols-outlined text-lg">draw</span></div>
+          <div class="text-left"><p class="text-xs font-bold text-on-surface">Halaman Diary</p><p class="text-[10px] text-secondary">Tulis perasaan</p></div>
+        </button>
+
+        <button onclick="closeModal('modalQuickAction'); switchTab('pesan'); openNewLetterModal();" class="p-3 rounded-2xl bg-white border border-pink-100 flex items-center gap-3 shadow-xs hover:border-primary">
+          <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center"><span class="material-symbols-outlined text-lg">mail</span></div>
+          <div class="text-left"><p class="text-xs font-bold text-on-surface">Surat Cinta</p><p class="text-[10px] text-secondary">Kirim surat baru</p></div>
+        </button>
+
+        <button onclick="closeModal('modalQuickAction'); switchTab('more'); openPhotoboothModal();" class="p-3 rounded-2xl bg-white border border-pink-100 flex items-center gap-3 shadow-xs hover:border-primary">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"><span class="material-symbols-outlined text-lg">auto_awesome</span></div>
+          <div class="text-left"><p class="text-xs font-bold text-on-surface">Photobooth</p><p class="text-[10px] text-secondary">Bikin 4-cut strip</p></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.log('SW registration note:', err);
+        });
+      });
+    }
+
+    // Live Clock & Status
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const clockEl = document.getElementById('liveClock');
+      if (clockEl) clockEl.textContent = `${hours}:${mins}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Theme Mode Toggle
+    const themeBtn = document.getElementById('themeToggleBtn');
+    themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      themeBtn.innerHTML = `<span class="material-symbols-outlined text-[18px]">${isDark ? 'light_mode' : 'dark_mode'}</span>`;
+      localStorage.setItem('nadin_theme', isDark ? 'dark' : 'light');
+    });
+    if (localStorage.getItem('nadin_theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+      themeBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">light_mode</span>';
+    }
+
+    // Default Seed Data
+    const DEFAULT_MEMORIES = [];
+
+    const DEFAULT_JOURNALS = [
+      {
+        id: 'j-1',
+        title: 'Tentang Hari Tenang Bersamamu',
+        date: '10 September 2026',
+        mood: '🌸 Bahagia',
+        weather: '⛅ Berawan Sejuk',
+        content: 'Hari ini tidak ada hal luar biasa yang terjadi, tapi justru di sanalah letak manisnya. Menemani kamu memilih buku, mendengar ceritamu tentang hal-hal sepele, dan melihat matamu berbinar saat menemukan es krim rasa matcha favoritmu. Aku harap hari-hari sederhana seperti ini terus berulang tanpa henti.'
+      },
+      {
+        id: 'j-2',
+        title: 'Secangkir Matcha & Cerita Belum Usai',
+        date: '04 September 2026',
+        mood: '🍵 Tenang',
+        weather: '🌧️ Gerimis Syahdu',
+        content: 'Gerimis sore membasahi kaca kafe kecil di dekat stasiun. Kita duduk berhadapan hampir tanpa kata untuk beberapa menit, hanya menikmati alunan musik lo-fi dan suara rintik hujan. Ada kedamaian yang sulit kujelaskan setiap kali kamu tersenyum sambil menyeruput cangkirmu.'
+      },
+      {
+        id: 'j-3',
+        title: 'Hal-Hal Kecil yang Selalu Kusyukuri',
+        date: '28 Agustus 2026',
+        mood: '✨ Bersyukur',
+        weather: '☀️ Cerah Hangat',
+        content: 'Aku mencatat tiga hal kecil hari ini: caramu tertawa terbahak-bahak saat leluconku garing, pesan suara selamat pagi yang selalu datang tepat waktu, dan caramu selalu mengingatkan aku minum air putih. Terima kasih sudah ada di duniaku, Nadin.'
+      }
+    ];
+
+    const DEFAULT_LETTERS = [
+      {
+        id: 'let-1',
+        title: 'Untuk Nadin: Saat Kamu Sedang Lelah',
+        date: '09 September 2026',
+        opened: false,
+        body: 'Dear Nadin sayang,\n\nKalau kamu membuka surat ini, mungkin hari ini terasa agak berat dan menguras energimu ya? Ingat ya, kamu sudah berjuang dengan luar biasa hebat. Tidak apa-apa untuk berhenti sejenak, tarik napas panjang, dan biarkan dunia berjalan tanpa beban di pundakmu.\n\nAku selalu bangga padamu, hari ini dan selamanya. Jangan lupa istirahat yang cukup yaa.'
+      },
+      {
+        id: 'let-2',
+        title: 'Tentang Semua Rencana Masa Depan',
+        date: '01 September 2026',
+        opened: true,
+        body: 'Nadin,\n\nAku sering membayangkan beberapa tahun ke depan: rumah kecil dengan jendela besar yang menghadap pohon rindang, rak buku penuh cerita, dan aroma kopi di pagi hari. Di setiap sudut bayangan itu, selalu ada kamu.\n\nTerima kasih sudah berjalan berdampingan denganku sampai hari ini.'
+      },
+      {
+        id: 'let-3',
+        title: 'Bisikan Rahasia untuk Hari Ulang Tahunmu',
+        date: '15 Agustus 2026',
+        opened: true,
+        body: 'Selamat bertambah usia, manusia paling manis di duniaku!\n\nDoaku sederhana: semoga semesta selalu memperlakukanmu dengan lembut, melapangkan langkahmu, dan menjaga senyuman manismu tetap utuh. Kamu adalah hadiah terindah yang pernah kutemui.'
+      }
+    ];
+
+    const DEFAULT_CHAT = [
+      { sender: 'maruko', text: 'Halo Nadin manis! Maruko siap menemani harimu 🌸', time: '08:30' },
+      { sender: 'user', text: 'Pagi Maruko! Hari ini banyak kerjaan nih...', time: '08:32' },
+      { sender: 'maruko', text: 'Semangat yaa Nadin! Jangan lupa minum air putih dan jangan skip makan siang 🥰', time: '08:33' }
+    ];
+
+    // LocalStorage Get/Set with Fallback
+    function getStored(key, fallback) {
+      try {
+        const val = localStorage.getItem(key);
+        return val ? JSON.parse(val) : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+    function setStored(key, val) {
+      try {
+        localStorage.setItem(key, JSON.stringify(val));
+      } catch (e) {}
+    }
+
+    // Automatically purge old template memories and leftover test photos
+    const CLEAN_VERSION = 'v15_clean_all';
+    if (localStorage.getItem('nadin_clean_ver') !== CLEAN_VERSION) {
+      localStorage.removeItem('nadin_memories');
+      localStorage.setItem('nadin_clean_ver', CLEAN_VERSION);
+    }
+
+    function isCleanMemory(m) {
+      if (!m || !m.id) return false;
+      if (['mem-1', 'mem-2', 'mem-3', 'mem-4', 'mem-5'].includes(m.id)) return false;
+      const t = (m.title || '').toLowerCase();
+      if (t.includes('ngelipir') || t.includes('melipir') || t.includes('veteran')) return false;
+      if (t.includes('dieng') || t.includes('kyoto') || t.includes('senopati') || t.includes('lodaya') || t.includes('malang')) return false;
+      return true;
+    }
+
+    let memories = getStored('nadin_memories', []);
+    memories = memories.filter(isCleanMemory);
+    setStored('nadin_memories', memories);
+
+    let journals = getStored('nadin_journals', DEFAULT_JOURNALS);
+    let letters = getStored('nadin_letters', DEFAULT_LETTERS);
+    let chats = getStored('nadin_chats', DEFAULT_CHAT);
+
+    // ==================== FIREBASE CLOUD 24/7 SYNC SYSTEM ====================
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2tLiuSO5h4szGlFWUNTkGea-Wu37PWAE",
+      authDomain: "nadin-archive.firebaseapp.com",
+      databaseURL: "https://nadin-archive-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "nadin-archive",
+      storageBucket: "nadin-archive.firebasestorage.app",
+      messagingSenderId: "464514048756",
+      appId: "1:464514048756:web:2f3480a5d1fde668a374a1",
+      measurementId: "G-VKDPQ3EQC9"
+    };
+
+    let cloudDb = null;
+    try {
+      if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        cloudDb = firebase.database();
+      }
+    } catch (e) {
+      console.log('Firebase init error:', e);
+    }
+
+    // Real-time Cloud Listener (Active 24/7 even when laptop is turned off!)
+    if (cloudDb) {
+      cloudDb.ref('archive').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          let hasChanges = false;
+          if (data.memories !== undefined) {
+            let cloudMems = Array.isArray(data.memories) ? data.memories : (data.memories ? Object.values(data.memories) : []);
+            cloudMems = cloudMems.filter(isCleanMemory);
+            if (JSON.stringify(memories) !== JSON.stringify(cloudMems)) {
+              memories = cloudMems;
+              setStored('nadin_memories', memories);
+              hasChanges = true;
+            }
+          }
+          if (data.journals && Array.isArray(data.journals)) {
+            if (JSON.stringify(journals) !== JSON.stringify(data.journals)) {
+              journals = data.journals;
+              setStored('nadin_journals', journals);
+              hasChanges = true;
+            }
+          }
+          if (data.letters && Array.isArray(data.letters)) {
+            if (JSON.stringify(letters) !== JSON.stringify(data.letters)) {
+              letters = data.letters;
+              setStored('nadin_letters', letters);
+              hasChanges = true;
+            }
+          }
+          if (data.chats && Array.isArray(data.chats)) {
+            if (JSON.stringify(chats) !== JSON.stringify(data.chats)) {
+              chats = data.chats;
+              setStored('nadin_chats', chats);
+              hasChanges = true;
+            }
+          }
+
+          if (hasChanges) {
+            renderHomeHighlights();
+            renderMemoriesGrid();
+            renderJournals();
+            renderLetters();
+            renderChatThread();
+          }
+
+          const syncIcon = document.getElementById('syncIcon');
+          if (syncIcon) {
+            syncIcon.textContent = 'cloud_done';
+            syncIcon.className = 'material-symbols-outlined text-[17px] text-emerald-600';
+          }
+        }
+      }, (err) => {
+        console.log('Firebase listener error:', err);
+      });
+    }
+
+    async function fetchServerData() {
+      // Fallback local fetch if cloud listener is not yet ready
+      try {
+        const res = await fetch('/api/data?t=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          let hasChanges = false;
+          if (data.memories && Array.isArray(data.memories)) {
+            const serverMems = data.memories.filter(isCleanMemory);
+            if (JSON.stringify(memories) !== JSON.stringify(serverMems)) {
+              memories = serverMems;
+              setStored('nadin_memories', memories);
+              hasChanges = true;
+            }
+          }
+          if (hasChanges) {
+            renderHomeHighlights();
+            renderMemoriesGrid();
+          }
+        }
+      } catch (e) {}
+    }
+
+    async function syncToServer() {
+      const syncIcon = document.getElementById('syncIcon');
+      if (syncIcon) {
+        syncIcon.textContent = 'sync';
+        syncIcon.className = 'material-symbols-outlined text-[17px] text-primary animate-spin';
+      }
+
+      setStored('nadin_memories', memories);
+      setStored('nadin_journals', journals);
+      setStored('nadin_letters', letters);
+      setStored('nadin_chats', chats);
+
+      // 1. Sync directly to Cloud 24/7 (Firebase)
+      if (cloudDb) {
+        try {
+          await cloudDb.ref('archive').set({
+            memories: memories || [],
+            journals: journals || [],
+            letters: letters || [],
+            chats: chats || [],
+            updatedAt: Date.now()
+          });
+          if (syncIcon) {
+            syncIcon.textContent = 'cloud_done';
+            syncIcon.className = 'material-symbols-outlined text-[17px] text-emerald-600';
+          }
+        } catch (err) {
+          console.log('Firebase save error:', err);
+        }
+      }
+
+      // 2. Also sync to laptop server if reachable
+      try {
+        const payload = { memories, journals, letters, chats };
+        await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {}
+    }
+
+    async function deleteCurrentMemory() {
+      if (!currentDetailId) return;
+      if (!confirm('Hapus kenangan foto ini? 🌸')) return;
+      memories = memories.filter(m => m.id !== currentDetailId);
+      setStored('nadin_memories', memories);
+      renderMemoriesGrid();
+      renderHomeHighlights();
+      closeModal('modalMemoryDetail');
+      await syncToServer();
+    }
+
+    async function clearAllMemories() {
+      if (!confirm('Hapus semua foto dari scrapbook? 🌸\nScrapbook akan bersih dan siap diisi foto-fotomu.')) return;
+      memories = [];
+      setStored('nadin_memories', memories);
+      renderMemoriesGrid();
+      renderHomeHighlights();
+      await syncToServer();
+      alert('Semua foto kenangan berhasil dibersihkan! 🌸');
+    }
+
+    async function manualSync() {
+      const syncIcon = document.getElementById('syncIcon');
+      if (syncIcon) {
+        syncIcon.textContent = 'sync';
+        syncIcon.className = 'material-symbols-outlined text-[17px] text-primary animate-spin';
+      }
+      memories = memories.filter(isCleanMemory);
+      setStored('nadin_memories', memories);
+      await fetchServerData();
+      renderMemoriesGrid();
+      renderHomeHighlights();
+      alert('Data tersinkronisasi bersih dengan laptop! 🌸');
+    }
+
+    // Auto poll every 6 seconds so photos added on HP appear on laptop automatically
+    setInterval(fetchServerData, 6000);
+
+    // Navigation System
+    function switchTab(tabName) {
+      document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(`screen-${tabName}`);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('text-primary');
+          btn.classList.remove('text-secondary');
+        } else {
+          btn.classList.remove('text-primary');
+          btn.classList.add('text-secondary');
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function formatImgSrc(src) {
+      if (!src) return 'maruko_figurine.jpg';
+      if (src.startsWith('data:') || src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/')) {
+        return src;
+      }
+      return '/' + src;
+    }
+
+    async function forcePurgeAndReload() {
+      if ('caches' in window) {
+        try {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        } catch(e) {}
+      }
+      localStorage.removeItem('nadin_memories');
+      await fetchServerData();
+      alert('Cache dibersihkan & data disinkronkan! 🌸');
+      window.location.reload();
+    }
+
+    // Render Recent Highlights on Home
+    function renderHomeHighlights() {
+      const listEl = document.getElementById('homePolaroidList');
+      if (!listEl) return;
+      if (!memories || memories.length === 0) {
+        listEl.innerHTML = `
+          <div class="w-full text-center py-5 px-4 bg-white/75 rounded-2xl border border-pink-100 flex flex-col items-center justify-center">
+            <span class="text-3xl mb-1">📷</span>
+            <p class="text-xs font-bold text-on-surface">Belum ada foto kenangan</p>
+            <p class="text-[11px] text-secondary mt-0.5">Mulai abadikan momen indah berdua!</p>
+            <button onclick="openAddMemoryModal()" class="mt-2 px-3.5 py-1.5 bg-primary text-white text-xs font-bold rounded-full shadow-xs hover:bg-primary-hover active:scale-95 transition-all">
+              + Impor Foto
+            </button>
+          </div>
+        `;
+        return;
+      }
+      const recent = memories.slice(0, 4);
+      listEl.innerHTML = recent.map((m, idx) => `
+        <div onclick="openMemoryDetail('${m.id}')" class="flex-shrink-0 w-36 bg-white p-2.5 rounded-2xl shadow-polaroid border border-stone-100 transform ${idx % 2 === 0 ? '-rotate-1' : 'rotate-2'} cursor-pointer hover:scale-105 transition-all">
+          <div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-2">
+            <img src="${formatImgSrc(m.image)}" alt="${m.title}" class="w-full h-full object-cover"/>
+          </div>
+          <p class="font-handwriting font-bold text-base text-on-surface truncate leading-tight">${m.title}</p>
+          <div class="flex items-center justify-between text-[10px] text-secondary mt-1">
+            <span>${m.date ? m.date.split('-').slice(1).join('/') : ''}</span>
+            <span class="text-rose-500 flex items-center gap-0.5">❤️ ${m.likes || 1}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render Memories Grid
+    function renderMemoriesGrid() {
+      const container = document.getElementById('memoriesGridContainer');
+      if (!container) return;
+
+      if (!memories || memories.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-2 text-center py-12 px-5 bg-white/85 rounded-3xl border-2 border-dashed border-pink-200 flex flex-col items-center justify-center space-y-2">
+            <div class="w-16 h-16 rounded-full bg-pink-100 text-primary flex items-center justify-center text-3xl mb-1 shadow-xs">
+              📸
+            </div>
+            <h4 class="font-epilogue font-bold text-sm text-on-surface">Scrapbook Masih Kosong</h4>
+            <p class="text-xs text-secondary max-w-xs leading-relaxed">
+              Mulai isi dengan foto favoritmu bersama Nadin. Tinggal pilih foto, isi judul, tanggal, dan ceritanya!
+            </p>
+            <button onclick="openAddMemoryModal()" class="mt-3 px-5 py-2.5 bg-primary text-white text-xs font-bold rounded-full shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base">add_photo_alternate</span>
+              <span>Impor Foto Pertama 🌸</span>
+            </button>
+          </div>
+        `;
+        document.getElementById('memoriesCounter').textContent = 0;
+        return;
+      }
+
+      container.innerHTML = memories.map((m, idx) => `
+        <div onclick="openMemoryDetail('${m.id}')" class="bg-white p-3 rounded-2xl shadow-polaroid border border-stone-100 cursor-pointer transform ${idx % 2 === 0 ? '-rotate-1 hover:rotate-0' : 'rotate-1 hover:rotate-0'} transition-all hover:scale-[1.02]">
+          <div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-2.5 relative">
+            <img src="${formatImgSrc(m.image)}" alt="${m.title}" class="w-full h-full object-cover"/>
+            <span class="absolute top-1.5 right-1.5 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-rose-500 px-1.5 py-0.5 rounded-full shadow-xs">
+              ❤️ ${m.likes || 1}
+            </span>
+          </div>
+          <h4 class="font-handwriting font-bold text-lg text-on-surface truncate leading-tight">${m.title}</h4>
+          <p class="text-[11px] text-secondary truncate mt-0.5">${m.story || ''}</p>
+          <div class="flex items-center justify-between text-[10px] text-secondary font-medium mt-2 pt-1 border-t border-stone-100">
+            <span>📅 ${m.date || ''}</span>
+            <span class="text-primary font-bold">Kenangan ✨</span>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('memoriesCounter').textContent = memories.length;
+    }
+
+    // Polaroid Detail Modal
+    let currentDetailId = null;
+    function openMemoryDetail(id) {
+      const mem = memories.find(m => m.id === id);
+      if (!mem) return;
+      currentDetailId = id;
+      document.getElementById('detailMemoryImg').src = formatImgSrc(mem.image);
+      document.getElementById('detailMemoryTitle').textContent = mem.title;
+      document.getElementById('detailMemoryDate').textContent = `📅 ${mem.date || ''}`;
+      document.getElementById('detailMemoryStory').textContent = `"${mem.story || ''}"`;
+      document.getElementById('modalMemoryDetail').classList.remove('hidden');
+      document.getElementById('modalMemoryDetail').classList.add('flex');
+    }
+
+    function toggleDetailLike() {
+      if (!currentDetailId) return;
+      const mem = memories.find(m => m.id === currentDetailId);
+      if (mem) {
+        mem.likes = (mem.likes || 1) + 1;
+        setStored('nadin_memories', memories);
+        renderMemoriesGrid();
+        renderHomeHighlights();
+        syncToServer();
+        const heartBtn = document.getElementById('detailLikeBtn');
+        heartBtn.classList.add('scale-125', 'text-rose-600');
+        setTimeout(() => heartBtn.classList.remove('scale-125'), 200);
+      }
+    }
+
+    // Add New Memory Modal & Handlers
+    function openAddMemoryModal() {
+      document.getElementById('newMemoryDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('newMemoryTitle').value = '';
+      document.getElementById('newMemoryStory').value = '';
+      document.getElementById('newMemorySelectedImg').value = '';
+      document.getElementById('newMemoryPreviewImg').src = '';
+      document.getElementById('photoPreviewContainer').classList.add('hidden');
+      document.getElementById('photoUploadPrompt').classList.remove('hidden');
+      document.getElementById('modalAddMemory').classList.remove('hidden');
+      document.getElementById('modalAddMemory').classList.add('flex');
+    }
+
+    function compressImage(file, maxDimension = 960, quality = 0.8) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // File input handler with immediate live preview & automatic client optimization
+    const fileInput = document.getElementById('newMemoryFileInput');
+    if (fileInput) {
+      fileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          try {
+            const compressed = await compressImage(file);
+            document.getElementById('newMemorySelectedImg').value = compressed;
+            document.getElementById('newMemoryPreviewImg').src = compressed;
+            document.getElementById('photoPreviewContainer').classList.remove('hidden');
+            document.getElementById('photoUploadPrompt').classList.add('hidden');
+          } catch (err) {
+            console.error('Image compression error:', err);
+          }
+        }
+      });
+    }
+
+    async function saveNewMemory() {
+      const title = document.getElementById('newMemoryTitle').value.trim();
+      const story = document.getElementById('newMemoryStory').value.trim();
+      const date = document.getElementById('newMemoryDate').value || new Date().toISOString().split('T')[0];
+      const image = document.getElementById('newMemorySelectedImg').value;
+
+      if (!image) {
+        alert('Mohon pilih / impor foto terlebih dahulu 📸');
+        return;
+      }
+
+      if (!title) {
+        alert('Mohon tuliskan judul kenangan 🌸');
+        return;
+      }
+
+      const newMem = {
+        id: 'mem-' + Date.now(),
+        title,
+        date,
+        image,
+        story: story || 'Kenangan manis yang tersimpan di scrapbook.',
+        likes: 1
+      };
+
+      memories.unshift(newMem);
+      setStored('nadin_memories', memories);
+      renderMemoriesGrid();
+      renderHomeHighlights();
+      closeModal('modalAddMemory');
+
+      // Sync data directly to Cloud (Firebase 24/7)
+      await syncToServer();
+      alert('Foto kenangan berhasil disimpan ke Cloud 🌸');
+    }
+
+    // Render Journal Entries
+    function renderJournals(filterQuery = '') {
+      const container = document.getElementById('journalEntriesContainer');
+      if (!container) return;
+
+      const filtered = filterQuery 
+        ? journals.filter(j => j.title.toLowerCase().includes(filterQuery.toLowerCase()) || j.content.toLowerCase().includes(filterQuery.toLowerCase()))
+        : journals;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-secondary text-xs">Belum ada catatan yang cocok... 🌸</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(j => `
+        <div class="rounded-2xl bg-white/95 border border-outline-variant/30 p-4 shadow-clay-card space-y-2 relative overflow-hidden">
+          <div class="flex items-center justify-between border-b border-pink-100 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-pink-100 text-primary font-bold px-2 py-0.5 rounded-full">${j.mood}</span>
+              <span class="text-[11px] text-secondary font-medium">${j.weather}</span>
+            </div>
+            <span class="text-[11px] font-semibold text-secondary">${j.date}</span>
+          </div>
+
+          <h3 class="font-epilogue font-bold text-sm text-on-surface pt-1">${j.title}</h3>
+          <p class="text-xs text-on-surface-variant leading-relaxed font-sans">${j.content}</p>
+
+          <div class="pt-1 flex items-center justify-end">
+            <span class="text-[10px] font-handwriting text-base font-bold text-primary">Nadin's Diary まる子</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function searchJournals(query) {
+      renderJournals(query);
+    }
+
+    function openAddDiaryModal() {
+      document.getElementById('modalAddDiary').classList.remove('hidden');
+      document.getElementById('modalAddDiary').classList.add('flex');
+    }
+
+    function saveNewDiary() {
+      const title = document.getElementById('newDiaryTitle').value.trim();
+      const content = document.getElementById('newDiaryContent').value.trim();
+      const mood = document.getElementById('newDiaryMood').value;
+      const weather = document.getElementById('newDiaryWeather').value;
+
+      if (!title || !content) {
+        alert('Mohon isi judul dan tulisan diary-mu yaa 🌸');
+        return;
+      }
+
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      const todayStr = new Date().toLocaleDateString('id-ID', options);
+
+      const newEntry = {
+        id: 'j-' + Date.now(),
+        title,
+        date: todayStr,
+        mood,
+        weather,
+        content
+      };
+
+      journals.unshift(newEntry);
+      setStored('nadin_journals', journals);
+      renderJournals();
+      closeModal('modalAddDiary');
+      document.getElementById('newDiaryTitle').value = '';
+      document.getElementById('newDiaryContent').value = '';
+      syncToServer();
+    }
+
+    // Letters & Chat System
+    function switchPesanSubTab(tab) {
+      const tabLetters = document.getElementById('subtab-letters');
+      const tabChat = document.getElementById('subtab-chat');
+      const btnLetters = document.getElementById('tabBtnLetters');
+      const btnChat = document.getElementById('tabBtnChat');
+
+      if (tab === 'letters') {
+        tabLetters.classList.remove('hidden');
+        tabChat.classList.add('hidden');
+        btnLetters.className = 'flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1.5';
+        btnChat.className = 'flex-1 py-1.5 text-xs font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1.5';
+      } else {
+        tabLetters.classList.add('hidden');
+        tabChat.classList.remove('hidden');
+        btnChat.className = 'flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1.5';
+        btnLetters.className = 'flex-1 py-1.5 text-xs font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1.5';
+        scrollChatToBottom();
+      }
+    }
+
+    function renderLetters() {
+      const container = document.getElementById('lettersContainer');
+      if (!container) return;
+
+      container.innerHTML = letters.map(l => `
+        <div onclick="openLetterDetail('${l.id}')" class="rounded-2xl p-4 border transition-all cursor-pointer shadow-sm ${l.opened ? 'bg-white border-pink-200' : 'bg-gradient-to-r from-pink-50 to-rose-50 border-primary/40 hover:border-primary'}">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center ${l.opened ? 'bg-pink-50 text-secondary' : 'bg-primary text-white shadow-xs animate-bounce'}">
+                <span class="material-symbols-outlined text-xl">${l.opened ? 'drafts' : 'mail'}</span>
+              </div>
+              <div>
+                <h4 class="font-epilogue font-bold text-xs text-on-surface leading-tight">${l.title}</h4>
+                <p class="text-[11px] text-secondary mt-0.5">${l.date}</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${l.opened ? 'bg-stone-100 text-secondary' : 'bg-primary-light text-primary'}">
+              ${l.opened ? 'Sudah Dibuka' : 'Baru! Segel 🌸'}
+            </span>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('lettersCounter').textContent = letters.length;
+      document.getElementById('letterCountBadge').textContent = letters.length;
+    }
+
+    function openLetterDetail(id) {
+      const l = letters.find(item => item.id === id);
+      if (!l) return;
+      l.opened = true;
+      setStored('nadin_letters', letters);
+      renderLetters();
+      syncToServer();
+
+      document.getElementById('openLetterTitle').textContent = l.title;
+      document.getElementById('openLetterDate').textContent = l.date;
+      document.getElementById('openLetterBody').textContent = l.body;
+      document.getElementById('modalOpenLetter').classList.remove('hidden');
+      document.getElementById('modalOpenLetter').classList.add('flex');
+    }
+
+    function openNewLetterModal() {
+      document.getElementById('modalNewLetter').classList.remove('hidden');
+      document.getElementById('modalNewLetter').classList.add('flex');
+    }
+
+    function saveNewLetter() {
+      const title = document.getElementById('newLetterTitle').value.trim();
+      const body = document.getElementById('newLetterBody').value.trim();
+      if (!title || !body) {
+        alert('Mohon isi judul dan isi surat yaa 💌');
+        return;
+      }
+
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      const todayStr = new Date().toLocaleDateString('id-ID', options);
+
+      const newLet = {
+        id: 'let-' + Date.now(),
+        title,
+        date: todayStr,
+        opened: false,
+        body
+      };
+
+      letters.unshift(newLet);
+      setStored('nadin_letters', letters);
+      renderLetters();
+      closeModal('modalNewLetter');
+      document.getElementById('newLetterTitle').value = '';
+      document.getElementById('newLetterBody').value = '';
+      syncToServer();
+    }
+
+    // Whisper Chat Logic
+    function renderChatThread() {
+      const thread = document.getElementById('chatMessageThread');
+      if (!thread) return;
+
+      thread.innerHTML = chats.map(c => `
+        <div class="flex ${c.sender === 'user' ? 'justify-end' : 'justify-start'}">
+          <div class="max-w-[80%] rounded-2xl px-3.5 py-2 text-xs shadow-xs ${
+            c.sender === 'user' 
+              ? 'bg-primary text-white rounded-br-none' 
+              : 'bg-pink-50 text-on-surface border border-pink-100 rounded-bl-none'
+          }">
+            <p>${c.text}</p>
+            <span class="block text-[9px] mt-1 text-right ${c.sender === 'user' ? 'text-pink-200' : 'text-secondary/70'}">${c.time}</span>
+          </div>
+        </div>
+      `).join('');
+
+      scrollChatToBottom();
+    }
+
+    function scrollChatToBottom() {
+      const thread = document.getElementById('chatMessageThread');
+      if (thread) thread.scrollTop = thread.scrollHeight;
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chatTextInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+      chats.push({ sender: 'user', text, time: timeStr });
+      setStored('nadin_chats', chats);
+      renderChatThread();
+      syncToServer();
+
+      // Cute Maruko automated answer
+      setTimeout(() => {
+        const replies = [
+          'Nadin selalu ada di hatiku! Tetap semangat yaa manis 💕',
+          'Aku mendengarkanmu selalu. Nanti kita istirahat bareng ya 🌸',
+          'Peluk hangat dari jauh! Jangan lupa tersenyum hari ini ✨',
+          'Terima kasih sudah berbagi cerita sama Maruko 🥰'
+        ];
+        const randomReply = replies[Math.floor(Math.random() * replies.length)];
+        const replyTime = `${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`;
+        chats.push({ sender: 'maruko', text: randomReply, time: replyTime });
+        setStored('nadin_chats', chats);
+        renderChatThread();
+        syncToServer();
+      }, 700);
+    }
+
+    function sendQuickChatMessage(text) {
+      document.getElementById('chatTextInput').value = text;
+      sendChatMessage();
+    }
+
+    // The Vault (PIN Lock System)
+    let enteredPin = '';
+    const CORRECT_PIN = '1234';
+
+    function openVaultModal() {
+      enteredPin = '';
+      updatePinDots();
+      document.getElementById('vaultLockState').classList.remove('hidden');
+      document.getElementById('vaultUnlockedState').classList.add('hidden');
+      document.getElementById('modalVault').classList.remove('hidden');
+      document.getElementById('modalVault').classList.add('flex');
+    }
+
+    function pressPin(digit) {
+      if (enteredPin.length < 4) {
+        enteredPin += digit;
+        updatePinDots();
+        if (enteredPin.length === 4) {
+          setTimeout(verifyPin, 150);
+        }
+      }
+    }
+
+    function clearPin() {
+      enteredPin = '';
+      updatePinDots();
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`pinDot${i}`);
+        if (i < enteredPin.length) {
+          dot.className = 'w-3.5 h-3.5 rounded-full border-2 border-purple-600 bg-purple-600 transition-all scale-110';
+        } else {
+          dot.className = 'w-3.5 h-3.5 rounded-full border-2 border-purple-400 bg-transparent transition-all';
+        }
+      }
+    }
+
+    function verifyPin() {
+      if (enteredPin === CORRECT_PIN) {
+        document.getElementById('vaultLockState').classList.add('hidden');
+        document.getElementById('vaultUnlockedState').classList.remove('hidden');
+      } else {
+        alert('PIN salah! Coba 1234 🌸');
+        enteredPin = '';
+        updatePinDots();
+      }
+    }
+
+    function lockVault() {
+      enteredPin = '';
+      updatePinDots();
+      document.getElementById('vaultLockState').classList.remove('hidden');
+      document.getElementById('vaultUnlockedState').classList.add('hidden');
+    }
+
+    // Playlist & Web Audio Lofi Synthesizer
+    const PLAYLIST_TRACKS = [
+      { title: 'Rayuan Perempuan Gila', artist: 'Nadin Amizah', mood: 'Cozy & Honest' },
+      { title: 'Bertaut', artist: 'Nadin Amizah', mood: 'Warm & Nostalgic' },
+      { title: 'Sorai', artist: 'Nadin Amizah', mood: 'Gentle Love' },
+      { title: 'Taruh', artist: 'Nadin Amizah', mood: 'Pure Feelings' },
+      { title: 'Seperti Tulang', artist: 'Nadin Amizah', mood: 'Midnight Reflection' }
+    ];
+    let currentTrackIdx = 0;
+    let isAudioPlaying = false;
+    let audioCtx = null;
+    let audioInterval = null;
+
+    function openPlaylistModal() {
+      renderPlaylistTracks();
+      document.getElementById('modalPlaylist').classList.remove('hidden');
+      document.getElementById('modalPlaylist').classList.add('flex');
+    }
+
+    function renderPlaylistTracks() {
+      const list = document.getElementById('playlistTrackList');
+      if (!list) return;
+      list.innerHTML = PLAYLIST_TRACKS.map((t, idx) => `
+        <div onclick="selectTrack(${idx})" class="flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-colors ${idx === currentTrackIdx ? 'bg-primary-light/50 border border-primary/30' : 'hover:bg-surface-container'}">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold ${idx === currentTrackIdx ? 'text-primary' : 'text-secondary'}">${idx + 1}</span>
+            <div>
+              <p class="text-xs font-bold text-on-surface leading-tight">${t.title}</p>
+              <p class="text-[10px] text-secondary">${t.artist}</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-primary">${idx === currentTrackIdx ? '🎵 Sedang Main' : ''}</span>
+        </div>
+      `).join('');
+    }
+
+    function selectTrack(idx) {
+      currentTrackIdx = idx;
+      updateTrackDisplay();
+      renderPlaylistTracks();
+      if (!isAudioPlaying) toggleAudioPlayback();
+    }
+
+    function prevTrack() {
+      currentTrackIdx = (currentTrackIdx - 1 + PLAYLIST_TRACKS.length) % PLAYLIST_TRACKS.length;
+      updateTrackDisplay();
+      renderPlaylistTracks();
+    }
+
+    function nextTrack() {
+      currentTrackIdx = (currentTrackIdx + 1) % PLAYLIST_TRACKS.length;
+      updateTrackDisplay();
+      renderPlaylistTracks();
+    }
+
+    function updateTrackDisplay() {
+      const track = PLAYLIST_TRACKS[currentTrackIdx];
+      document.getElementById('homeSongTitle').textContent = track.title;
+      document.getElementById('playlistTrackTitle').textContent = track.title;
+    }
+
+    // Cozy Web Audio Chime Melody
+    function playCozyChime() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // Pentatonic warmth
+        const freq = notes[Math.floor(Math.random() * notes.length)];
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+      } catch (e) {}
+    }
+
+    function toggleAudioPlayback() {
+      isAudioPlaying = !isAudioPlaying;
+      const vinylHome = document.getElementById('homeVinylDisk');
+      const vinylModal = document.getElementById('playlistVinyl');
+      const homePlayIcon = document.getElementById('homePlayIcon');
+      const playlistPlayIcon = document.getElementById('playlistPlayIcon');
+
+      if (isAudioPlaying) {
+        if (vinylHome) vinylHome.classList.remove('spin-vinyl-paused');
+        if (vinylModal) vinylModal.classList.remove('spin-vinyl-paused');
+        if (homePlayIcon) homePlayIcon.textContent = 'pause';
+        if (playlistPlayIcon) playlistPlayIcon.textContent = 'pause';
+        playCozyChime();
+        audioInterval = setInterval(playCozyChime, 2400);
+      } else {
+        if (vinylHome) vinylHome.classList.add('spin-vinyl-paused');
+        if (vinylModal) vinylModal.classList.add('spin-vinyl-paused');
+        if (homePlayIcon) homePlayIcon.textContent = 'play_arrow';
+        if (playlistPlayIcon) playlistPlayIcon.textContent = 'play_arrow';
+        clearInterval(audioInterval);
+      }
+    }
+
+    // Photobooth 4-Cut Studio
+    function openPhotoboothModal() {
+      document.getElementById('modalPhotobooth').classList.remove('hidden');
+      document.getElementById('modalPhotobooth').classList.add('flex');
+    }
+
+    function setPhotoboothFrame(colorHex) {
+      document.getElementById('photoboothStrip').style.backgroundColor = colorHex;
+    }
+
+    function downloadPhotoStrip() {
+      alert('Photo strip siap disimpan! Foto tersimpan ke galeri Nadin ✨');
+    }
+
+    // Daily Quotes Rotating
+    const DAILY_QUOTES = [
+      '"Semoga segala yang rumit di kepalamu luruh satu persatu, digantikan hangat teh manis dan rasa cukup."',
+      '"Di antara riuhnya isi dunia, kamu adalah satu-satunya sudut paling tenang tempat hatiku pulang."',
+      '"Tidak perlu terburu-buru, hal-hal baik selalu butuh waktu untuk mekar dengan indah."',
+      '"Terima kasih sudah selalu jadi kamu yang apa adanya, manis dan berharga."'
+    ];
+    let quoteIdx = 0;
+    function rotateDailyQuote() {
+      quoteIdx = (quoteIdx + 1) % DAILY_QUOTES.length;
+      document.getElementById('dailyQuoteText').textContent = DAILY_QUOTES[quoteIdx];
+    }
+
+    // Modal Helper
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function openQuickActionSheet() {
+      document.getElementById('modalQuickAction').classList.remove('hidden');
+      document.getElementById('modalQuickAction').classList.add('flex');
+    }
+
+    // Backup / Export Data
+    function exportDataBackup() {
+      const data = {
+        memories,
+        journals,
+        letters,
+        chats,
+        exportDate: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nadin_archive_backup_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // PWA Install Prompt
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('installPwaBtn');
+      if (installBtn) installBtn.style.display = 'flex';
+    });
+
+    function promptPWAInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+        });
+      } else {
+        alert('Untuk memasang di iPhone/iPad:\n1. Buka di Safari\n2. Tekan tombol Bagikan (Share 📤)\n3. Pilih "Tambahkan ke Layar Utama" (Add to Home Screen)');
+      }
+    }
+
+    // Initialize View on DOM Ready
+    window.addEventListener('DOMContentLoaded', () => {
+      renderHomeHighlights();
+      renderMemoriesGrid();
+      renderJournals();
+      renderLetters();
+      renderChatThread();
+      fetchServerData();
+    });
+  </script>
+</body>
+</html>

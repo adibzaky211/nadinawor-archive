@@ -1,0 +1,11 @@
+# Ignore large binary tools
+cloudflared.exe
+
+# Ignore local database & uploaded media (now stored in Firebase Cloud)
+data/
+uploads/
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
