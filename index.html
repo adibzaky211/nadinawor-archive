@@ -973,19 +973,25 @@
         </div>
       </div>
 
-      <!-- Turntable Vinyl Display -->
+      <!-- Player Area -->
       <div class="p-4 bg-gradient-to-b from-[#2a2225] to-[#1a1215] rounded-2xl text-center space-y-3 shadow-inner">
-        <div class="w-24 h-24 mx-auto rounded-full bg-stone-900 border-4 border-stone-800 flex items-center justify-center spin-vinyl spin-vinyl-paused" id="playlistVinyl">
-          <div class="w-14 h-14 rounded-full border border-stone-700 flex items-center justify-center">
-            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-[9px] font-bold">
-              NADIN
+        
+        <!-- Vinyl + YouTube Embed (iframe harus ada dimensi nyata agar audio bisa play) -->
+        <div class="relative mx-auto" style="width:96px;height:96px;">
+          <!-- Vinyl visual (pointer-events none agar klik tembus ke iframe) -->
+          <div class="absolute inset-0 rounded-full bg-stone-900 border-4 border-stone-800 flex items-center justify-center spin-vinyl spin-vinyl-paused z-10 pointer-events-none" id="playlistVinyl">
+            <div class="w-14 h-14 rounded-full border border-stone-700 flex items-center justify-center">
+              <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-[9px] font-bold">NADIN</div>
             </div>
           </div>
-        </div>
-
-        <!-- Hidden YouTube Player -->
-        <div id="ytPlayerContainer" style="width:0;height:0;overflow:hidden;position:absolute;">
-          <div id="ytPlayer"></div>
+          <!-- Real YouTube iframe (opacity 0 tapi tetap punya ukuran agar audio berjalan) -->
+          <iframe id="ytIframe"
+            src="about:blank"
+            width="96" height="96"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            style="position:absolute;inset:0;border:none;border-radius:50%;opacity:0;z-index:1;"
+          ></iframe>
         </div>
 
         <div>
@@ -1006,7 +1012,7 @@
           </button>
         </div>
 
-        <!-- YouTube link fallback -->
+        <!-- Buka di YouTube fallback -->
         <a id="ytOpenLink" href="#" target="_blank" rel="noopener" class="text-pink-300/60 text-[10px] hover:text-pink-200 flex items-center justify-center gap-1 mt-1">
           <span class="material-symbols-outlined text-[12px]">open_in_new</span> Buka di YouTube
         </a>
@@ -2185,53 +2191,21 @@
     ];
     let currentTrackIdx = 0;
     let isAudioPlaying = false;
-    let ytPlayer = null;
-    let ytPlayerReady = false;
-    let ytApiLoaded = false;
 
-    // Load YouTube IFrame API
-    function loadYouTubeAPI() {
-      if (ytApiLoaded) return;
-      ytApiLoaded = true;
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.head.appendChild(tag);
+    // Ganti src iframe YouTube dengan autoplay=1 agar suara keluar
+    // (iframe harus punya dimensi nyata — opacity:0 tapi bukan width:0)
+    function playYouTubeTrack(ytId) {
+      const iframe = document.getElementById('ytIframe');
+      if (!iframe) return;
+      // autoplay=1, mute=0 agar ada suara
+      iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&enablejsapi=1`;
     }
 
-    // Called automatically by YouTube API when ready
-    window.onYouTubeIframeAPIReady = function() {
-      ytPlayer = new YT.Player('ytPlayer', {
-        height: '1',
-        width: '1',
-        videoId: PLAYLIST_TRACKS[0].ytId,
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          rel: 0,
-          modestbranding: 1
-        },
-        events: {
-          onReady: function(e) {
-            ytPlayerReady = true;
-          },
-          onStateChange: function(e) {
-            // When video ends, go to next track
-            if (e.data === YT.PlayerState.ENDED) {
-              nextTrack();
-              if (isAudioPlaying && ytPlayerReady) {
-                ytPlayer.loadVideoById(PLAYLIST_TRACKS[currentTrackIdx].ytId);
-              }
-            }
-            // Sync playing state
-            if (e.data === YT.PlayerState.PLAYING) {
-              setPlayingUI(true);
-            } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.BUFFERING) {
-              // keep UI in sync
-            }
-          }
-        }
-      });
-    };
+    function stopYouTubeTrack() {
+      const iframe = document.getElementById('ytIframe');
+      if (!iframe) return;
+      iframe.src = 'about:blank';
+    }
 
     function shufflePlaylist() {
       for (let i = PLAYLIST_TRACKS.length - 1; i > 0; i--) {
@@ -2241,13 +2215,12 @@
       currentTrackIdx = 0;
       updateTrackDisplay();
       renderPlaylistTracks();
-      if (isAudioPlaying && ytPlayerReady) {
-        ytPlayer.loadVideoById(PLAYLIST_TRACKS[0].ytId);
+      if (isAudioPlaying) {
+        playYouTubeTrack(PLAYLIST_TRACKS[0].ytId);
       }
     }
 
     function openPlaylistModal() {
-      loadYouTubeAPI();
       renderPlaylistTracks();
       updateTrackDisplay();
       document.getElementById('modalPlaylist').classList.remove('hidden');
@@ -2277,32 +2250,23 @@
       currentTrackIdx = idx;
       updateTrackDisplay();
       renderPlaylistTracks();
-      if (ytPlayerReady) {
-        ytPlayer.loadVideoById(PLAYLIST_TRACKS[idx].ytId);
-        isAudioPlaying = true;
-        setPlayingUI(true);
-      } else {
-        // fallback: open in new tab
-        window.open('https://www.youtube.com/watch?v=' + PLAYLIST_TRACKS[idx].ytId, '_blank');
-      }
+      playYouTubeTrack(PLAYLIST_TRACKS[idx].ytId);
+      isAudioPlaying = true;
+      setPlayingUI(true);
     }
 
     function prevTrack() {
       currentTrackIdx = (currentTrackIdx - 1 + PLAYLIST_TRACKS.length) % PLAYLIST_TRACKS.length;
       updateTrackDisplay();
       renderPlaylistTracks();
-      if (isAudioPlaying && ytPlayerReady) {
-        ytPlayer.loadVideoById(PLAYLIST_TRACKS[currentTrackIdx].ytId);
-      }
+      if (isAudioPlaying) playYouTubeTrack(PLAYLIST_TRACKS[currentTrackIdx].ytId);
     }
 
     function nextTrack() {
       currentTrackIdx = (currentTrackIdx + 1) % PLAYLIST_TRACKS.length;
       updateTrackDisplay();
       renderPlaylistTracks();
-      if (isAudioPlaying && ytPlayerReady) {
-        ytPlayer.loadVideoById(PLAYLIST_TRACKS[currentTrackIdx].ytId);
-      }
+      if (isAudioPlaying) playYouTubeTrack(PLAYLIST_TRACKS[currentTrackIdx].ytId);
     }
 
     function updateTrackDisplay() {
@@ -2337,18 +2301,11 @@
     }
 
     function toggleAudioPlayback() {
-      loadYouTubeAPI();
-      if (!ytPlayerReady) {
-        // API not ready yet, open YouTube directly
-        const track = PLAYLIST_TRACKS[currentTrackIdx];
-        window.open('https://www.youtube.com/watch?v=' + track.ytId, '_blank');
-        return;
-      }
       if (isAudioPlaying) {
-        ytPlayer.pauseVideo();
+        stopYouTubeTrack();
         setPlayingUI(false);
       } else {
-        ytPlayer.loadVideoById(PLAYLIST_TRACKS[currentTrackIdx].ytId);
+        playYouTubeTrack(PLAYLIST_TRACKS[currentTrackIdx].ytId);
         setPlayingUI(true);
       }
     }
