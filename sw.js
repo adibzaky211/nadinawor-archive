@@ -1,5 +1,5 @@
-// Nadin PWA Service Worker - Fresh Cache Purge v14
-const CACHE_NAME = 'nadin-clean-v14';
+// Nadin PWA Service Worker - Fresh Cache Purge v15
+const CACHE_NAME = 'nadin-clean-v15';
 
 self.addEventListener('install', e => {
   // Force new service worker to activate immediately without waiting
