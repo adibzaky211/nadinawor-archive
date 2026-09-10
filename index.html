@@ -975,7 +975,7 @@
 
       <!-- Turntable Vinyl Display -->
       <div class="p-4 bg-gradient-to-b from-[#2a2225] to-[#1a1215] rounded-2xl text-center space-y-3 shadow-inner">
-        <div class="w-24 h-24 mx-auto rounded-full bg-stone-900 border-4 border-stone-800 flex items-center justify-center spin-vinyl" id="playlistVinyl">
+        <div class="w-24 h-24 mx-auto rounded-full bg-stone-900 border-4 border-stone-800 flex items-center justify-center spin-vinyl spin-vinyl-paused" id="playlistVinyl">
           <div class="w-14 h-14 rounded-full border border-stone-700 flex items-center justify-center">
             <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-[9px] font-bold">
               NADIN
@@ -983,9 +983,14 @@
           </div>
         </div>
 
+        <!-- Hidden YouTube Player -->
+        <div id="ytPlayerContainer" style="width:0;height:0;overflow:hidden;position:absolute;">
+          <div id="ytPlayer"></div>
+        </div>
+
         <div>
-          <h4 class="text-white font-bold text-sm" id="playlistTrackTitle">Rayuan Perempuan Gila</h4>
-          <p class="text-pink-300/80 text-xs">Nadin Amizah · Akustik Hangat</p>
+          <h4 class="text-white font-bold text-sm" id="playlistTrackTitle">About You</h4>
+          <p class="text-pink-300/80 text-xs" id="playlistTrackArtist">The 1975 · Romantic Indie 💕</p>
         </div>
 
         <!-- Controls -->
@@ -1000,10 +1005,15 @@
             <span class="material-symbols-outlined text-xl">skip_next</span>
           </button>
         </div>
+
+        <!-- YouTube link fallback -->
+        <a id="ytOpenLink" href="#" target="_blank" rel="noopener" class="text-pink-300/60 text-[10px] hover:text-pink-200 flex items-center justify-center gap-1 mt-1">
+          <span class="material-symbols-outlined text-[12px]">open_in_new</span> Buka di YouTube
+        </a>
       </div>
 
       <!-- Track List -->
-      <div class="space-y-1.5 max-h-40 overflow-y-auto" id="playlistTrackList">
+      <div class="space-y-1.5 max-h-44 overflow-y-auto no-scrollbar" id="playlistTrackList">
         <!-- Rendered by JS -->
       </div>
     </div>
@@ -2160,33 +2170,68 @@
       document.getElementById('vaultUnlockedState').classList.add('hidden');
     }
 
-    // Playlist & Web Audio Lofi Synthesizer (20 Lagu Romantis, Lucu & Kekinian)
+    // ==================== PLAYLIST - 10 LAGU BISA DIDENGARKAN VIA YOUTUBE ====================
     const PLAYLIST_TRACKS = [
-      { title: 'Kita Bikin Romantis', artist: "MALIQ & D'Essentials", mood: 'Gemes & Ceria 🌸' },
-      { title: 'Rayuan Perempuan Gila', artist: 'Nadin Amizah', mood: 'Cozy & Honest 💕' },
-      { title: 'Gala Bunga Matahari', artist: 'Sal Priadi', mood: 'Paling Manis 🌻' },
-      { title: 'Kupu-Kupu', artist: 'Tiara Andini', mood: 'Centil Kasmaran ✨' },
-      { title: 'Untungnya, Hidup Harus Berjalan', artist: 'Bernadya', mood: 'Peluk Hangat 🤍' },
-      { title: 'Satu-Satu', artist: 'Idgitaf', mood: 'Terima Apa Adanya 🥰' },
-      { title: 'Nanti Kita Seperti Ini', artist: 'Batas Senja', mood: 'Masa Depan Berdua 🏡' },
-      { title: 'Dan...', artist: 'Sheila On 7', mood: 'Romantis Sepanjang Masa 🎸' },
-      { title: 'Tampar', artist: 'Juicy Luicy', mood: 'Galau-Galau Lucu 🤭' },
-      { title: 'Jatuh Cinta', artist: 'HIVI!', mood: 'Deg-degan Pas Ketemu 💓' },
-      { title: 'Bertaut', artist: 'Nadin Amizah', mood: 'Warm & Nostalgic ☕' },
-      { title: 'Lover', artist: 'Taylor Swift', mood: 'Bucin Maksimal 💖' },
-      { title: 'Monokrom', artist: 'Tulus', mood: 'Kenangan Manis Foto 📷' },
-      { title: 'Sialan', artist: 'Juicy Luicy ft. Adrian Khalif', mood: 'Kepincut Tiap Hari 🙈' },
-      { title: 'Penjaga Hati', artist: 'Nadhif Basalamah', mood: 'Janji Setia Selalu 💍' },
-      { title: 'Anugerah Terindah yang Pernah Kumiliki', artist: 'Sheila On 7', mood: 'Kamu Paling Berharga ✨' },
-      { title: 'Komang', artist: 'Raim Laode', mood: 'Wanita Tercantik 🌸' },
-      { title: 'Sorai', artist: 'Nadin Amizah', mood: 'Gentle Love 🌿' },
-      { title: 'Taruh', artist: 'Nadin Amizah', mood: 'Pure Feelings 💌' },
-      { title: 'Melompat Lebih Tinggi', artist: 'Sheila On 7', mood: 'Petualangan Berdua 🚀' }
+      { title: 'About You', artist: 'The 1975', mood: 'Romantic Indie 💕', ytId: '_9MDtoUq1e0' },
+      { title: 'Iris', artist: 'Goo Goo Dolls', mood: 'Timeless Love 🌹', ytId: 'NdYWuo9OFAw' },
+      { title: 'Dunia Yang Nanti', artist: 'Raim Laode', mood: 'Manis Banget 🌸', ytId: 'awWKxGftWh4' },
+      { title: 'Thinking of You', artist: 'Katy Perry', mood: 'Selalu Teringat 💭', ytId: 'Ld559dZcyBk' },
+      { title: 'Teh Hijau', artist: 'Tulus', mood: 'Hangat & Santai 🍵', ytId: 'zyLmavBAY7k' },
+      { title: 'Bertaut', artist: 'Nadin Amizah', mood: 'Warm & Nostalgic ☕', ytId: 't-w_nLSpHyg' },
+      { title: 'Rayuan Perempuan Gila', artist: 'Nadin Amizah', mood: 'Cozy & Honest 💕', ytId: 'j7_n_-W21Jg' },
+      { title: 'Gala Bunga Matahari', artist: 'Sal Priadi', mood: 'Paling Manis 🌻', ytId: 'a1_u9V4yYxM' },
+      { title: 'Komang', artist: 'Raim Laode', mood: 'Wanita Tercantik 🌸', ytId: 'a8LgG__2x08' },
+      { title: 'Lover', artist: 'Taylor Swift', mood: 'Bucin Maksimal 💖', ytId: '-BjZmE2gTDo' }
     ];
     let currentTrackIdx = 0;
     let isAudioPlaying = false;
-    let audioCtx = null;
-    let audioInterval = null;
+    let ytPlayer = null;
+    let ytPlayerReady = false;
+    let ytApiLoaded = false;
+
+    // Load YouTube IFrame API
+    function loadYouTubeAPI() {
+      if (ytApiLoaded) return;
+      ytApiLoaded = true;
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    }
+
+    // Called automatically by YouTube API when ready
+    window.onYouTubeIframeAPIReady = function() {
+      ytPlayer = new YT.Player('ytPlayer', {
+        height: '1',
+        width: '1',
+        videoId: PLAYLIST_TRACKS[0].ytId,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          rel: 0,
+          modestbranding: 1
+        },
+        events: {
+          onReady: function(e) {
+            ytPlayerReady = true;
+          },
+          onStateChange: function(e) {
+            // When video ends, go to next track
+            if (e.data === YT.PlayerState.ENDED) {
+              nextTrack();
+              if (isAudioPlaying && ytPlayerReady) {
+                ytPlayer.loadVideoById(PLAYLIST_TRACKS[currentTrackIdx].ytId);
+              }
+            }
+            // Sync playing state
+            if (e.data === YT.PlayerState.PLAYING) {
+              setPlayingUI(true);
+            } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.BUFFERING) {
+              // keep UI in sync
+            }
+          }
+        }
+      });
+    };
 
     function shufflePlaylist() {
       for (let i = PLAYLIST_TRACKS.length - 1; i > 0; i--) {
@@ -2196,11 +2241,15 @@
       currentTrackIdx = 0;
       updateTrackDisplay();
       renderPlaylistTracks();
-      playCozyChime();
+      if (isAudioPlaying && ytPlayerReady) {
+        ytPlayer.loadVideoById(PLAYLIST_TRACKS[0].ytId);
+      }
     }
 
     function openPlaylistModal() {
+      loadYouTubeAPI();
       renderPlaylistTracks();
+      updateTrackDisplay();
       document.getElementById('modalPlaylist').classList.remove('hidden');
       document.getElementById('modalPlaylist').classList.add('flex');
     }
@@ -2211,13 +2260,15 @@
       list.innerHTML = PLAYLIST_TRACKS.map((t, idx) => `
         <div onclick="selectTrack(${idx})" class="flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-colors ${idx === currentTrackIdx ? 'bg-primary-light/50 border border-primary/30' : 'hover:bg-surface-container'}">
           <div class="flex items-center gap-2.5">
-            <span class="text-xs font-bold w-5 text-center ${idx === currentTrackIdx ? 'text-primary' : 'text-secondary'}">${idx + 1}</span>
+            <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center flex-shrink-0">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.8a8.18 8.18 0 004.77 1.52V6.88a4.85 4.85 0 01-1-.19z"/></svg>
+            </div>
             <div>
               <p class="text-xs font-bold text-on-surface leading-tight">${t.title}</p>
-              <p class="text-[10px] text-secondary flex items-center gap-1.5"><span>${t.artist}</span> · <span class="text-primary font-medium">${t.mood}</span></p>
+              <p class="text-[10px] text-secondary">${t.artist} · <span class="text-primary font-medium">${t.mood}</span></p>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-primary">${idx === currentTrackIdx ? '🎵 Playing' : ''}</span>
+          <span class="text-[10px] font-bold text-primary flex-shrink-0">${idx === currentTrackIdx ? '🎵' : ''}</span>
         </div>
       `).join('');
     }
@@ -2226,74 +2277,79 @@
       currentTrackIdx = idx;
       updateTrackDisplay();
       renderPlaylistTracks();
-      if (!isAudioPlaying) toggleAudioPlayback();
+      if (ytPlayerReady) {
+        ytPlayer.loadVideoById(PLAYLIST_TRACKS[idx].ytId);
+        isAudioPlaying = true;
+        setPlayingUI(true);
+      } else {
+        // fallback: open in new tab
+        window.open('https://www.youtube.com/watch?v=' + PLAYLIST_TRACKS[idx].ytId, '_blank');
+      }
     }
 
     function prevTrack() {
       currentTrackIdx = (currentTrackIdx - 1 + PLAYLIST_TRACKS.length) % PLAYLIST_TRACKS.length;
       updateTrackDisplay();
       renderPlaylistTracks();
+      if (isAudioPlaying && ytPlayerReady) {
+        ytPlayer.loadVideoById(PLAYLIST_TRACKS[currentTrackIdx].ytId);
+      }
     }
 
     function nextTrack() {
       currentTrackIdx = (currentTrackIdx + 1) % PLAYLIST_TRACKS.length;
       updateTrackDisplay();
       renderPlaylistTracks();
+      if (isAudioPlaying && ytPlayerReady) {
+        ytPlayer.loadVideoById(PLAYLIST_TRACKS[currentTrackIdx].ytId);
+      }
     }
 
     function updateTrackDisplay() {
       const track = PLAYLIST_TRACKS[currentTrackIdx];
       const homeSong = document.getElementById('homeSongTitle');
-      const playlistTrack = document.getElementById('playlistTrackTitle');
+      const playlistTrackTitle = document.getElementById('playlistTrackTitle');
+      const playlistTrackArtist = document.getElementById('playlistTrackArtist');
+      const ytOpenLink = document.getElementById('ytOpenLink');
       if (homeSong) homeSong.textContent = track.title;
-      if (playlistTrack) playlistTrack.textContent = `${track.title} - ${track.artist}`;
+      if (playlistTrackTitle) playlistTrackTitle.textContent = track.title;
+      if (playlistTrackArtist) playlistTrackArtist.textContent = `${track.artist} · ${track.mood}`;
+      if (ytOpenLink) ytOpenLink.href = 'https://www.youtube.com/watch?v=' + track.ytId;
     }
 
-    // Cozy Web Audio Chime Melody
-    function playCozyChime() {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // Pentatonic warmth
-        const freq = notes[Math.floor(Math.random() * notes.length)];
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 1.2);
-      } catch (e) {}
-    }
-
-    function toggleAudioPlayback() {
-      isAudioPlaying = !isAudioPlaying;
+    function setPlayingUI(playing) {
+      isAudioPlaying = playing;
       const vinylHome = document.getElementById('homeVinylDisk');
       const vinylModal = document.getElementById('playlistVinyl');
       const homePlayIcon = document.getElementById('homePlayIcon');
       const playlistPlayIcon = document.getElementById('playlistPlayIcon');
-
-      if (isAudioPlaying) {
+      if (playing) {
         if (vinylHome) vinylHome.classList.remove('spin-vinyl-paused');
         if (vinylModal) vinylModal.classList.remove('spin-vinyl-paused');
         if (homePlayIcon) homePlayIcon.textContent = 'pause';
         if (playlistPlayIcon) playlistPlayIcon.textContent = 'pause';
-        playCozyChime();
-        audioInterval = setInterval(playCozyChime, 2400);
       } else {
         if (vinylHome) vinylHome.classList.add('spin-vinyl-paused');
         if (vinylModal) vinylModal.classList.add('spin-vinyl-paused');
         if (homePlayIcon) homePlayIcon.textContent = 'play_arrow';
         if (playlistPlayIcon) playlistPlayIcon.textContent = 'play_arrow';
-        clearInterval(audioInterval);
+      }
+    }
+
+    function toggleAudioPlayback() {
+      loadYouTubeAPI();
+      if (!ytPlayerReady) {
+        // API not ready yet, open YouTube directly
+        const track = PLAYLIST_TRACKS[currentTrackIdx];
+        window.open('https://www.youtube.com/watch?v=' + track.ytId, '_blank');
+        return;
+      }
+      if (isAudioPlaying) {
+        ytPlayer.pauseVideo();
+        setPlayingUI(false);
+      } else {
+        ytPlayer.loadVideoById(PLAYLIST_TRACKS[currentTrackIdx].ytId);
+        setPlayingUI(true);
       }
     }
 
