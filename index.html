@@ -1480,9 +1480,9 @@
 
     function isCleanMemory(m) {
       if (!m || !m.id) return false;
-      if (['mem-1', 'mem-2', 'mem-3', 'mem-4', 'mem-5'].includes(m.id)) return false;
       return true;
     }
+
 
     function isCleanJournal(j) {
       if (!j) return false;
@@ -1549,33 +1549,53 @@
         const data = snapshot.val();
         if (data) {
           let hasChanges = false;
+
+          // Memories: ambil cloud hanya jika cloud lebih banyak data atau lokal kosong
           if (data.memories !== undefined) {
             let cloudMems = Array.isArray(data.memories) ? data.memories : (data.memories ? Object.values(data.memories) : []);
             cloudMems = cloudMems.filter(isCleanMemory);
-            if (JSON.stringify(memories) !== JSON.stringify(cloudMems)) {
-              memories = cloudMems;
-              setStored('nadin_memories', memories);
-              hasChanges = true;
+            if (cloudMems.length > 0 && cloudMems.length >= memories.length) {
+              if (JSON.stringify(memories) !== JSON.stringify(cloudMems)) {
+                memories = cloudMems;
+                setStored('nadin_memories', memories);
+                hasChanges = true;
+              }
+            } else if (memories.length > 0 && cloudMems.length === 0) {
+              // Lokal ada data, cloud kosong - push lokal ke cloud
+              cloudDb.ref('archive/memories').set(memories).catch(() => {});
             }
           }
+
+          // Journals: sama - cloud hanya menimpa jika lebih banyak atau lokal kosong
           if (data.journals !== undefined) {
             let cloudJournals = Array.isArray(data.journals) ? data.journals : (data.journals ? Object.values(data.journals) : []);
             cloudJournals = cloudJournals.filter(isCleanJournal);
-            if (JSON.stringify(journals) !== JSON.stringify(cloudJournals)) {
-              journals = cloudJournals;
-              setStored('nadin_journals', journals);
-              hasChanges = true;
+            if (cloudJournals.length > 0 && cloudJournals.length >= journals.length) {
+              if (JSON.stringify(journals) !== JSON.stringify(cloudJournals)) {
+                journals = cloudJournals;
+                setStored('nadin_journals', journals);
+                hasChanges = true;
+              }
+            } else if (journals.length > 0 && cloudJournals.length === 0) {
+              cloudDb.ref('archive/journals').set(journals).catch(() => {});
             }
           }
+
+          // Letters: sama
           if (data.letters !== undefined) {
             let cloudLetters = Array.isArray(data.letters) ? data.letters : (data.letters ? Object.values(data.letters) : []);
             cloudLetters = cloudLetters.filter(isCleanLetter);
-            if (JSON.stringify(letters) !== JSON.stringify(cloudLetters)) {
-              letters = cloudLetters;
-              setStored('nadin_letters', letters);
-              hasChanges = true;
+            if (cloudLetters.length > 0 && cloudLetters.length >= letters.length) {
+              if (JSON.stringify(letters) !== JSON.stringify(cloudLetters)) {
+                letters = cloudLetters;
+                setStored('nadin_letters', letters);
+                hasChanges = true;
+              }
+            } else if (letters.length > 0 && cloudLetters.length === 0) {
+              cloudDb.ref('archive/letters').set(letters).catch(() => {});
             }
           }
+
           if (data.chats && Array.isArray(data.chats)) {
             if (JSON.stringify(chats) !== JSON.stringify(data.chats)) {
               chats = data.chats;
@@ -1627,7 +1647,9 @@
     }
 
     async function fetchServerData() {
+    async function fetchServerData() {
       // Fallback local fetch if cloud listener is not yet ready
+      // SAFE: server data hanya menimpa lokal jika server punya lebih banyak data
       try {
         const res = await fetch('/api/data?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
@@ -1635,26 +1657,32 @@
           let hasChanges = false;
           if (data.memories && Array.isArray(data.memories)) {
             const serverMems = data.memories.filter(isCleanMemory);
-            if (JSON.stringify(memories) !== JSON.stringify(serverMems)) {
-              memories = serverMems;
-              setStored('nadin_memories', memories);
-              hasChanges = true;
+            if (serverMems.length > 0 && serverMems.length >= memories.length) {
+              if (JSON.stringify(memories) !== JSON.stringify(serverMems)) {
+                memories = serverMems;
+                setStored('nadin_memories', memories);
+                hasChanges = true;
+              }
             }
           }
           if (data.journals && Array.isArray(data.journals)) {
             const serverJournals = data.journals.filter(isCleanJournal);
-            if (JSON.stringify(journals) !== JSON.stringify(serverJournals)) {
-              journals = serverJournals;
-              setStored('nadin_journals', journals);
-              hasChanges = true;
+            if (serverJournals.length > 0 && serverJournals.length >= journals.length) {
+              if (JSON.stringify(journals) !== JSON.stringify(serverJournals)) {
+                journals = serverJournals;
+                setStored('nadin_journals', journals);
+                hasChanges = true;
+              }
             }
           }
           if (data.letters && Array.isArray(data.letters)) {
             const serverLetters = data.letters.filter(isCleanLetter);
-            if (JSON.stringify(letters) !== JSON.stringify(serverLetters)) {
-              letters = serverLetters;
-              setStored('nadin_letters', letters);
-              hasChanges = true;
+            if (serverLetters.length > 0 && serverLetters.length >= letters.length) {
+              if (JSON.stringify(letters) !== JSON.stringify(serverLetters)) {
+                letters = serverLetters;
+                setStored('nadin_letters', letters);
+                hasChanges = true;
+              }
             }
           }
           if (hasChanges) {
