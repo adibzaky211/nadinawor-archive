@@ -1647,55 +1647,51 @@
     }
 
     async function fetchServerData() {
+      try {
+        const res = await fetch('/api/data?t=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          let hasChanges = false;
+          if (data.memories && Array.isArray(data.memories)) {
+            const serverMems = data.memories.filter(isCleanMemory);
+            if (serverMems.length > 0 && serverMems.length >= memories.length) {
+              if (JSON.stringify(memories) !== JSON.stringify(serverMems)) {
+                memories = serverMems;
+                setStored('nadin_memories', memories);
+                hasChanges = true;
+              }
+            }
+          }
+          if (data.journals && Array.isArray(data.journals)) {
+            const serverJournals = data.journals.filter(isCleanJournal);
+            if (serverJournals.length > 0 && serverJournals.length >= journals.length) {
+              if (JSON.stringify(journals) !== JSON.stringify(serverJournals)) {
+                journals = serverJournals;
+                setStored('nadin_journals', journals);
+                hasChanges = true;
+              }
+            }
+          }
+          if (data.letters && Array.isArray(data.letters)) {
+            const serverLetters = data.letters.filter(isCleanLetter);
+            if (serverLetters.length > 0 && serverLetters.length >= letters.length) {
+              if (JSON.stringify(letters) !== JSON.stringify(serverLetters)) {
+                letters = serverLetters;
+                setStored('nadin_letters', letters);
+                hasChanges = true;
+              }
+            }
+          }
+          if (hasChanges) {
+            renderHomeHighlights();
+            renderMemoriesGrid();
+            renderJournals();
+            renderLetters();
+          }
+        }
+      } catch (e) {}
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    async function syncToServer() {
     async function syncToServer() {
       const syncIcon = document.getElementById('syncIcon');
       if (syncIcon) {
@@ -2856,7 +2852,6 @@
         </div>`;
 
       container.innerHTML = pinStart + memItems + pinEnd;
-    }
     }
 
     // ==================== PURIKURA 4-CUT CAMERA & STUDIO ====================
