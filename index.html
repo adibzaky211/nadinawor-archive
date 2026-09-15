@@ -1548,51 +1548,46 @@
       cloudDb.ref('archive').on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
+          const cloudUpdatedAt = Number(data.updatedAt) || 0;
+          const localLastUpdate = Number(getStored('nadin_last_update', 0)) || 0;
+
+          // Jika perubahan ini berasal dari aksi lokal sendiri yang baru saja di-push, abaikan
+          if (cloudUpdatedAt > 0 && cloudUpdatedAt <= localLastUpdate) {
+            return;
+          }
+
           let hasChanges = false;
 
-          // Memories: ambil cloud hanya jika cloud lebih banyak data atau lokal kosong
+          // Memories: update dari cloud
           if (data.memories !== undefined) {
             let cloudMems = Array.isArray(data.memories) ? data.memories : (data.memories ? Object.values(data.memories) : []);
             cloudMems = cloudMems.filter(isCleanMemory);
-            if (cloudMems.length > 0 && cloudMems.length >= memories.length) {
-              if (JSON.stringify(memories) !== JSON.stringify(cloudMems)) {
-                memories = cloudMems;
-                setStored('nadin_memories', memories);
-                hasChanges = true;
-              }
-            } else if (memories.length > 0 && cloudMems.length === 0) {
-              // Lokal ada data, cloud kosong - push lokal ke cloud
-              cloudDb.ref('archive/memories').set(memories).catch(() => {});
+            if (JSON.stringify(memories) !== JSON.stringify(cloudMems)) {
+              memories = cloudMems;
+              setStored('nadin_memories', memories);
+              hasChanges = true;
             }
           }
 
-          // Journals: sama - cloud hanya menimpa jika lebih banyak atau lokal kosong
+          // Journals / Diary: update dari cloud
           if (data.journals !== undefined) {
             let cloudJournals = Array.isArray(data.journals) ? data.journals : (data.journals ? Object.values(data.journals) : []);
             cloudJournals = cloudJournals.filter(isCleanJournal);
-            if (cloudJournals.length > 0 && cloudJournals.length >= journals.length) {
-              if (JSON.stringify(journals) !== JSON.stringify(cloudJournals)) {
-                journals = cloudJournals;
-                setStored('nadin_journals', journals);
-                hasChanges = true;
-              }
-            } else if (journals.length > 0 && cloudJournals.length === 0) {
-              cloudDb.ref('archive/journals').set(journals).catch(() => {});
+            if (JSON.stringify(journals) !== JSON.stringify(cloudJournals)) {
+              journals = cloudJournals;
+              setStored('nadin_journals', journals);
+              hasChanges = true;
             }
           }
 
-          // Letters: sama
+          // Letters: update dari cloud
           if (data.letters !== undefined) {
             let cloudLetters = Array.isArray(data.letters) ? data.letters : (data.letters ? Object.values(data.letters) : []);
             cloudLetters = cloudLetters.filter(isCleanLetter);
-            if (cloudLetters.length > 0 && cloudLetters.length >= letters.length) {
-              if (JSON.stringify(letters) !== JSON.stringify(cloudLetters)) {
-                letters = cloudLetters;
-                setStored('nadin_letters', letters);
-                hasChanges = true;
-              }
-            } else if (letters.length > 0 && cloudLetters.length === 0) {
-              cloudDb.ref('archive/letters').set(letters).catch(() => {});
+            if (JSON.stringify(letters) !== JSON.stringify(cloudLetters)) {
+              letters = cloudLetters;
+              setStored('nadin_letters', letters);
+              hasChanges = true;
             }
           }
 
@@ -1604,12 +1599,20 @@
             }
           }
 
+          if (cloudUpdatedAt > localLastUpdate) {
+            setStored('nadin_last_update', cloudUpdatedAt);
+          }
+
           if (hasChanges) {
             renderHomeHighlights();
             renderMemoriesGrid();
             renderJournals();
             renderLetters();
+            renderHomeLetterPeek();
             renderChatThread();
+            if (typeof renderMilestoneTimeline === 'function') {
+              renderMilestoneTimeline();
+            }
           }
 
           const syncIcon = document.getElementById('syncIcon');
@@ -1651,35 +1654,35 @@
         const res = await fetch('/api/data?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
+          const serverUpdatedAt = Number(data.updatedAt) || 0;
+          const localLastUpdate = Number(getStored('nadin_last_update', 0)) || 0;
+          if (serverUpdatedAt > 0 && serverUpdatedAt <= localLastUpdate) {
+            return;
+          }
+
           let hasChanges = false;
           if (data.memories && Array.isArray(data.memories)) {
             const serverMems = data.memories.filter(isCleanMemory);
-            if (serverMems.length > 0 && serverMems.length >= memories.length) {
-              if (JSON.stringify(memories) !== JSON.stringify(serverMems)) {
-                memories = serverMems;
-                setStored('nadin_memories', memories);
-                hasChanges = true;
-              }
+            if (JSON.stringify(memories) !== JSON.stringify(serverMems)) {
+              memories = serverMems;
+              setStored('nadin_memories', memories);
+              hasChanges = true;
             }
           }
           if (data.journals && Array.isArray(data.journals)) {
             const serverJournals = data.journals.filter(isCleanJournal);
-            if (serverJournals.length > 0 && serverJournals.length >= journals.length) {
-              if (JSON.stringify(journals) !== JSON.stringify(serverJournals)) {
-                journals = serverJournals;
-                setStored('nadin_journals', journals);
-                hasChanges = true;
-              }
+            if (JSON.stringify(journals) !== JSON.stringify(serverJournals)) {
+              journals = serverJournals;
+              setStored('nadin_journals', journals);
+              hasChanges = true;
             }
           }
           if (data.letters && Array.isArray(data.letters)) {
             const serverLetters = data.letters.filter(isCleanLetter);
-            if (serverLetters.length > 0 && serverLetters.length >= letters.length) {
-              if (JSON.stringify(letters) !== JSON.stringify(serverLetters)) {
-                letters = serverLetters;
-                setStored('nadin_letters', letters);
-                hasChanges = true;
-              }
+            if (JSON.stringify(letters) !== JSON.stringify(serverLetters)) {
+              letters = serverLetters;
+              setStored('nadin_letters', letters);
+              hasChanges = true;
             }
           }
           if (hasChanges) {
@@ -1687,6 +1690,10 @@
             renderMemoriesGrid();
             renderJournals();
             renderLetters();
+            renderHomeLetterPeek();
+            if (typeof renderMilestoneTimeline === 'function') {
+              renderMilestoneTimeline();
+            }
           }
         }
       } catch (e) {}
@@ -1699,47 +1706,24 @@
         syncIcon.className = 'material-symbols-outlined text-[17px] text-primary animate-spin';
       }
 
-      // Simpan ke localStorage dulu
+      const now = Date.now();
+      setStored('nadin_last_update', now);
+
+      // Simpan ke localStorage
       setStored('nadin_memories', memories);
       setStored('nadin_journals', journals);
       setStored('nadin_letters', letters);
       setStored('nadin_chats', chats);
 
-      // Sync ke Firebase - tapi DULU cek dulu data di Firebase
-      // Jangan overwrite Firebase kalau data lokal kosong (mungkin belum load)
+      // Sync ke Firebase 24/7 (menulis state terkini baik tambah maupun hapus)
       if (cloudDb) {
         try {
-          const snap = await cloudDb.ref('archive').once('value');
-          const cloudData = snap.val() || {};
-          const cloudMems = Array.isArray(cloudData.memories) ? cloudData.memories : (cloudData.memories ? Object.values(cloudData.memories) : []);
-          const cloudJournals = Array.isArray(cloudData.journals) ? cloudData.journals : (cloudData.journals ? Object.values(cloudData.journals) : []);
-          const cloudLetters = Array.isArray(cloudData.letters) ? cloudData.letters : (cloudData.letters ? Object.values(cloudData.letters) : []);
-
-          // Hanya push ke Firebase jika lokal punya data ATAU lokal lebih banyak dari cloud
-          const finalMems = memories.length >= cloudMems.length ? memories : cloudMems;
-          const finalJournals = journals.length >= cloudJournals.length ? journals : cloudJournals;
-          const finalLetters = letters.length >= cloudLetters.length ? letters : cloudLetters;
-
-          // Update variabel lokal dengan data terbanyak
-          if (cloudMems.length > memories.length) {
-            memories = cloudMems.filter(isCleanMemory);
-            setStored('nadin_memories', memories);
-          }
-          if (cloudJournals.length > journals.length) {
-            journals = cloudJournals.filter(isCleanJournal);
-            setStored('nadin_journals', journals);
-          }
-          if (cloudLetters.length > letters.length) {
-            letters = cloudLetters.filter(isCleanLetter);
-            setStored('nadin_letters', letters);
-          }
-
           await cloudDb.ref('archive').set({
-            memories: finalMems,
-            journals: finalJournals,
-            letters: finalLetters,
+            memories: memories || [],
+            journals: journals || [],
+            letters: letters || [],
             chats: chats || [],
-            updatedAt: Date.now()
+            updatedAt: now
           });
 
           if (syncIcon) {
@@ -1760,15 +1744,32 @@
         await fetch('/api/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ memories, journals, letters, chats })
+          body: JSON.stringify({ memories, journals, letters, chats, updatedAt: now })
         });
       } catch (err) {}
 
-      // Re-render setelah sync selesai
+      // Re-render UI
       renderHomeHighlights();
       renderMemoriesGrid();
       renderJournals();
       renderLetters();
+      renderHomeLetterPeek();
+      if (typeof renderMilestoneTimeline === 'function') {
+        renderMilestoneTimeline();
+      }
+    }
+
+    function deleteMemoryCard(id) {
+      if (!confirm('Hapus foto kenangan ini? 🌸')) return;
+      memories = memories.filter(m => m.id !== id);
+      setStored('nadin_memories', memories);
+      setStored('nadin_last_update', Date.now());
+      renderMemoriesGrid();
+      renderHomeHighlights();
+      if (typeof renderMilestoneTimeline === 'function') {
+        renderMilestoneTimeline();
+      }
+      syncToServer();
     }
 
     async function deleteCurrentMemory() {
@@ -1776,8 +1777,12 @@
       if (!confirm('Hapus kenangan foto ini? 🌸')) return;
       memories = memories.filter(m => m.id !== currentDetailId);
       setStored('nadin_memories', memories);
+      setStored('nadin_last_update', Date.now());
       renderMemoriesGrid();
       renderHomeHighlights();
+      if (typeof renderMilestoneTimeline === 'function') {
+        renderMilestoneTimeline();
+      }
       closeModal('modalMemoryDetail');
       await syncToServer();
     }
@@ -1786,8 +1791,12 @@
       if (!confirm('Hapus semua foto dari scrapbook? 🌸\nScrapbook akan bersih dan siap diisi foto-fotomu.')) return;
       memories = [];
       setStored('nadin_memories', memories);
+      setStored('nadin_last_update', Date.now());
       renderMemoriesGrid();
       renderHomeHighlights();
+      if (typeof renderMilestoneTimeline === 'function') {
+        renderMilestoneTimeline();
+      }
       await syncToServer();
       alert('Semua foto kenangan berhasil dibersihkan! 🌸');
     }
@@ -1919,7 +1928,12 @@
           <p class="text-[11px] text-secondary truncate mt-0.5">${m.story || ''}</p>
           <div class="flex items-center justify-between text-[10px] text-secondary font-medium mt-2 pt-1 border-t border-stone-100">
             <span>📅 ${m.date || ''}</span>
-            <span class="text-primary font-bold">Kenangan ✨</span>
+            <div class="flex items-center gap-1">
+              <button onclick="event.stopPropagation(); deleteMemoryCard('${m.id}')" class="text-stone-300 hover:text-rose-500 p-1 rounded-full hover:bg-rose-50 transition-colors" title="Hapus Foto">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+              <span class="text-primary font-bold">Kenangan ✨</span>
+            </div>
           </div>
         </div>
       `).join('');
@@ -2085,7 +2099,7 @@
             </div>
             <div class="flex items-center gap-2">
               <span class="text-[11px] font-semibold text-secondary">${j.date}</span>
-              <button onclick="deleteDiary('${j.id}')" class="text-secondary/40 hover:text-red-500 p-0.5 rounded-full transition-colors" title="Hapus Catatan">
+              <button onclick="event.stopPropagation(); deleteDiary('${j.id}')" class="text-secondary/40 hover:text-red-500 p-1.5 rounded-full hover:bg-rose-50 transition-colors flex items-center justify-center" title="Hapus Catatan">
                 <span class="material-symbols-outlined text-sm">delete</span>
               </button>
             </div>
@@ -2105,6 +2119,7 @@
       if (!confirm('Hapus catatan buku harian ini? 🌸')) return;
       journals = journals.filter(j => j.id !== id);
       setStored('nadin_journals', journals);
+      setStored('nadin_last_update', Date.now());
       renderJournals();
       syncToServer();
     }
@@ -2269,7 +2284,9 @@
       if (!confirm('Hapus surat ini? 💌')) return;
       letters = letters.filter(l => l.id !== id);
       setStored('nadin_letters', letters);
+      setStored('nadin_last_update', Date.now());
       renderLetters();
+      renderHomeLetterPeek();
       syncToServer();
     }
 
@@ -2278,7 +2295,9 @@
       if (!confirm('Hapus surat ini? 💌')) return;
       letters = letters.filter(l => l.id !== currentOpenLetterId);
       setStored('nadin_letters', letters);
+      setStored('nadin_last_update', Date.now());
       renderLetters();
+      renderHomeLetterPeek();
       closeModal('modalOpenLetter');
       syncToServer();
     }
