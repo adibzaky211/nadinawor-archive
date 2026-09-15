@@ -2724,6 +2724,7 @@
       const startDate = new Date(2025, 2, 10); // 10 Maret 2025 (bulan 2 = Maret)
       const now = new Date();
       const diffTime = now.getTime() - startDate.getTime();
+      const diffDays = Math.max(1, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
       const counterEl = document.getElementById('daysCounter');
       if (counterEl) counterEl.textContent = diffDays;
 
