@@ -141,6 +141,20 @@
       animation: gentle-bounce 3.2s ease-in-out infinite;
     }
 
+    /* Safe Area (notch / dynamic island support) */
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+    .safe-top {
+      padding-top: max(12px, var(--safe-top));
+    }
+    .safe-bottom-nav {
+      bottom: max(12px, calc(var(--safe-bottom) + 8px));
+    }
+
     /* Screen Transition */
     .app-screen {
       display: none;
@@ -157,7 +171,7 @@
 <body class="min-h-screen flex flex-col bg-surface bg-paper-dots selection:bg-primary-light selection:text-primary">
 
   <!-- ==================== TOP APP BAR ==================== -->
-  <header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 px-4 py-3 transition-colors">
+  <header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 px-4 pb-3 safe-top transition-colors">
     <div class="max-w-md mx-auto flex items-center justify-between">
       
       <!-- Mascot / Brand -->
@@ -621,7 +635,7 @@
   </main>
 
   <!-- ==================== BOTTOM NAVIGATION DOCK ==================== -->
-  <nav class="fixed bottom-3 left-0 right-0 z-40 max-w-md mx-auto px-4 pointer-events-none">
+  <nav class="safe-bottom-nav fixed left-0 right-0 z-40 max-w-md mx-auto px-4 pointer-events-none">
     <div class="pointer-events-auto bg-white/92 dark:bg-stone-900/92 backdrop-blur-lg border border-pink-200/80 dark:border-stone-800 rounded-3xl p-1.5 shadow-clay flex items-center justify-around">
       
       <!-- Nav Item: Home -->
