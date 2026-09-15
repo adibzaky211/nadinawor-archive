@@ -14,55 +14,8 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 // Initial DB template
 const DEFAULT_DB = {
   memories: [],
-  journals: [
-    {
-      id: 'j-1',
-      title: 'Tentang Hari Tenang Bersamamu',
-      date: '10 September 2026',
-      mood: '🌸 Bahagia',
-      weather: '⛅ Berawan Sejuk',
-      content: 'Hari ini tidak ada hal luar biasa yang terjadi, tapi justru di sanalah letak manisnya. Menemani kamu memilih buku, mendengar ceritamu tentang hal-hal sepele, dan melihat matamu berbinar saat menemukan es krim rasa matcha favoritmu. Aku harap hari-hari sederhana seperti ini terus berulang tanpa henti.'
-    },
-    {
-      id: 'j-2',
-      title: 'Secangkir Matcha & Cerita Belum Usai',
-      date: '04 September 2026',
-      mood: '🍵 Tenang',
-      weather: '🌧️ Gerimis Syahdu',
-      content: 'Gerimis sore membasahi kaca kafe kecil di dekat stasiun. Kita duduk berhadapan hampir tanpa kata untuk beberapa menit, hanya menikmati alunan musik lo-fi dan suara rintik hujan. Ada kedamaian yang sulit kujelaskan setiap kali kamu tersenyum sambil menyeruput cangkirmu.'
-    },
-    {
-      id: 'j-3',
-      title: 'Hal-Hal Kecil yang Selalu Kusyukuri',
-      date: '28 Agustus 2026',
-      mood: '✨ Bersyukur',
-      weather: '☀️ Cerah Hangat',
-      content: 'Aku mencatat tiga hal kecil hari ini: caramu tertawa terbahak-bahak saat leluconku garing, pesan suara selamat pagi yang selalu datang tepat waktu, dan caramu selalu mengingatkan aku minum air putih. Terima kasih sudah ada di duniaku, Nadin.'
-    }
-  ],
-  letters: [
-    {
-      id: 'let-1',
-      title: 'Untuk Nadin: Saat Kamu Sedang Lelah',
-      date: '09 September 2026',
-      opened: false,
-      body: 'Dear Nadin sayang,\n\nKalau kamu membuka surat ini, mungkin hari ini terasa agak berat dan menguras energimu ya? Ingat ya, kamu sudah berjuang dengan luar biasa hebat. Tidak apa-apa untuk berhenti sejenak, tarik napas panjang, dan biarkan dunia berjalan tanpa beban di pundakmu.\n\nAku selalu bangga padamu, hari ini dan selamanya. Jangan lupa istirahat yang cukup yaa.'
-    },
-    {
-      id: 'let-2',
-      title: 'Tentang Semua Rencana Masa Depan',
-      date: '01 September 2026',
-      opened: true,
-      body: 'Nadin,\n\nAku sering membayangkan beberapa tahun ke depan: rumah kecil dengan jendela besar yang menghadap pohon rindang, rak buku penuh cerita, dan aroma kopi di pagi hari. Di setiap sudut bayangan itu, selalu ada kamu.\n\nTerima kasih sudah berjalan berdampingan denganku sampai hari ini.'
-    },
-    {
-      id: 'let-3',
-      title: 'Bisikan Rahasia untuk Hari Ulang Tahunmu',
-      date: '15 Agustus 2026',
-      opened: true,
-      body: 'Selamat bertambah usia, manusia paling manis di duniaku!\n\nDoaku sederhana: semoga semesta selalu memperlakukanmu dengan lembut, melapangkan langkahmu, dan menjaga senyuman manismu tetap utuh. Kamu adalah hadiah terindah yang pernah kutemui.'
-    }
-  ],
+  journals: [],
+  letters: [],
   chats: [
     { sender: 'maruko', text: 'Halo Nadin manis! Maruko siap menemani harimu 🌸', time: '08:30' },
     { sender: 'user', text: 'Pagi Maruko! Hari ini banyak kerjaan nih...', time: '08:32' },
