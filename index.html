@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id" class="light">
 <head>
   <meta charset="utf-8"/>
@@ -1366,39 +1366,9 @@
         </button>
       </div>
 
-      <!-- Timeline Items -->
-      <div class="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-pink-200 pl-6">
-        
-        <!-- Item 1: 10 Maret 2025 -->
-        <div class="relative space-y-1">
-          <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-primary border-2 border-white shadow-xs"></div>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-light text-primary">10 Maret 2025 💕</span>
-          <h4 class="font-epilogue font-bold text-xs text-on-surface">Hari Pertama Resmi Jadian</h4>
-          <p class="text-[11px] text-on-surface-variant leading-relaxed">
-            Hari ketika langkah kita mulai beriringan. Memulai lembar cerita baru yang penuh kehangatan, tawa, dan rasa syukur yang tak pernah habis.
-          </p>
-        </div>
-
-        <!-- Item 2: Ngelipir di Veteran -->
-        <div class="relative space-y-1">
-          <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-rose-400 border-2 border-white shadow-xs"></div>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600">Awal Pertemuan 🌸</span>
-          <h4 class="font-epilogue font-bold text-xs text-on-surface">Ngelipir di Veteran & Go Public</h4>
-          <p class="text-[11px] text-on-surface-variant leading-relaxed">
-            Momen awal ketemu, foto berdua pertama yang di-post buat go public. Senyum manis yang bikin kangen sampai hari ini.
-          </p>
-        </div>
-
-        <!-- Item 3: Hari Ini & Seterusnya -->
-        <div class="relative space-y-1">
-          <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-xs"></div>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Hari Ini & Selamanya ✨</span>
-          <h4 class="font-epilogue font-bold text-xs text-on-surface"><span id="timelineDaysCount">--</span> Hari Bersama</h4>
-          <p class="text-[11px] text-on-surface-variant leading-relaxed italic">
-            “Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.”
-          </p>
-        </div>
-
+      <!-- Timeline Items (dinamis dari memories) -->
+      <div id="milestoneTimelineList" class="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-pink-200 pl-6">
+        <!-- Diisi otomatis oleh renderMilestoneTimeline() -->
       </div>
 
       <button onclick="closeModal('modalTimeline')" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-clay-button hover:bg-primary-hover">
@@ -2748,8 +2718,79 @@
 
     function openTimelineModal() {
       updateRelationshipStats();
+      renderMilestoneTimeline();
       document.getElementById('modalTimeline').classList.remove('hidden');
       document.getElementById('modalTimeline').classList.add('flex');
+    }
+
+    function renderMilestoneTimeline() {
+      const container = document.getElementById('milestoneTimelineList');
+      if (!container) return;
+
+      const dotColors = ['bg-rose-400','bg-violet-400','bg-amber-400','bg-sky-400','bg-teal-400','bg-orange-400','bg-indigo-400'];
+      const badgeColors = ['bg-rose-50 text-rose-600','bg-violet-50 text-violet-600','bg-amber-50 text-amber-600','bg-sky-50 text-sky-600','bg-teal-50 text-teal-600','bg-orange-50 text-orange-600','bg-indigo-50 text-indigo-600'];
+      const emojis = ['🌸','📸','🌟','💫','🎉','🍃','💕','✨'];
+
+      function parseIndonesianDate(str) {
+        if (!str) return new Date(0);
+        const months = {
+          'januari':0,'februari':1,'maret':2,'april':3,'mei':4,'juni':5,
+          'juli':6,'agustus':7,'september':8,'oktober':9,'november':10,'desember':11
+        };
+        const parts = str.trim().toLowerCase().split(/\s+/);
+        if (parts.length >= 3) {
+          const d = parseInt(parts[0]) || 1;
+          const m = months[parts[1]] !== undefined ? months[parts[1]] : 0;
+          const y = parseInt(parts[2]) || 2025;
+          return new Date(y, m, d);
+        }
+        return new Date(str);
+      }
+
+      const sortedMems = [...(memories || [])].sort((a, b) =>
+        parseIndonesianDate(a.date) - parseIndonesianDate(b.date)
+      );
+
+      const startDate = new Date(2025, 2, 10);
+      const now = new Date();
+      const daysCount = Math.max(1, Math.floor((now - startDate) / (1000 * 60 * 60 * 24)));
+
+      const pinStart = `
+        <div class="relative space-y-1">
+          <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-primary border-2 border-white shadow-xs"></div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-light text-primary">10 Maret 2025 💕</span>
+          <h4 class="font-epilogue font-bold text-xs text-on-surface">Hari Pertama Resmi Jadian</h4>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed">Hari ketika langkah kita mulai beriringan. Memulai lembar cerita baru yang penuh kehangatan, tawa, dan rasa syukur.</p>
+        </div>`;
+
+      const memItems = sortedMems.length === 0
+        ? `<div class="relative space-y-1">
+            <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-pink-300 border-2 border-white shadow-xs"></div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-50 text-pink-500">Belum ada kenangan 📷</span>
+            <p class="text-[11px] text-on-surface-variant leading-relaxed">Yuk mulai tambahkan foto kenangan di menu Memories — nanti otomatis muncul di sini!</p>
+          </div>`
+        : sortedMems.map((m, i) => {
+            const ci = i % dotColors.length;
+            const emoji = emojis[i % emojis.length];
+            const story = m.story ? (m.story.length > 100 ? m.story.slice(0, 100) + '…' : m.story) : '';
+            return `<div class="relative space-y-1">
+              <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full ${dotColors[ci]} border-2 border-white shadow-xs"></div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeColors[ci]}">${m.date || 'Tanpa tanggal'} ${emoji}</span>
+              <h4 class="font-epilogue font-bold text-xs text-on-surface">${m.title}</h4>
+              ${story ? `<p class="text-[11px] text-on-surface-variant leading-relaxed">${story}</p>` : ''}
+            </div>`;
+          }).join('');
+
+      const pinEnd = `
+        <div class="relative space-y-1">
+          <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-xs"></div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Hari Ini & Selamanya ✨</span>
+          <h4 class="font-epilogue font-bold text-xs text-on-surface">${daysCount} Hari Bersama</h4>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed italic">"Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan."</p>
+        </div>`;
+
+      container.innerHTML = pinStart + memItems + pinEnd;
+    }
     }
 
     // ==================== PURIKURA 4-CUT CAMERA & STUDIO ====================
