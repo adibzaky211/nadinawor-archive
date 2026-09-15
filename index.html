@@ -357,21 +357,9 @@
         </div>
       </div>
 
-      <!-- Companion Note / Letter Peek -->
-      <div class="rounded-2xl bg-white/95 border border-outline-variant/30 p-4 shadow-clay-card flex items-center gap-3.5">
-        <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-pink-100 border border-pink-200">
-          <img src="images/maruko_companion.jpg" alt="Companion" class="w-full h-full object-cover"/>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between">
-            <h4 class="text-xs font-bold text-on-surface">Surat Terakhir untukmu</h4>
-            <span class="text-[10px] text-secondary font-medium">Baru saja</span>
-          </div>
-          <p class="text-[11px] text-on-surface-variant truncate mt-0.5">"Terima kasih sudah bertahan dengan sangat baik minggu ini..."</p>
-        </div>
-        <button onclick="switchTab('pesan')" class="px-3 py-1.5 bg-primary-light text-primary text-xs font-bold rounded-xl hover:bg-primary hover:text-white transition-all">
-          Baca
-        </button>
+      <!-- Companion Note / Letter Peek (Dynamic) -->
+      <div id="homeLetterPeekContainer">
+        <!-- Rendered dynamically by renderHomeLetterPeek() -->
       </div>
 
     </section>
@@ -2033,6 +2021,7 @@
 
       document.getElementById('lettersCounter').textContent = letters.length;
       document.getElementById('letterCountBadge').textContent = letters.length;
+      renderHomeLetterPeek();
 
       if (!letters || letters.length === 0) {
         container.innerHTML = `
@@ -2070,6 +2059,52 @@
           </div>
         </div>
       `).join('');
+    }
+
+    function renderHomeLetterPeek() {
+      const container = document.getElementById('homeLetterPeekContainer');
+      if (!container) return;
+
+      if (!letters || letters.length === 0) {
+        container.innerHTML = `
+          <div class="rounded-2xl bg-white/95 border border-outline-variant/30 p-4 shadow-clay-card flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-pink-50 border border-pink-100 flex items-center justify-center text-2xl shadow-xs">
+              💌
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-on-surface">Belum Ada Surat Tersimpan</h4>
+                <span class="text-[10px] text-secondary font-medium">Kosong</span>
+              </div>
+              <p class="text-[11px] text-secondary truncate mt-0.5">Tulis surat rahasia spesial untuk Nadin 🌸</p>
+            </div>
+            <button onclick="switchTab('pesan'); openNewLetterModal();" class="px-3 py-1.5 bg-primary-light text-primary text-xs font-bold rounded-xl hover:bg-primary hover:text-white transition-all flex-shrink-0">
+              + Tulis
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const latest = letters[0];
+      const previewText = latest.body ? latest.body.replace(/\n/g, ' ') : '';
+      container.innerHTML = `
+        <div class="rounded-2xl bg-white/95 border border-outline-variant/30 p-4 shadow-clay-card flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-pink-100 border border-pink-200">
+            <img src="images/maruko_companion.jpg" alt="Companion" class="w-full h-full object-cover"/>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-on-surface truncate pr-2">${latest.title}</h4>
+              <span class="text-[10px] text-secondary font-medium flex-shrink-0">${latest.date || 'Terbaru'}</span>
+            </div>
+            <p class="text-[11px] text-on-surface-variant truncate mt-0.5">"${previewText}"</p>
+          </div>
+          <button onclick="openLetterDetail('${latest.id}')" class="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-xl shadow-xs hover:bg-primary-hover active:scale-95 transition-all flex-shrink-0">
+            Baca
+          </button>
+        </div>
+      `;
     }
 
     function deleteLetter(id) {
