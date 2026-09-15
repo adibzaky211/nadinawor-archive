@@ -1053,16 +1053,17 @@
         <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black shadow-inner border-2 border-pink-200">
           <video id="photoboothVideo" autoplay playsinline muted class="w-full h-full object-cover transition-transform duration-200" style="transform: scaleX(-1);"></video>
           
-          <!-- Countdown Overlay -->
-          <div id="photoboothCountdown" class="absolute inset-0 flex items-center justify-center text-7xl font-epilogue font-extrabold text-white drop-shadow-2xl hidden pointer-events-none animate-pulse">
-            3
+          <!-- Countdown Overlay (Click to cancel failsafe) -->
+          <div id="photoboothCountdown" onclick="cancelPhotoboothCountdown()" class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-2xs text-7xl font-epilogue font-extrabold text-white drop-shadow-2xl hidden cursor-pointer z-30 animate-pulse" title="Klik untuk membatalkan">
+            <span id="photoboothCountdownNum">3</span>
+            <span class="text-[11px] font-sans font-bold text-white/90 mt-2 bg-black/50 px-3 py-1 rounded-full border border-white/20">Batal ✕</span>
           </div>
 
           <!-- Flash Pulse Overlay -->
-          <div id="photoboothFlash" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-150"></div>
+          <div id="photoboothFlash" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-150 z-40"></div>
 
           <!-- Top Status Badge -->
-          <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+          <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none z-20">
             <span id="photoboothSlotBadge" class="bg-black/60 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-full border border-white/20">
               Pose 1 dari 4 🌸
             </span>
@@ -1071,13 +1072,26 @@
                 🪞 Mirror: ON
               </button>
               <span id="photoboothCameraIndicator" class="bg-rose-500/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> REC
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> LIVE
               </span>
             </div>
           </div>
 
           <!-- Guide Crosshair / Overlay -->
           <div class="absolute inset-0 border-2 border-white/20 rounded-2xl pointer-events-none m-3"></div>
+        </div>
+
+        <!-- Live Camera Filter Selector Row -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-secondary flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs text-primary">auto_fix_high</span> Filter Foto:
+            </span>
+            <span id="currentCameraFilterName" class="text-[10px] font-bold text-primary">Normal ✨</span>
+          </div>
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-1 text-xs" id="cameraFilterChipsContainer">
+            <!-- Populated by initPhotoboothFiltersUI() -->
+          </div>
         </div>
 
         <!-- Hidden canvas for capturing frames -->
@@ -1143,65 +1157,163 @@
       </div>
 
       <!-- VIEW 2: STRIP DESIGNER & DOWNLOAD -->
-      <div id="photoboothStripView" class="space-y-3.5 hidden">
+      <div id="photoboothStripView" class="space-y-3 hidden">
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-pink-100 pb-2">
           <button onclick="showPhotoboothCameraView()" class="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">
             <span class="material-symbols-outlined text-sm">arrow_back</span> Kamera
           </button>
-          <h3 class="font-epilogue font-bold text-sm text-on-surface">Desain Photo Strip 🎞️</h3>
-          <button onclick="closePhotoboothModal()" class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+          <h3 class="font-epilogue font-bold text-sm text-on-surface flex items-center gap-1">
+            <span>Desain Photo Strip</span>
+            <span class="text-xs">🎞️</span>
+          </h3>
+          <button onclick="closePhotoboothModal()" class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary">
             <span class="material-symbols-outlined text-xs">close</span>
           </button>
         </div>
 
-        <!-- Frame Color Picker -->
-        <div class="flex items-center justify-between text-xs bg-white/70 p-2.5 rounded-2xl border border-pink-100">
-          <span class="font-bold text-secondary">Warna Frame:</span>
-          <div class="flex gap-2">
-            <button onclick="setPhotoboothFrameColor('#ffd9e2')" class="w-6 h-6 rounded-full bg-[#ffd9e2] border-2 border-white shadow-xs" title="Sakura Pink"></button>
-            <button onclick="setPhotoboothFrameColor('#fff2b2')" class="w-6 h-6 rounded-full bg-[#fff2b2] border-2 border-white shadow-xs" title="Butter Cream"></button>
-            <button onclick="setPhotoboothFrameColor('#e5d4ed')" class="w-6 h-6 rounded-full bg-[#e5d4ed] border-2 border-white shadow-xs" title="Lilac Dream"></button>
-            <button onclick="setPhotoboothFrameColor('#d8f3dc')" class="w-6 h-6 rounded-full bg-[#d8f3dc] border-2 border-white shadow-xs" title="Matcha Mint"></button>
-            <button onclick="setPhotoboothFrameColor('#22191b')" class="w-6 h-6 rounded-full bg-[#22191b] border-2 border-white shadow-xs" title="Midnight Noir"></button>
-            <button onclick="setPhotoboothFrameColor('#ffffff')" class="w-6 h-6 rounded-full bg-[#ffffff] border-2 border-stone-300 shadow-xs" title="Pure White"></button>
+        <!-- Sub Tabs: Tema Frame vs Filter vs Elemen & Stiker -->
+        <div class="flex p-1 bg-surface-container rounded-2xl border border-outline-variant/30 text-xs">
+          <button id="stripTabBtn-theme" onclick="switchStripTab('theme')" class="flex-1 py-1.5 font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-sm">palette</span> Tema Frame
+          </button>
+          <button id="stripTabBtn-filter" onclick="switchStripTab('filter')" class="flex-1 py-1.5 font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-sm">auto_fix_high</span> Filter Foto
+          </button>
+          <button id="stripTabBtn-elements" onclick="switchStripTab('elements')" class="flex-1 py-1.5 font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-sm">interests</span> Elemen & Stiker
+          </button>
+        </div>
+
+        <!-- PANEL 1: TEMA FRAME (12 Pilihan Populer) -->
+        <div id="stripPanel-theme" class="space-y-2.5 bg-white/80 p-3 rounded-2xl border border-pink-100 text-xs">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-secondary">Pilih Tema Frame Photobooth:</span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[10px] text-secondary font-medium">Custom:</span>
+              <input type="color" id="customFrameColorInput" onchange="setCustomPhotoboothColor(this.value)" class="w-6 h-6 rounded-full border border-stone-300 cursor-pointer p-0" title="Pilih Warna Bebas"/>
+            </div>
+          </div>
+
+          <!-- 12 Themes Grid -->
+          <div class="grid grid-cols-4 gap-1.5 max-h-36 overflow-y-auto pr-1" id="themeButtonsGrid">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Border Style -->
+          <div class="flex items-center justify-between pt-1 border-t border-pink-100 text-[11px]">
+            <span class="font-semibold text-secondary">Gaya Bingkai:</span>
+            <div class="flex gap-1">
+              <button onclick="setStripBorderStyle('solid')" id="btnBorderSolid" class="px-2.5 py-1 rounded-lg bg-primary text-white font-bold text-[10px] shadow-xs">Modern</button>
+              <button onclick="setStripBorderStyle('film')" id="btnBorderFilm" class="px-2.5 py-1 rounded-lg bg-surface-container text-secondary font-bold text-[10px] hover:bg-pink-100">Film 🎞️</button>
+              <button onclick="setStripBorderStyle('polaroid')" id="btnBorderPolaroid" class="px-2.5 py-1 rounded-lg bg-surface-container text-secondary font-bold text-[10px] hover:bg-pink-100">Polaroid</button>
+            </div>
           </div>
         </div>
 
-        <!-- Frame Custom Title -->
-        <div class="flex items-center gap-2">
-          <input type="text" id="stripHeaderInput" value="ADIB & NADIN · 10.03.2025" oninput="updateStripHeaderText()" placeholder="Judul Strip..." class="flex-1 px-3 py-1.5 bg-white rounded-xl border border-pink-200 text-xs font-bold text-on-surface focus:outline-none focus:border-primary"/>
+        <!-- PANEL 2: FILTER FOTO -->
+        <div id="stripPanel-filter" class="space-y-2 bg-white/80 p-3 rounded-2xl border border-pink-100 text-xs hidden">
+          <span class="font-bold text-secondary">Pilih Filter Efek Foto:</span>
+          <div class="grid grid-cols-4 gap-1.5" id="stripFilterButtonsGrid">
+            <!-- Rendered by JS -->
+          </div>
         </div>
 
-        <!-- The Photo Strip (Render Target) -->
+        <!-- PANEL 3: ELEMEN & STIKER & TEKS -->
+        <div id="stripPanel-elements" class="space-y-2.5 bg-white/80 p-3 rounded-2xl border border-pink-100 text-xs hidden">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="font-bold text-secondary">Tempel Stiker Lucu (Klik untuk pasang):</span>
+              <button onclick="clearAllStickers()" class="text-[10px] font-bold text-red-500 hover:underline">Hapus Semua</button>
+            </div>
+            <!-- Sticker Palette -->
+            <div class="flex flex-wrap gap-1.5 p-2 bg-surface-container rounded-xl text-lg select-none" id="stickerPaletteContainer">
+              <!-- Rendered by JS -->
+            </div>
+            <!-- Quick Combos -->
+            <div class="flex gap-1.5 mt-2">
+              <button onclick="addStickerCombo('hearts')" class="px-2.5 py-1 rounded-lg bg-pink-100 text-primary font-bold text-[10px] hover:bg-pink-200">+ Tabur Hati 💕</button>
+              <button onclick="addStickerCombo('stars')" class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold text-[10px] hover:bg-amber-200">+ Bintang ✨</button>
+              <button onclick="addStickerCombo('kawaii')" class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-800 font-bold text-[10px] hover:bg-purple-200">+ Ribbon 🎀</button>
+            </div>
+          </div>
+
+          <!-- Edit Teks Custom -->
+          <div class="pt-2 border-t border-pink-100 space-y-2 text-xs">
+            <div>
+              <label class="block font-bold text-secondary mb-0.5 text-[11px]">Judul Strip (Atas):</label>
+              <input type="text" id="stripHeaderInput" value="ADIB & NADIN · 10.03.2025" oninput="updateStripHeaderText()" placeholder="Judul Strip..." class="w-full px-2.5 py-1.5 bg-white rounded-xl border border-pink-200 text-xs font-bold text-on-surface focus:outline-none focus:border-primary"/>
+            </div>
+            <div>
+              <label class="block font-bold text-secondary mb-0.5 text-[11px]">Tanggal & Cap (Bawah):</label>
+              <input type="text" id="stripWatermarkInput" value="10 Maret 2025 💕 まる子" oninput="updateStripWatermarkText()" class="w-full px-2.5 py-1.5 bg-white rounded-xl border border-pink-200 text-xs text-on-surface focus:outline-none focus:border-primary"/>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-0.5">
+                <label class="font-bold text-secondary text-[11px]">Kutipan / Pesan Cinta:</label>
+                <button onclick="pickRandomQuote()" class="text-[10px] font-bold text-primary hover:underline">🎲 Ganti Kata</button>
+              </div>
+              <textarea id="stripQuoteInput" oninput="updateStripQuoteText()" rows="2" class="w-full px-2.5 py-1.5 bg-white rounded-xl border border-pink-200 text-xs font-handwriting text-base text-on-surface focus:outline-none focus:border-primary">"Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan."</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Photo Strip (Render Target with interactive stickers & perforations) -->
         <div class="py-2 flex justify-center">
-          <div id="photoboothStrip" class="w-52 p-3.5 rounded-2xl shadow-polaroid space-y-2.5 text-center transition-colors border border-white/60" style="background-color: #ffd9e2;">
+          <div id="photoboothStrip" class="w-56 p-3.5 rounded-2xl shadow-polaroid space-y-2.5 text-center transition-all relative overflow-hidden select-none border border-white/60" style="background-color: #ffd9e2;">
             
+            <!-- Left & Right Film Perforation Decors -->
+            <div id="stripFilmLeft" class="absolute left-1 top-3 bottom-3 w-2.5 flex flex-col justify-between hidden pointer-events-none z-10 opacity-70">
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+            </div>
+            <div id="stripFilmRight" class="absolute right-1 top-3 bottom-3 w-2.5 flex flex-col justify-between hidden pointer-events-none z-10 opacity-70">
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+              <span class="w-1.5 h-2.5 bg-black/40 rounded-xs"></span>
+            </div>
+
+            <!-- Draggable Interactive Stickers Layer -->
+            <div id="stripStickersLayer" class="absolute inset-0 z-20 pointer-events-none">
+              <!-- Populated by JS -->
+            </div>
+
             <!-- Strip Header -->
-            <div id="stripHeaderDisplay" class="text-[10px] font-epilogue font-extrabold text-primary tracking-widest uppercase">
+            <div id="stripHeaderDisplay" class="text-[10px] font-epilogue font-extrabold text-primary tracking-widest uppercase relative z-10 transition-colors">
               ADIB & NADIN · 10.03.2025
             </div>
             
             <!-- 4 Photos Display -->
-            <div class="space-y-2">
-              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80">
-                <img id="stripImg0" src="images/photobooth_friends.jpg" class="w-full h-full object-cover"/>
+            <div class="space-y-2 relative z-10" id="stripPhotosContainer">
+              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80 relative">
+                <img id="stripImg0" src="images/photobooth_friends.jpg" class="w-full h-full object-cover transition-all"/>
               </div>
-              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80">
-                <img id="stripImg1" src="images/kyoto_coffee.jpg" class="w-full h-full object-cover"/>
+              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80 relative">
+                <img id="stripImg1" src="images/kyoto_coffee.jpg" class="w-full h-full object-cover transition-all"/>
               </div>
-              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80">
-                <img id="stripImg2" src="images/rain_senopati.jpg" class="w-full h-full object-cover"/>
+              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80 relative">
+                <img id="stripImg2" src="images/rain_senopati.jpg" class="w-full h-full object-cover transition-all"/>
               </div>
-              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80">
-                <img id="stripImg3" src="images/memory_cocoa.jpg" class="w-full h-full object-cover"/>
+              <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xs border border-white/80 relative">
+                <img id="stripImg3" src="images/memory_cocoa.jpg" class="w-full h-full object-cover transition-all"/>
               </div>
             </div>
 
             <!-- Strip Footer -->
-            <div class="pt-1 space-y-1">
-              <p class="text-[9px] font-bold text-primary tracking-wide">10 Maret 2025 💕 まる子</p>
-              <p id="stripQuoteDisplay" class="text-[10px] font-handwriting font-bold text-on-surface leading-tight px-1">
+            <div class="pt-1 space-y-1 relative z-10">
+              <p id="stripWatermarkDisplay" class="text-[9px] font-bold text-primary tracking-wide transition-colors">10 Maret 2025 💕 まる子</p>
+              <p id="stripQuoteDisplay" class="text-[10px] font-handwriting font-bold text-on-surface leading-tight px-1 transition-colors">
                 "Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan."
               </p>
             </div>
@@ -2612,8 +2724,6 @@
       const startDate = new Date(2025, 2, 10); // 10 Maret 2025 (bulan 2 = Maret)
       const now = new Date();
       const diffTime = now.getTime() - startDate.getTime();
-      const diffDays = Math.max(1, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
-
       const counterEl = document.getElementById('daysCounter');
       if (counterEl) counterEl.textContent = diffDays;
 
@@ -2634,16 +2744,104 @@
     let photoboothActiveSlot = 0;
     let photoboothCuts = [null, null, null, null];
     let photoboothFrameColor = '#ffd9e2';
+    let photoboothTheme = 'sakura';
+    let photoboothFilter = 'none';
+    let photoboothBorderStyle = 'solid';
+    let photoboothStickers = [];
     let isCountingDown = false;
     let isAutoSeriesActive = false;
+    let countdownTimerId = null;
+
+    const PHOTOBOOTH_THEMES = [
+      { id: 'sakura', name: 'Sakura Blush 🌸', color: '#ffd9e2', textColor: '#ad2b57', accentColor: '#ad2b57', quoteColor: '#22191b', cardBg: '#ffffff', border: '#ffb3c6', dark: false },
+      { id: 'white', name: 'Studio Film 🤍', color: '#ffffff', textColor: '#18181b', accentColor: '#71717a', quoteColor: '#27272a', cardBg: '#f4f4f5', border: '#e4e4e7', dark: false },
+      { id: 'black', name: 'Midnight Noir 🖤', color: '#171415', textColor: '#ffd9e2', accentColor: '#ff85a1', quoteColor: '#faeeed', cardBg: '#272224', border: '#3f3739', dark: true },
+      { id: 'butter', name: 'Butter Cream 🧁', color: '#fff6c2', textColor: '#8c6d00', accentColor: '#a68200', quoteColor: '#4a3b00', cardBg: '#ffffff', border: '#ffe885', dark: false },
+      { id: 'lilac', name: 'Lilac Dream 💜', color: '#e8dcff', textColor: '#6b3ba6', accentColor: '#8a4ec9', quoteColor: '#351c54', cardBg: '#ffffff', border: '#d4beff', dark: false },
+      { id: 'matcha', name: 'Matcha Forest 🍵', color: '#d8f3dc', textColor: '#2d6a4f', accentColor: '#40916c', quoteColor: '#1b4332', cardBg: '#ffffff', border: '#b7e4c7', dark: false },
+      { id: 'peach', name: 'Peachy Coral 🍑', color: '#ffe5d4', textColor: '#c85a32', accentColor: '#e07a5f', quoteColor: '#6e2f18', cardBg: '#ffffff', border: '#ffd1b3', dark: false },
+      { id: 'sky', name: 'Summer Sky 🌊', color: '#d6ecff', textColor: '#1e6091', accentColor: '#184e77', quoteColor: '#0f345c', cardBg: '#ffffff', border: '#b3d9ff', dark: false },
+      { id: 'sepia', name: 'Vintage Kraft 🎞️', color: '#f2e8cf', textColor: '#6a4c28', accentColor: '#bc6c25', quoteColor: '#3d2612', cardBg: '#fbf7ed', border: '#e3d5b0', dark: false },
+      { id: 'valentine', name: 'Sweet Romance 🎀', color: '#ffb3c6', textColor: '#990033', accentColor: '#c9184a', quoteColor: '#590d22', cardBg: '#ffffff', border: '#ff8fa3', dark: false },
+      { id: 'cyber', name: 'Cyber Y2K 🌌', color: '#1a1329', textColor: '#d4b3ff', accentColor: '#c77dff', quoteColor: '#f2e9ff', cardBg: '#2a1f42', border: '#4f3c78', dark: true },
+      { id: 'coffee', name: 'Mocha Cafe ☕', color: '#e8ded4', textColor: '#583e2e', accentColor: '#7f5539', quoteColor: '#382314', cardBg: '#f7f4ef', border: '#d5c4b4', dark: false }
+    ];
+
+    const PHOTOBOOTH_FILTERS = [
+      { id: 'none', name: 'Normal ✨', css: 'none' },
+      { id: 'mono', name: 'B&W Film 🖤', css: 'grayscale(1) contrast(1.18)' },
+      { id: 'vintage', name: 'Vintage 🎞️', css: 'sepia(0.38) contrast(1.08) brightness(1.05) saturate(1.15)' },
+      { id: 'rose', name: 'Soft Rosé 🌸', css: 'contrast(1.05) brightness(1.08) saturate(1.22) hue-rotate(-8deg)' },
+      { id: 'warm', name: 'Warm Glow ☀️', css: 'sepia(0.22) saturate(1.3) brightness(1.04) contrast(1.05)' },
+      { id: 'chrome', name: 'Cool Fuji ❄️', css: 'contrast(1.12) saturate(0.85) hue-rotate(10deg)' },
+      { id: 'y2k', name: 'Y2K Flash 🕯️', css: 'contrast(1.28) brightness(1.12) saturate(1.1)' },
+      { id: 'fade', name: 'Moody Fade 🫐', css: 'contrast(0.92) brightness(1.08) saturate(0.82)' }
+    ];
+
+    const STICKER_PALETTE = ['❤️', '💖', '🌸', '🎀', '✨', '🐾', '👑', '🍓', '🧸', '⭐', '🍒', '💌', '🐰', '💫', '🤍', '🍀', '🍰', '🍡', '🧁', '🌷'];
+
+    const ROMANTIC_QUOTES = [
+      "Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.",
+      "Di antara miliaran manusia di bumi, terima kasih sudah memilih untuk singgah dan tinggal di sampingku.",
+      "Setiap detik yang kuhabiskan bersamamu selalu terasa seperti rumah yang hangat dan menenangkan.",
+      "Bukan tentang ke mana kita pergi, tapi tentang siapa yang selalu ada di sampingku menggenggam jemari.",
+      "Semoga hari-hari sederhana penuh tawa bersamamu terus berulang tanpa pernah henti."
+    ];
+
+    function getFilterCss(filterId) {
+      const f = PHOTOBOOTH_FILTERS.find(item => item.id === filterId);
+      return f ? f.css : 'none';
+    }
+
+    // Synthesize Audio Chimes Safely with Web Audio API
+    function playCozyChime(freq = 880, duration = 0.12) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playShutterSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1100, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(250, ctx.currentTime + 0.09);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.09);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.09);
+      } catch (e) {}
+    }
 
     function openPhotoboothModal() {
       document.getElementById('modalPhotobooth').classList.remove('hidden');
       document.getElementById('modalPhotobooth').classList.add('flex');
+      initPhotoboothUI();
       showPhotoboothCameraView();
     }
 
     function closePhotoboothModal() {
+      cancelPhotoboothCountdown();
       stopPhotoboothCamera();
       closeModal('modalPhotobooth');
     }
@@ -2666,6 +2864,7 @@
         videoEl.srcObject = photoboothStream;
         await videoEl.play();
         updatePhotoboothMirrorUI();
+        applyPhotoboothFilterToVideo();
 
         const indicator = document.getElementById('photoboothCameraIndicator');
         if (indicator) {
@@ -2693,7 +2892,6 @@
 
     function togglePhotoboothCameraFacing() {
       photoboothFacing = (photoboothFacing === 'user') ? 'environment' : 'user';
-      // Default: mirror aktif di kamera depan, mati di kamera belakang
       photoboothMirror = (photoboothFacing === 'user');
       startPhotoboothCamera();
       updatePhotoboothMirrorUI();
@@ -2730,6 +2928,13 @@
       }
     }
 
+    function applyPhotoboothFilterToVideo() {
+      const videoEl = document.getElementById('photoboothVideo');
+      if (videoEl) {
+        videoEl.style.filter = getFilterCss(photoboothFilter);
+      }
+    }
+
     function selectPhotoboothSlot(idx) {
       photoboothActiveSlot = idx;
       updatePhotoboothSlotUI();
@@ -2748,7 +2953,7 @@
         if (photoboothCuts[i]) {
           slotEl.className = `aspect-[4/3] rounded-xl border-2 ${i === photoboothActiveSlot ? 'border-primary ring-2 ring-primary/40' : 'border-pink-300'} bg-white flex items-center justify-center cursor-pointer overflow-hidden relative shadow-xs`;
           slotEl.innerHTML = `
-            <img src="${photoboothCuts[i]}" class="w-full h-full object-cover"/>
+            <img src="${photoboothCuts[i]}" class="w-full h-full object-cover" style="filter: ${getFilterCss(photoboothFilter)};"/>
             <span class="absolute top-1 left-1 bg-black/60 text-white text-[9px] font-bold px-1 rounded">#${i+1}</span>
           `;
         } else {
@@ -2761,42 +2966,63 @@
       }
     }
 
+    // Cancel Countdown Failsafe
+    function cancelPhotoboothCountdown() {
+      if (countdownTimerId) {
+        clearInterval(countdownTimerId);
+        countdownTimerId = null;
+      }
+      isCountingDown = false;
+      const countdownEl = document.getElementById('photoboothCountdown');
+      if (countdownEl) countdownEl.classList.add('hidden');
+      const shutterBtn = document.getElementById('btnShutter');
+      if (shutterBtn) shutterBtn.disabled = false;
+    }
+
     function snapPhotoboothCountdown(onDone) {
       if (isCountingDown) return;
       isCountingDown = true;
 
       const countdownEl = document.getElementById('photoboothCountdown');
+      const countdownNum = document.getElementById('photoboothCountdownNum');
       const shutterBtn = document.getElementById('btnShutter');
       if (shutterBtn) shutterBtn.disabled = true;
 
       let count = 3;
-      if (countdownEl) {
-        countdownEl.textContent = count;
-        countdownEl.classList.remove('hidden');
-      }
-      playCozyChime();
+      if (countdownNum) countdownNum.textContent = count;
+      if (countdownEl) countdownEl.classList.remove('hidden');
 
-      const timer = setInterval(() => {
-        count--;
-        if (count > 0) {
-          if (countdownEl) countdownEl.textContent = count;
-          playCozyChime();
-        } else {
-          clearInterval(timer);
-          if (countdownEl) countdownEl.classList.add('hidden');
-          
-          // Flash effect
-          const flash = document.getElementById('photoboothFlash');
-          if (flash) {
-            flash.style.opacity = '1';
-            setTimeout(() => { flash.style.opacity = '0'; }, 150);
+      playCozyChime(750, 0.15);
+
+      if (countdownTimerId) clearInterval(countdownTimerId);
+      countdownTimerId = setInterval(() => {
+        try {
+          count--;
+          if (count > 0) {
+            if (countdownNum) countdownNum.textContent = count;
+            playCozyChime(750 + (3 - count) * 150, 0.15);
+          } else {
+            clearInterval(countdownTimerId);
+            countdownTimerId = null;
+            if (countdownEl) countdownEl.classList.add('hidden');
+            
+            // Flash effect
+            const flash = document.getElementById('photoboothFlash');
+            if (flash) {
+              flash.style.opacity = '1';
+              setTimeout(() => { flash.style.opacity = '0'; }, 150);
+            }
+            playShutterSound();
+
+            // Capture image
+            capturePhotoboothFrame();
+            isCountingDown = false;
+            if (shutterBtn) shutterBtn.disabled = false;
+            if (onDone) onDone();
           }
-
-          // Capture image
-          capturePhotoboothFrame();
-          isCountingDown = false;
-          if (shutterBtn) shutterBtn.disabled = false;
-          if (onDone) onDone();
+        } catch (err) {
+          console.error('Countdown execution error:', err);
+          cancelPhotoboothCountdown();
         }
       }, 900);
     }
@@ -2835,11 +3061,14 @@
       }
       ctx.drawImage(video, sX, sY, sW, sH, 0, 0, canvas.width, canvas.height);
 
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.90);
       photoboothCuts[photoboothActiveSlot] = dataUrl;
 
       const stripImg = document.getElementById(`stripImg${photoboothActiveSlot}`);
-      if (stripImg) stripImg.src = dataUrl;
+      if (stripImg) {
+        stripImg.src = dataUrl;
+        stripImg.style.filter = getFilterCss(photoboothFilter);
+      }
 
       // Advance to next slot
       const nextEmpty = photoboothCuts.findIndex((c, i) => !c && i > photoboothActiveSlot);
@@ -2905,13 +3134,15 @@
           }
 
           ctx.drawImage(img, sX, sY, sW, sH, 0, 0, canvas.width, canvas.height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.90);
           photoboothCuts[photoboothActiveSlot] = dataUrl;
 
           const stripImg = document.getElementById(`stripImg${photoboothActiveSlot}`);
-          if (stripImg) stripImg.src = dataUrl;
+          if (stripImg) {
+            stripImg.src = dataUrl;
+            stripImg.style.filter = getFilterCss(photoboothFilter);
+          }
 
-          // Next empty slot
           const nextEmpty = photoboothCuts.findIndex((c, i) => !c && i > photoboothActiveSlot);
           if (nextEmpty !== -1) {
             photoboothActiveSlot = nextEmpty;
@@ -2929,6 +3160,10 @@
       photoboothCuts = [null, null, null, null];
       photoboothActiveSlot = 0;
       updatePhotoboothSlotUI();
+      for (let i = 0; i < 4; i++) {
+        const stripImg = document.getElementById(`stripImg${i}`);
+        if (stripImg) stripImg.src = '';
+      }
     }
 
     function showPhotoboothCameraView() {
@@ -2939,6 +3174,7 @@
     }
 
     function showPhotoboothStripView() {
+      cancelPhotoboothCountdown();
       stopPhotoboothCamera();
       document.getElementById('photoboothCameraView').classList.add('hidden');
       document.getElementById('photoboothStripView').classList.remove('hidden');
@@ -2954,16 +3190,286 @@
         const stripImg = document.getElementById(`stripImg${i}`);
         if (stripImg) {
           stripImg.src = photoboothCuts[i] || defaultFallbacks[i];
+          stripImg.style.filter = getFilterCss(photoboothFilter);
+        }
+      }
+
+      applyCurrentThemeToStrip();
+      renderPhotoboothStickers();
+    }
+
+    // ==================== THEMES & FILTERS & STICKERS LOGIC ====================
+    function switchStripTab(tab) {
+      ['theme', 'filter', 'elements'].forEach(t => {
+        const panel = document.getElementById(`stripPanel-${t}`);
+        const btn = document.getElementById(`stripTabBtn-${t}`);
+        if (t === tab) {
+          if (panel) panel.classList.remove('hidden');
+          if (btn) btn.className = 'flex-1 py-1.5 font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1';
+        } else {
+          if (panel) panel.classList.add('hidden');
+          if (btn) btn.className = 'flex-1 py-1.5 font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1';
+        }
+      });
+    }
+
+    function setPhotoboothTheme(themeId) {
+      photoboothTheme = themeId;
+      const th = PHOTOBOOTH_THEMES.find(t => t.id === themeId);
+      if (th) {
+        photoboothFrameColor = th.color;
+      }
+      applyCurrentThemeToStrip();
+      updateThemeButtonsUI();
+    }
+
+    function setCustomPhotoboothColor(hex) {
+      photoboothFrameColor = hex;
+      photoboothTheme = 'custom';
+      applyCurrentThemeToStrip();
+      updateThemeButtonsUI();
+    }
+
+    function applyCurrentThemeToStrip() {
+      const strip = document.getElementById('photoboothStrip');
+      const headerDisplay = document.getElementById('stripHeaderDisplay');
+      const watermarkDisplay = document.getElementById('stripWatermarkDisplay');
+      const quoteDisplay = document.getElementById('stripQuoteDisplay');
+
+      const th = PHOTOBOOTH_THEMES.find(t => t.id === photoboothTheme) || {
+        color: photoboothFrameColor,
+        textColor: '#ad2b57',
+        accentColor: '#ad2b57',
+        quoteColor: '#22191b',
+        dark: false
+      };
+
+      if (strip) {
+        strip.style.backgroundColor = photoboothFrameColor;
+      }
+      if (headerDisplay) {
+        headerDisplay.style.color = th.textColor;
+      }
+      if (watermarkDisplay) {
+        watermarkDisplay.style.color = th.accentColor;
+      }
+      if (quoteDisplay) {
+        quoteDisplay.style.color = th.quoteColor;
+      }
+
+      applyStripBorderStyle();
+    }
+
+    function setStripBorderStyle(style) {
+      photoboothBorderStyle = style;
+      const bSolid = document.getElementById('btnBorderSolid');
+      const bFilm = document.getElementById('btnBorderFilm');
+      const bPolaroid = document.getElementById('btnBorderPolaroid');
+
+      [bSolid, bFilm, bPolaroid].forEach(btn => {
+        if (btn) btn.className = 'px-2.5 py-1 rounded-lg bg-surface-container text-secondary font-bold text-[10px] hover:bg-pink-100';
+      });
+
+      if (style === 'solid' && bSolid) bSolid.className = 'px-2.5 py-1 rounded-lg bg-primary text-white font-bold text-[10px] shadow-xs';
+      if (style === 'film' && bFilm) bFilm.className = 'px-2.5 py-1 rounded-lg bg-primary text-white font-bold text-[10px] shadow-xs';
+      if (style === 'polaroid' && bPolaroid) bPolaroid.className = 'px-2.5 py-1 rounded-lg bg-primary text-white font-bold text-[10px] shadow-xs';
+
+      applyStripBorderStyle();
+    }
+
+    function applyStripBorderStyle() {
+      const leftFilm = document.getElementById('stripFilmLeft');
+      const rightFilm = document.getElementById('stripFilmRight');
+      const strip = document.getElementById('photoboothStrip');
+
+      if (photoboothBorderStyle === 'film') {
+        if (leftFilm) leftFilm.classList.remove('hidden');
+        if (rightFilm) rightFilm.classList.remove('hidden');
+        if (strip) {
+          strip.classList.add('px-6');
+          strip.classList.remove('px-3.5');
+        }
+      } else {
+        if (leftFilm) leftFilm.classList.add('hidden');
+        if (rightFilm) rightFilm.classList.add('hidden');
+        if (strip) {
+          strip.classList.remove('px-6');
+          strip.classList.add('px-3.5');
         }
       }
     }
 
-    function setPhotoboothFrameColor(colorHex) {
-      photoboothFrameColor = colorHex;
-      const strip = document.getElementById('photoboothStrip');
-      if (strip) strip.style.backgroundColor = colorHex;
+    function setPhotoboothFilter(filterId) {
+      photoboothFilter = filterId;
+      applyPhotoboothFilterToVideo();
+
+      for (let i = 0; i < 4; i++) {
+        const stripImg = document.getElementById(`stripImg${i}`);
+        if (stripImg) stripImg.style.filter = getFilterCss(photoboothFilter);
+      }
+      updatePhotoboothSlotUI();
+      updateFilterButtonsUI();
+
+      const nameEl = document.getElementById('currentCameraFilterName');
+      const fObj = PHOTOBOOTH_FILTERS.find(f => f.id === filterId);
+      if (nameEl && fObj) nameEl.textContent = fObj.name;
     }
 
+    function updateThemeButtonsUI() {
+      const container = document.getElementById('themeButtonsGrid');
+      if (!container) return;
+
+      container.innerHTML = PHOTOBOOTH_THEMES.map(th => {
+        const isActive = photoboothTheme === th.id;
+        return `
+          <button onclick="setPhotoboothTheme('${th.id}')" class="p-1.5 rounded-xl border flex flex-col items-center gap-1 transition-all ${isActive ? 'border-primary ring-2 ring-primary/40 scale-105 bg-pink-50/80 shadow-xs' : 'border-outline-variant/30 hover:border-primary/50 bg-white'}">
+            <span class="w-6 h-6 rounded-full border border-black/10 shadow-inner flex items-center justify-center text-[10px]" style="background-color: ${th.color};">
+              ${isActive ? '✓' : ''}
+            </span>
+            <span class="text-[9px] font-bold text-on-surface truncate w-full text-center leading-tight">${th.name.split(' ')[0]}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function updateFilterButtonsUI() {
+      // 1. Camera live chips
+      const camChips = document.getElementById('cameraFilterChipsContainer');
+      if (camChips) {
+        camChips.innerHTML = PHOTOBOOTH_FILTERS.map(f => {
+          const isActive = photoboothFilter === f.id;
+          return `
+            <button onclick="setPhotoboothFilter('${f.id}')" class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap transition-all ${isActive ? 'bg-primary text-white shadow-xs' : 'bg-surface-container text-secondary hover:bg-pink-100'}">
+              ${f.name}
+            </button>
+          `;
+        }).join('');
+      }
+
+      // 2. Strip designer filter grid
+      const stripGrid = document.getElementById('stripFilterButtonsGrid');
+      if (stripGrid) {
+        stripGrid.innerHTML = PHOTOBOOTH_FILTERS.map(f => {
+          const isActive = photoboothFilter === f.id;
+          return `
+            <button onclick="setPhotoboothFilter('${f.id}')" class="p-2 rounded-xl border text-center transition-all ${isActive ? 'border-primary bg-pink-50 ring-2 ring-primary/40 font-bold text-primary shadow-xs' : 'border-outline-variant/30 bg-white hover:border-primary text-on-surface'}">
+              <span class="block text-base mb-0.5">${f.name.split(' ').pop()}</span>
+              <span class="text-[10px] font-semibold block">${f.name.split(' ')[0]}</span>
+            </button>
+          `;
+        }).join('');
+      }
+    }
+
+    function initPhotoboothUI() {
+      updateThemeButtonsUI();
+      updateFilterButtonsUI();
+
+      // Sticker Palette
+      const palette = document.getElementById('stickerPaletteContainer');
+      if (palette) {
+        palette.innerHTML = STICKER_PALETTE.map(emoji => `
+          <button onclick="addPhotoboothSticker('${emoji}')" class="w-8 h-8 rounded-xl bg-white hover:bg-pink-50 flex items-center justify-center hover:scale-125 active:scale-95 transition-all shadow-xs" title="Tempel ${emoji}">
+            ${emoji}
+          </button>
+        `).join('');
+      }
+    }
+
+    // ==================== STICKERS SYSTEM ====================
+    function addPhotoboothSticker(emoji, x = 50, y = 50, size = 26) {
+      const newStk = {
+        id: 'stk-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+        emoji,
+        x: Math.max(8, Math.min(92, x + (Math.random() * 16 - 8))),
+        y: Math.max(5, Math.min(95, y + (Math.random() * 16 - 8))),
+        size
+      };
+      photoboothStickers.push(newStk);
+      renderPhotoboothStickers();
+    }
+
+    function removePhotoboothSticker(id) {
+      photoboothStickers = photoboothStickers.filter(s => s.id !== id);
+      renderPhotoboothStickers();
+    }
+
+    function clearAllStickers() {
+      photoboothStickers = [];
+      renderPhotoboothStickers();
+    }
+
+    function addStickerCombo(type) {
+      if (type === 'hearts') {
+        addPhotoboothSticker('❤️', 18, 12, 22);
+        addPhotoboothSticker('💖', 82, 12, 24);
+        addPhotoboothSticker('💕', 18, 88, 22);
+        addPhotoboothSticker('🤍', 82, 88, 22);
+      } else if (type === 'stars') {
+        addPhotoboothSticker('✨', 80, 8, 24);
+        addPhotoboothSticker('⭐', 18, 34, 20);
+        addPhotoboothSticker('💫', 82, 58, 22);
+        addPhotoboothSticker('✨', 18, 85, 24);
+      } else if (type === 'kawaii') {
+        addPhotoboothSticker('🎀', 50, 6, 26);
+        addPhotoboothSticker('🌸', 16, 25, 22);
+        addPhotoboothSticker('🐾', 84, 45, 20);
+        addPhotoboothSticker('🍓', 16, 70, 22);
+        addPhotoboothSticker('🎀', 50, 92, 24);
+      }
+    }
+
+    function renderPhotoboothStickers() {
+      const layer = document.getElementById('stripStickersLayer');
+      if (!layer) return;
+
+      layer.innerHTML = photoboothStickers.map(s => `
+        <div id="${s.id}" class="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing pointer-events-auto select-none group touch-none" style="left: ${s.x}%; top: ${s.y}%; font-size: ${s.size}px; line-height: 1;">
+          <span>${s.emoji}</span>
+          <button onclick="event.stopPropagation(); removePhotoboothSticker('${s.id}')" class="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold hidden group-hover:flex items-center justify-center shadow-xs cursor-pointer leading-none">
+            ×
+          </button>
+        </div>
+      `).join('');
+
+      // Enable touch/mouse dragging for each sticker
+      photoboothStickers.forEach(s => {
+        const el = document.getElementById(s.id);
+        if (!el) return;
+
+        el.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          el.setPointerCapture(e.pointerId);
+
+          const stripEl = document.getElementById('photoboothStrip');
+          const rect = stripEl.getBoundingClientRect();
+
+          const onPointerMove = (moveEvt) => {
+            let newX = ((moveEvt.clientX - rect.left) / rect.width) * 100;
+            let newY = ((moveEvt.clientY - rect.top) / rect.height) * 100;
+            newX = Math.max(5, Math.min(95, newX));
+            newY = Math.max(3, Math.min(97, newY));
+            s.x = Math.round(newX);
+            s.y = Math.round(newY);
+            el.style.left = s.x + '%';
+            el.style.top = s.y + '%';
+          };
+
+          const onPointerUp = (upEvt) => {
+            el.removeEventListener('pointermove', onPointerMove);
+            el.removeEventListener('pointerup', onPointerUp);
+            el.removeEventListener('pointercancel', onPointerUp);
+          };
+
+          el.addEventListener('pointermove', onPointerMove);
+          el.addEventListener('pointerup', onPointerUp);
+          el.addEventListener('pointercancel', onPointerUp);
+        });
+      });
+    }
+
+    // ==================== CUSTOM TEXT & QUOTES ====================
     function updateStripHeaderText() {
       const input = document.getElementById('stripHeaderInput');
       const display = document.getElementById('stripHeaderDisplay');
@@ -2972,7 +3478,34 @@
       }
     }
 
-    // High-Resolution Canvas Generator
+    function updateStripWatermarkText() {
+      const input = document.getElementById('stripWatermarkInput');
+      const display = document.getElementById('stripWatermarkDisplay');
+      if (input && display) {
+        display.textContent = input.value.trim() || '10 Maret 2025 💕 まる子';
+      }
+    }
+
+    function updateStripQuoteText() {
+      const input = document.getElementById('stripQuoteInput');
+      const display = document.getElementById('stripQuoteDisplay');
+      if (input && display) {
+        display.textContent = input.value.trim();
+      }
+    }
+
+    function pickRandomQuote() {
+      const current = document.getElementById('stripQuoteInput')?.value;
+      const choices = ROMANTIC_QUOTES.filter(q => q !== current);
+      const chosen = choices[Math.floor(Math.random() * choices.length)] || ROMANTIC_QUOTES[0];
+      const input = document.getElementById('stripQuoteInput');
+      if (input) {
+        input.value = `"${chosen}"`;
+        updateStripQuoteText();
+      }
+    }
+
+    // ==================== HIGH-RES CANVAS GENERATOR (HD PNG) ====================
     function generatePhotoboothCanvas(callback) {
       const width = 800;
       const height = 2400;
@@ -2981,20 +3514,46 @@
       canvas.height = height;
       const ctx = canvas.getContext('2d');
 
-      // Background Frame
+      const th = PHOTOBOOTH_THEMES.find(t => t.id === photoboothTheme) || {
+        color: photoboothFrameColor,
+        textColor: '#ad2b57',
+        accentColor: '#ad2b57',
+        quoteColor: '#22191b',
+        cardBg: '#ffffff',
+        border: '#ffb3c6',
+        dark: false
+      };
+
+      // 1. Background Frame
       ctx.fillStyle = photoboothFrameColor;
       ctx.fillRect(0, 0, width, height);
 
-      // Header Text
-      ctx.fillStyle = (photoboothFrameColor === '#22191b') ? '#ffd9e2' : '#ad2b57';
+      // 2. Film Perforations (if film style)
+      if (photoboothBorderStyle === 'film') {
+        ctx.fillStyle = th.dark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.16)';
+        const perfW = 20;
+        const perfH = 34;
+        const perfCount = 38;
+        const perfGap = height / perfCount;
+        for (let p = 0; p < perfCount; p++) {
+          const pY = p * perfGap + 12;
+          drawRoundedRect(ctx, 16, pY, perfW, perfH, 6);
+          ctx.fill();
+          drawRoundedRect(ctx, width - 16 - perfW, pY, perfW, perfH, 6);
+          ctx.fill();
+        }
+      }
+
+      // 3. Header Text
+      ctx.fillStyle = th.textColor;
       ctx.font = 'bold 36px "Epilogue", sans-serif';
       ctx.textAlign = 'center';
       const headerText = document.getElementById('stripHeaderInput')?.value.trim() || 'ADIB & NADIN · 10.03.2025';
       ctx.fillText(headerText.toUpperCase(), width / 2, 85);
 
-      const marginX = 65;
-      const photoW = width - (marginX * 2); // 670
-      const photoH = photoW * 0.75; // 502.5 (aspect 4:3)
+      const marginX = (photoboothBorderStyle === 'film') ? 78 : 65;
+      const photoW = width - (marginX * 2);
+      const photoH = photoW * 0.75; // aspect 4:3
       const startY = 125;
       const gapY = 32;
 
@@ -3014,48 +3573,90 @@
         img.onload = () => {
           loadedCount++;
           if (loadedCount === 4) {
-            renderAllPhotosOnCanvas();
+            renderAllPhotosAndStickers();
+          }
+        };
+        img.onerror = () => {
+          loadedCount++;
+          if (loadedCount === 4) {
+            renderAllPhotosAndStickers();
           }
         };
         img.src = photoboothCuts[i] || defaultFallbacks[i];
         images.push(img);
       }
 
-      function renderAllPhotosOnCanvas() {
+      function renderAllPhotosAndStickers() {
         for (let i = 0; i < 4; i++) {
           const y = startY + i * (photoH + gapY);
           
-          // White card border behind each photo
+          // Card border behind photo
           ctx.save();
           ctx.shadowColor = 'rgba(0,0,0,0.08)';
           ctx.shadowBlur = 15;
           ctx.shadowOffsetY = 6;
-          ctx.fillStyle = '#ffffff';
+          ctx.fillStyle = th.cardBg || '#ffffff';
           drawRoundedRect(ctx, marginX - 6, y - 6, photoW + 12, photoH + 12, 22);
           ctx.fill();
           ctx.restore();
 
-          // Clip rounded photo
+          // Clip rounded photo with applied filter!
           ctx.save();
           drawRoundedRect(ctx, marginX, y, photoW, photoH, 18);
           ctx.clip();
+          if (photoboothFilter !== 'none') {
+            ctx.filter = getFilterCss(photoboothFilter);
+          }
           ctx.drawImage(images[i], marginX, y, photoW, photoH);
+          ctx.filter = 'none';
           ctx.restore();
         }
 
         // Footer Text
-        const footerY = startY + 4 * (photoH + gapY) + 35;
-        ctx.fillStyle = (photoboothFrameColor === '#22191b') ? '#ffd9e2' : '#ad2b57';
+        const footerY = startY + 4 * (photoH + gapY) + 38;
+        ctx.fillStyle = th.accentColor;
         ctx.font = 'bold 26px "Epilogue", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('10 Maret 2025 💕 まる子', width / 2, footerY);
+        const watermarkText = document.getElementById('stripWatermarkInput')?.value.trim() || '10 Maret 2025 💕 まる子';
+        ctx.fillText(watermarkText, width / 2, footerY);
 
-        ctx.fillStyle = (photoboothFrameColor === '#22191b') ? '#faeeed' : '#22191b';
-        ctx.font = 'bold 24px "Caveat", cursive';
-        const quoteText = '“Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan,';
-        const quoteText2 = 'melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.”';
-        ctx.fillText(quoteText, width / 2, footerY + 44);
-        ctx.fillText(quoteText2, width / 2, footerY + 80);
+        ctx.fillStyle = th.quoteColor;
+        ctx.font = 'bold 25px "Caveat", cursive';
+        const quoteRaw = document.getElementById('stripQuoteInput')?.value.trim() || '“Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.”';
+        
+        // Wrap quote text nicely
+        const words = quoteRaw.split(' ');
+        let line = '';
+        let lineY = footerY + 44;
+        for (let n = 0; n < words.length; n++) {
+          const testLine = line + words[n] + ' ';
+          const metrics = ctx.measureText(testLine);
+          if (metrics.width > 680 && n > 0) {
+            ctx.fillText(line.trim(), width / 2, lineY);
+            line = words[n] + ' ';
+            lineY += 36;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line.trim(), width / 2, lineY);
+
+        // Render Stickers onto the Canvas
+        const stripEl = document.getElementById('photoboothStrip');
+        const stripW = stripEl ? stripEl.offsetWidth : 224;
+        const scaleFactor = width / stripW;
+
+        photoboothStickers.forEach(s => {
+          ctx.save();
+          const sX = (s.x / 100) * width;
+          const sY = (s.y / 100) * height;
+          const fontSize = Math.round(s.size * scaleFactor);
+          ctx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(s.emoji, sX, sY);
+          ctx.restore();
+        });
 
         callback(canvas.toDataURL('image/png'));
       }
@@ -3086,7 +3687,7 @@
             await navigator.share({
               files: [file],
               title: 'Purikura 4-Cut Adib & Nadin',
-              text: 'Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.'
+              text: 'Photo strip kenangan indah kita berdua 💕'
             });
             return;
           }
@@ -3102,8 +3703,8 @@
 
     async function saveStripToScrapbook() {
       generatePhotoboothCanvas(async (dataUrl) => {
-        const title = 'Purikura 4-Cut Studio';
-        const story = 'Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.';
+        const title = 'Purikura 4-Cut Studio 📸';
+        const story = document.getElementById('stripQuoteInput')?.value.trim() || 'Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.';
         const todayStr = new Date().toISOString().split('T')[0];
 
         const newMem = {
@@ -3203,6 +3804,7 @@
       fetchServerData();
       initAudioPlayer();
       updateTrackDisplay();
+      initPhotoboothUI();
     });
   </script>
 </body>
