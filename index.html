@@ -249,7 +249,7 @@
         <div class="flex items-start justify-between gap-4">
           <div class="space-y-1.5 md:space-y-3 max-w-[65%] md:max-w-[72%]">
             <div class="inline-flex items-center gap-1 text-[11px] md:text-xs font-bold tracking-wide uppercase text-primary bg-white/70 px-2 py-0.5 rounded-full shadow-xs">
-              <span class="material-symbols-outlined text-[13px] md:text-[15px]">favorite</span>
+              <svg class="w-[13px] h-[13px] inline-block md:text-[15px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               Our Private Diary
             </div>
             <h2 class="font-epilogue font-extrabold text-xl md:text-3xl text-on-surface leading-tight">
@@ -293,28 +293,28 @@
       <div class="grid grid-cols-4 gap-2.5 md:gap-4">
         <button onclick="switchTab('memories'); openAddMemoryModal();" class="flex flex-col items-center gap-1 md:gap-2 p-2.5 md:p-4 rounded-2xl md:rounded-3xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
           <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-pink-50 text-primary flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-xl md:text-2xl">add_photo_alternate</span>
+            <svg class="w-6 h-6 inline-block md:text-2xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><polyline points="21 15 16 10 5 21"/><line x1="16" y1="5" x2="22" y2="5"/><line x1="19" y1="2" x2="19" y2="8"/></svg>
           </div>
           <span class="text-[11px] md:text-xs font-semibold text-on-surface">Foto Baru</span>
         </button>
 
         <button onclick="switchTab('journal'); openAddDiaryModal();" class="flex flex-col items-center gap-1 md:gap-2 p-2.5 md:p-4 rounded-2xl md:rounded-3xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
           <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-xl md:text-2xl">edit_note</span>
+            <svg class="w-6 h-6 inline-block md:text-2xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
           </div>
           <span class="text-[11px] md:text-xs font-semibold text-on-surface">Tulis Diary</span>
         </button>
 
         <button onclick="switchTab('pesan')" class="flex flex-col items-center gap-1 md:gap-2 p-2.5 md:p-4 rounded-2xl md:rounded-3xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
           <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-xl md:text-2xl">mark_email_unread</span>
+            <svg class="w-6 h-6 inline-block md:text-2xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/><circle cx="18" cy="5" r="3" fill="#e11d48" stroke="none"/></svg>
           </div>
           <span class="text-[11px] md:text-xs font-semibold text-on-surface">Buka Surat</span>
         </button>
 
         <button onclick="switchTab('more'); openVaultModal();" class="flex flex-col items-center gap-1 md:gap-2 p-2.5 md:p-4 rounded-2xl md:rounded-3xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
           <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-xl md:text-2xl">lock</span>
+            <svg class="w-6 h-6 inline-block md:text-2xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
           <span class="text-[11px] md:text-xs font-semibold text-on-surface">Brankas</span>
         </button>
@@ -334,7 +334,7 @@
               </div>
             </div>
             <button class="absolute -bottom-1 -right-1 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center shadow-xs">
-              <span id="homePlayIcon" class="material-symbols-outlined text-[13px]">play_arrow</span>
+              <svg id="homePlayIcon" class="w-[13px] h-[13px] inline-block" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
             </button>
           </div>
 
@@ -354,7 +354,7 @@
         </div>
 
         <button onclick="switchTab('more'); openPlaylistModal();" class="text-primary hover:bg-primary-light/40 p-2 rounded-xl transition-colors">
-          <span class="material-symbols-outlined text-lg">queue_music</span>
+          <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
         </button>
       </div>
 
@@ -376,11 +376,11 @@
       <div class="space-y-2.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-primary text-lg">auto_awesome</span>
+            <svg class="w-5 h-5 inline-block text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
             <h3 class="font-epilogue font-bold text-sm text-on-surface">Sorotan Kenangan Manis</h3>
           </div>
           <button onclick="switchTab('memories')" class="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
-            Lihat Semua <span class="material-symbols-outlined text-xs">chevron_right</span>
+            Lihat Semua <svg class="w-3.5 h-3.5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
         </div>
 
@@ -438,7 +438,7 @@
           <p class="text-xs md:text-sm text-secondary">Tumpukan pikiran hangat dan doa-doa baik</p>
         </div>
         <button onclick="openAddDiaryModal()" class="flex items-center gap-1 md:gap-1.5 px-3.5 md:px-4 py-1.5 md:py-2 rounded-full bg-primary text-white text-xs md:text-sm font-bold shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all">
-          <span class="material-symbols-outlined text-sm md:text-base">edit</span>
+          <svg class="w-4 h-4 inline-block md:text-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           <span>Tulis Baru</span>
         </button>
       </div>
@@ -446,7 +446,7 @@
       <!-- Search & Mood Bar -->
       <div class="flex items-center gap-2">
         <div class="relative flex-1">
-          <span class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-sm">search</span>
+          <svg class="w-4 h-4 inline-block absolute left-3 top-2.5 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="journalSearchInput" oninput="searchJournals(this.value)" placeholder="Cari tulisan atau perasaan..." class="w-full bg-white/90 border border-outline-variant/40 rounded-xl pl-8 pr-3 py-2 text-xs md:text-sm text-on-surface placeholder:text-secondary/60 focus:outline-none focus:border-primary"/>
         </div>
       </div>
@@ -472,11 +472,11 @@
       <!-- Sub Tabs: Surat vs Chat -->
       <div class="flex p-1 bg-surface-container rounded-2xl border border-outline-variant/30 max-w-md md:max-w-lg mx-auto">
         <button id="tabBtnLetters" onclick="switchPesanSubTab('letters')" class="flex-1 py-1.5 md:py-2 text-xs md:text-sm font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1.5">
-          <span class="material-symbols-outlined text-sm md:text-base">mail</span>
+          <svg class="w-4 h-4 inline-block md:text-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Surat Tersegel (<span id="letterCountBadge">0</span>)
         </button>
         <button id="tabBtnChat" onclick="switchPesanSubTab('chat')" class="flex-1 py-1.5 md:py-2 text-xs md:text-sm font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1.5">
-          <span class="material-symbols-outlined text-sm md:text-base">chat_bubble</span>
+          <svg class="w-4 h-4 inline-block md:text-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Whisper Chat 💬
         </button>
       </div>
@@ -486,7 +486,7 @@
         <div class="flex items-center justify-between">
           <span class="text-xs md:text-sm font-bold text-secondary">Surat yang belum / sudah kamu buka:</span>
           <button onclick="openNewLetterModal()" class="text-xs md:text-sm font-bold text-primary hover:underline flex items-center gap-0.5">
-            <span class="material-symbols-outlined text-xs md:text-sm">add</span> Tulis Surat
+            <svg class="w-3.5 h-3.5 inline-block md:text-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Tulis Surat
           </button>
         </div>
 
@@ -536,7 +536,7 @@
         <div class="p-2.5 md:p-3.5 bg-white border-t border-outline-variant/30 flex items-center gap-2">
           <input type="text" id="chatTextInput" onkeydown="if(event.key==='Enter') sendChatMessage()" placeholder="Ketik pesan manis untuk Nadin..." class="flex-1 bg-surface-container px-3.5 py-2 md:py-2.5 rounded-xl text-xs md:text-sm text-on-surface placeholder:text-secondary/60 focus:outline-none focus:ring-1 focus:ring-primary"/>
           <button onclick="sendChatMessage()" class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs hover:bg-primary-hover active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-sm md:text-base">send</span>
+            <svg class="w-4 h-4 inline-block md:text-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
       </div>
@@ -566,7 +566,7 @@
         <!-- Feature 1: The Vault (Brankas Rahasia) -->
         <div onclick="openVaultModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
           <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-xl md:text-2xl">lock</span>
+            <svg class="w-6 h-6 inline-block md:text-2xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
           <h3 class="font-epilogue font-bold text-sm text-on-surface">The Vault</h3>
           <p class="text-[11px] text-secondary mt-0.5">Brankas foto & catatan terkunci PIN</p>
@@ -578,7 +578,7 @@
         <!-- Feature 2: Playlist Lagu -->
         <div onclick="openPlaylistModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
           <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-xl md:text-2xl">album</span>
+            <svg class="w-6 h-6 inline-block md:text-2xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
           </div>
           <h3 class="font-epilogue font-bold text-sm text-on-surface">Playlist Lagu</h3>
           <p class="text-[11px] text-secondary mt-0.5">Pemutar vinyl & lagu kenangan</p>
@@ -590,7 +590,7 @@
         <!-- Feature 3: Vintage Photobooth -->
         <div onclick="openPhotoboothModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
           <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-xl md:text-2xl">photo_camera</span>
+            <svg class="w-6 h-6 inline-block md:text-2xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
           </div>
           <h3 class="font-epilogue font-bold text-sm text-on-surface">Photobooth 4-Cut</h3>
           <p class="text-[11px] text-secondary mt-0.5">Photo-strip gaya purikura Jepang</p>
@@ -602,7 +602,7 @@
         <!-- Feature 4: Memory Timeline -->
         <div onclick="openTimelineModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
           <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-xl md:text-2xl">timeline</span>
+            <svg class="w-6 h-6 inline-block md:text-2xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           </div>
           <h3 class="font-epilogue font-bold text-sm text-on-surface">Milestone Timeline</h3>
           <p class="text-[11px] text-secondary mt-0.5">Perjalanan kisah dari hari pertama</p>
@@ -632,14 +632,14 @@
         <!-- Action Buttons -->
         <div class="grid grid-cols-2 gap-2 md:gap-3 pt-1">
           <button onclick="exportDataBackup()" class="px-3 py-2 rounded-xl bg-surface-container text-secondary text-xs md:text-sm font-bold border border-outline-variant/40 hover:bg-pink-100 transition-colors flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-sm md:text-base">download</span> Ekspor Data
+            <svg class="w-4 h-4 inline-block md:text-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Ekspor Data
           </button>
           <button onclick="promptPWAInstall()" id="installPwaBtn" class="px-3 py-2 rounded-xl bg-primary text-white text-xs md:text-sm font-bold shadow-clay-button hover:bg-primary-hover transition-colors flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-sm md:text-base">install_mobile</span> Pasang di HP
+            <svg class="w-4 h-4 inline-block md:text-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/><polyline points="9 11 12 14 15 11"/><line x1="12" y1="8" x2="12" y2="14"/></svg> Pasang di HP
           </button>
         </div>
         <button onclick="forcePurgeAndReload()" class="w-full mt-2 px-3 py-2.5 rounded-xl bg-pink-50 text-primary text-xs md:text-sm font-bold border border-pink-200 hover:bg-pink-100 transition-colors flex items-center justify-center gap-1">
-          <span class="material-symbols-outlined text-sm md:text-base">sync</span> Bersihkan Cache & Sinkronkan Ulang
+          <svg class="w-4 h-4 inline-block md:text-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Bersihkan Cache & Sinkronkan Ulang
         </button>
       </div>
 
@@ -697,7 +697,7 @@
       <div class="flex items-center justify-between">
         <h3 class="font-epilogue font-bold text-base text-on-surface">Tambah Foto Kenangan 📸</h3>
         <button onclick="closeModal('modalAddMemory')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
-          <span class="material-symbols-outlined text-sm">close</span>
+          <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
 
@@ -710,7 +710,7 @@
               <img id="newMemoryPreviewImg" src="" class="w-full h-full object-cover"/>
             </div>
             <div id="photoUploadPrompt" class="py-3 space-y-1">
-              <span class="material-symbols-outlined text-3xl text-primary">add_a_photo</span>
+              <svg class="w-8 h-8 inline-block text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="9.5" y1="10.5" x2="14.5" y2="10.5"/></svg>
               <p class="text-xs font-bold text-on-surface">Pilih / Ambil Foto dari HP</p>
               <p class="text-[10px] text-secondary">Ketuk di sini untuk mengimpor foto</p>
             </div>
@@ -749,7 +749,7 @@
       <div class="w-full aspect-square rounded-lg overflow-hidden bg-stone-100 mb-3 relative">
         <img id="detailMemoryImg" src="" alt="Memory" class="w-full h-full object-cover"/>
         <button id="detailLikeBtn" onclick="toggleDetailLike()" class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-white/90 text-primary flex items-center justify-center shadow-md">
-          <span class="material-symbols-outlined text-lg">favorite</span>
+          <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
         </button>
       </div>
 
@@ -761,7 +761,7 @@
 
       <div class="mt-4 pt-3 border-t border-stone-200/60 flex items-center justify-between text-xs">
         <button onclick="deleteCurrentMemory()" class="text-xs font-bold text-rose-500 hover:text-rose-700 flex items-center gap-1">
-          <span class="material-symbols-outlined text-sm">delete</span> Hapus Foto
+          <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Hapus Foto
         </button>
         <button onclick="closeModal('modalMemoryDetail')" class="text-xs font-bold text-secondary hover:text-on-surface">Tutup</button>
       </div>
@@ -774,7 +774,7 @@
       <div class="flex items-center justify-between">
         <h3 class="font-epilogue font-bold text-base text-amber-950">Tulis Catatan Harian 📖</h3>
         <button onclick="closeModal('modalAddDiary')" class="w-8 h-8 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center">
-          <span class="material-symbols-outlined text-sm">close</span>
+          <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
 
@@ -833,7 +833,7 @@
 
       <div class="flex items-center justify-between pt-2">
         <button id="btnDeleteLetterModal" onclick="deleteCurrentOpenLetter()" class="text-xs text-red-500 hover:text-red-700 font-semibold flex items-center gap-1 transition-colors">
-          <span class="material-symbols-outlined text-sm">delete</span> Hapus
+          <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Hapus
         </button>
         <button onclick="closeModal('modalOpenLetter')" class="px-4 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-xs">
           Tutup
@@ -848,7 +848,7 @@
       <div class="flex items-center justify-between">
         <h3 class="font-epilogue font-bold text-base text-on-surface">Tulis Surat Baru 💌</h3>
         <button onclick="closeModal('modalNewLetter')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
-          <span class="material-symbols-outlined text-sm">close</span>
+          <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
 
@@ -877,7 +877,7 @@
       <!-- Lock Screen State -->
       <div id="vaultLockState" class="space-y-4">
         <div class="w-14 h-14 mx-auto rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center shadow-inner">
-          <span class="material-symbols-outlined text-3xl">lock</span>
+          <svg class="w-8 h-8 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <div>
           <h3 class="font-epilogue font-bold text-lg text-on-surface">Nadin's Secret Vault 🔒</h3>
@@ -913,7 +913,7 @@
       <div id="vaultUnlockedState" class="hidden space-y-4 text-left max-h-[75vh] overflow-y-auto">
         <div class="flex items-center justify-between pb-2 border-b border-purple-200">
           <div class="flex items-center gap-1.5 text-purple-800 font-bold text-sm">
-            <span class="material-symbols-outlined text-lg">lock_open</span>
+            <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
             Brankas Terbuka! 🌸
           </div>
           <button onclick="lockVault()" class="text-xs font-bold text-secondary hover:text-purple-700">Kunci Lagi</button>
@@ -926,7 +926,7 @@
               <span>✨</span> Foto Rahasia Berdua
             </p>
             <button onclick="document.getElementById('vaultPhotoInput').click()" class="text-[11px] font-bold text-primary hover:underline flex items-center gap-1">
-              <span class="material-symbols-outlined text-sm">photo_camera</span> Ganti Foto
+              <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Ganti Foto
             </button>
             <input type="file" id="vaultPhotoInput" accept="image/*" class="hidden" onchange="handleVaultPhotoUpload(event)"/>
           </div>
@@ -988,15 +988,15 @@
       <!-- Header -->
       <div class="flex items-center justify-between px-5 pt-4 pb-2.5 border-b border-pink-100/60">
         <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary text-xl">album</span>
+          <svg class="w-6 h-6 inline-block text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
           <h3 class="font-epilogue font-bold text-base text-on-surface">Playlist Kita 🎵</h3>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="shufflePlaylist()" class="text-[11px] font-bold text-primary bg-pink-100 hover:bg-pink-200 px-2.5 py-1 rounded-full flex items-center gap-1 transition-all active:scale-95">
-            <span class="material-symbols-outlined text-xs">shuffle</span> Acak
+            <svg class="w-3.5 h-3.5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg> Acak
           </button>
           <button onclick="closeModal('modalPlaylist')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary transition-colors">
-            <span class="material-symbols-outlined text-sm">close</span>
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
       </div>
@@ -1008,7 +1008,7 @@
           <div class="relative w-16 h-16 rounded-2xl overflow-hidden shadow-md border border-pink-200/80 flex-shrink-0 bg-stone-900">
             <img id="modalCoverArt" src="music/about_you.jpg" alt="Cover" class="w-full h-full object-cover">
             <div id="modalVinylBadge" class="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center hidden">
-              <span class="material-symbols-outlined text-white text-base animate-spin">graphic_eq</span>
+              <svg class="w-5 h-5 inline-block text-white animate-spin" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="5" width="2" height="14" rx="1"/><rect x="11" y="8" width="2" height="8" rx="1"/><rect x="15" y="3" width="2" height="18" rx="1"/><rect x="3" y="10" width="2" height="4" rx="1"/><rect x="19" y="10" width="2" height="4" rx="1"/></svg>
             </div>
           </div>
 
@@ -1039,13 +1039,13 @@
         <!-- Player Controls -->
         <div class="flex items-center justify-center gap-4">
           <button onclick="prevTrack()" class="w-9 h-9 rounded-full bg-surface-container hover:bg-pink-100 text-secondary hover:text-primary flex items-center justify-center transition-all active:scale-90 shadow-xs">
-            <span class="material-symbols-outlined text-lg">skip_previous</span>
+            <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
           </button>
           <button onclick="togglePlayPause()" id="modalPlayBtn" class="w-12 h-12 rounded-full bg-primary hover:bg-primary-hover text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all active:scale-95">
-            <span id="modalPlayIcon" class="material-symbols-outlined text-2xl">play_arrow</span>
+            <svg id="modalPlayIcon" class="w-7 h-7 inline-block" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
           </button>
           <button onclick="nextTrack()" class="w-9 h-9 rounded-full bg-surface-container hover:bg-pink-100 text-secondary hover:text-primary flex items-center justify-center transition-all active:scale-90 shadow-xs">
-            <span class="material-symbols-outlined text-lg">skip_next</span>
+            <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
           </button>
         </div>
       </div>
@@ -1078,7 +1078,7 @@
             <p class="text-[11px] text-secondary">Ambil 4 pose terbaikmu bersama Nadin!</p>
           </div>
           <button onclick="closePhotoboothModal()" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary transition-colors">
-            <span class="material-symbols-outlined text-sm">close</span>
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
 
@@ -1118,7 +1118,7 @@
         <div class="space-y-1">
           <div class="flex items-center justify-between text-[11px]">
             <span class="font-bold text-secondary flex items-center gap-1">
-              <span class="material-symbols-outlined text-xs text-primary">auto_fix_high</span> Filter Foto:
+              <svg class="w-3.5 h-3.5 inline-block text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7l2-7z"/></svg> Filter Foto:
             </span>
             <span id="currentCameraFilterName" class="text-[10px] font-bold text-primary">Normal ✨</span>
           </div>
@@ -1156,26 +1156,26 @@
         <div class="space-y-2 pt-1">
           <div class="flex items-center gap-2">
             <button onclick="snapPhotoboothCountdown()" id="btnShutter" class="flex-1 py-3 rounded-2xl bg-primary text-white font-epilogue font-bold text-xs shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all flex items-center justify-center gap-2">
-              <span class="material-symbols-outlined text-lg">photo_camera</span>
+              <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
               <span id="shutterBtnLabel">Jepret Pose Ini (3 Detik) 📸</span>
             </button>
             <button onclick="togglePhotoboothMirror()" id="btnToggleMirror" class="w-12 h-12 rounded-2xl bg-primary-light/60 text-primary hover:bg-primary-light flex flex-col items-center justify-center transition-all border border-primary/40 shadow-xs" title="Mirror Kamera (Cermin On/Off)">
-              <span class="material-symbols-outlined text-base">swap_horiz</span>
+              <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 8 16 13"/><line x1="21" y1="8" x2="9" y2="8"/><polyline points="8 21 3 16 8 11"/><line x1="3" y1="16" x2="15" y2="16"/></svg>
               <span class="text-[8px] font-bold">Mirror</span>
             </button>
             <button onclick="togglePhotoboothCameraFacing()" class="w-12 h-12 rounded-2xl bg-surface-container text-secondary hover:text-primary hover:bg-pink-100 flex flex-col items-center justify-center transition-all border border-pink-200" title="Ganti Kamera Depan/Belakang">
-              <span class="material-symbols-outlined text-base">flip_camera_ios</span>
+              <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><path d="M14 10a2 2 0 1 0-4 0c0 1.11.9 2 2 2"/><polyline points="14 8 16 10 14 12"/></svg>
               <span class="text-[8px] font-bold">Flip</span>
             </button>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <button onclick="startAutoSeriesPhotobooth()" id="btnAutoSeries" class="py-2 px-3 rounded-xl bg-gradient-to-r from-pink-100 to-rose-100 text-primary text-[11px] font-bold hover:brightness-95 flex items-center justify-center gap-1 border border-pink-200">
-              <span class="material-symbols-outlined text-sm">auto_videocam</span>
+              <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
               Auto 4-Pose (3s per pose)
             </button>
             <button onclick="document.getElementById('photoboothFileInput').click()" class="py-2 px-3 rounded-xl bg-surface-container text-secondary text-[11px] font-bold hover:bg-pink-100 flex items-center justify-center gap-1 border border-outline-variant/30">
-              <span class="material-symbols-outlined text-sm">photo_library</span>
+              <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="1" y="1" width="14" height="14" rx="2"/><circle cx="12" cy="10" r="2"/><path d="m9 15 3-3 4 4"/></svg>
               Pilih dari Galeri HP
             </button>
             <input type="file" id="photoboothFileInput" accept="image/*" class="hidden" onchange="handlePhotoboothFilePicked(event)"/>
@@ -1183,7 +1183,7 @@
 
           <!-- Go to Strip Designer Button -->
           <button onclick="showPhotoboothStripView()" id="btnGoToStrip" class="w-full mt-1 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-sm hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center gap-1.5">
-            <span class="material-symbols-outlined text-sm">view_carousel</span>
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="3" width="10" height="18" rx="1"/><rect x="1" y="6" width="5" height="12" rx="1"/><rect x="18" y="6" width="5" height="12" rx="1"/></svg>
             <span>Lihat Hasil & Desain Frame Strip &rarr;</span>
           </button>
         </div>
@@ -1194,27 +1194,27 @@
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-pink-100 pb-2">
           <button onclick="showPhotoboothCameraView()" class="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">
-            <span class="material-symbols-outlined text-sm">arrow_back</span> Kamera
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Kamera
           </button>
           <h3 class="font-epilogue font-bold text-sm text-on-surface flex items-center gap-1">
             <span>Desain Photo Strip</span>
             <span class="text-xs">🎞️</span>
           </h3>
           <button onclick="closePhotoboothModal()" class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-primary">
-            <span class="material-symbols-outlined text-xs">close</span>
+            <svg class="w-3.5 h-3.5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
 
         <!-- Sub Tabs: Tema Frame vs Filter vs Elemen & Stiker -->
         <div class="flex p-1 bg-surface-container rounded-2xl border border-outline-variant/30 text-xs">
           <button id="stripTabBtn-theme" onclick="switchStripTab('theme')" class="flex-1 py-1.5 font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-sm">palette</span> Tema Frame
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="14" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="14" r="1" fill="currentColor" stroke="none"/></svg> Tema Frame
           </button>
           <button id="stripTabBtn-filter" onclick="switchStripTab('filter')" class="flex-1 py-1.5 font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-sm">auto_fix_high</span> Filter Foto
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7l2-7z"/></svg> Filter Foto
           </button>
           <button id="stripTabBtn-elements" onclick="switchStripTab('elements')" class="flex-1 py-1.5 font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-sm">interests</span> Elemen & Stiker
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="17" r="4"/><circle cx="17" cy="17" r="4"/><circle cx="12" cy="7" r="4"/></svg> Elemen & Stiker
           </button>
         </div>
 
@@ -1356,15 +1356,15 @@
         <!-- Strip Action Buttons -->
         <div class="space-y-2 pt-1">
           <button onclick="downloadPhotoStripHD()" class="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-clay-button hover:bg-primary-hover flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-sm">download</span> Unduh Photo Strip (HD PNG)
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Unduh Photo Strip (HD PNG)
           </button>
           
           <button onclick="saveStripToScrapbook()" class="w-full py-2 rounded-xl bg-pink-100 text-primary font-bold text-xs hover:bg-pink-200 flex items-center justify-center gap-1.5 transition-all">
-            <span class="material-symbols-outlined text-sm">bookmark_add</span> Simpan ke Scrapbook Kita 🌸
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg> Simpan ke Scrapbook Kita 🌸
           </button>
 
           <button onclick="showPhotoboothCameraView()" class="w-full py-2 rounded-xl bg-surface-container text-secondary font-bold text-xs hover:bg-pink-50 flex items-center justify-center gap-1 transition-all">
-            <span class="material-symbols-outlined text-sm">replay</span> Ulangi / Foto Pose Baru
+            <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-6"/></svg> Ulangi / Foto Pose Baru
           </button>
         </div>
       </div>
@@ -1381,7 +1381,7 @@
           <p class="text-[11px] text-secondary">Perjalanan cinta Adib & Nadin</p>
         </div>
         <button onclick="closeModal('modalTimeline')" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
-          <span class="material-symbols-outlined text-sm">close</span>
+          <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
 
@@ -1718,8 +1718,8 @@
 
           const syncIcon = document.getElementById('syncIcon');
           if (syncIcon) {
-            syncIcon.textContent = 'cloud_done';
-            syncIcon.className = 'material-symbols-outlined text-[17px] text-emerald-600';
+            syncIcon.innerHTML = '<svg class="w-[17px] h-[17px] text-emerald-600 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="9 13 12 16 17 11"/></svg>';
+            syncIcon.className = 'flex items-center justify-center';
           }
         }
       }, (err) => {
@@ -1807,8 +1807,8 @@
     async function syncToServer() {
       const syncIcon = document.getElementById('syncIcon');
       if (syncIcon) {
-        syncIcon.textContent = 'sync';
-        syncIcon.className = 'material-symbols-outlined text-[17px] text-primary animate-spin';
+        syncIcon.className = 'flex items-center justify-center animate-spin';
+        syncIcon.innerHTML = '<svg class="w-[17px] h-[17px] text-primary inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
       }
 
       const now = Date.now();
@@ -1832,14 +1832,14 @@
           });
 
           if (syncIcon) {
-            syncIcon.textContent = 'cloud_done';
-            syncIcon.className = 'material-symbols-outlined text-[17px] text-emerald-600';
+            syncIcon.className = 'flex items-center justify-center';
+            syncIcon.innerHTML = '<svg class="w-[17px] h-[17px] text-emerald-600 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="9 13 12 16 17 11"/></svg>';
           }
         } catch (err) {
           console.log('Firebase save error:', err);
           if (syncIcon) {
-            syncIcon.textContent = 'cloud_off';
-            syncIcon.className = 'material-symbols-outlined text-[17px] text-rose-500';
+            syncIcon.className = 'flex items-center justify-center';
+            syncIcon.innerHTML = '<svg class="w-[17px] h-[17px] text-rose-500 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
           }
         }
       }
@@ -1909,8 +1909,8 @@
     async function manualSync() {
       const syncIcon = document.getElementById('syncIcon');
       if (syncIcon) {
-        syncIcon.textContent = 'sync';
-        syncIcon.className = 'material-symbols-outlined text-[17px] text-primary animate-spin';
+        syncIcon.className = 'flex items-center justify-center animate-spin';
+        syncIcon.innerHTML = '<svg class="w-[17px] h-[17px] text-primary inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
       }
       memories = memories.filter(isCleanMemory);
       setStored('nadin_memories', memories);
@@ -2012,7 +2012,7 @@
               Mulai isi dengan foto favoritmu bersama Nadin. Tinggal pilih foto, isi judul, tanggal, dan ceritanya!
             </p>
             <button onclick="openAddMemoryModal()" class="mt-3 px-5 py-2.5 bg-primary text-white text-xs font-bold rounded-full shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-base">add_photo_alternate</span>
+              <svg class="w-5 h-5 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><polyline points="21 15 16 10 5 21"/><line x1="16" y1="5" x2="22" y2="5"/><line x1="19" y1="2" x2="19" y2="8"/></svg>
               <span>Impor Foto Pertama 🌸</span>
             </button>
           </div>
@@ -2035,7 +2035,7 @@
             <span>📅 ${m.date || ''}</span>
             <div class="flex items-center gap-1">
               <button onclick="event.stopPropagation(); deleteMemoryCard('${m.id}')" class="text-stone-300 hover:text-rose-500 p-1 rounded-full hover:bg-rose-50 transition-colors" title="Hapus Foto">
-                <span class="material-symbols-outlined text-sm md:text-base">delete</span>
+                <svg class="w-4 h-4 inline-block md:text-base" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
               </button>
               <span class="text-primary font-bold">Kenangan ✨</span>
             </div>
@@ -2205,7 +2205,7 @@
             <div class="flex items-center gap-2">
               <span class="text-[11px] font-semibold text-secondary">${j.date}</span>
               <button onclick="event.stopPropagation(); deleteDiary('${j.id}')" class="text-secondary/40 hover:text-red-500 p-1.5 rounded-full hover:bg-rose-50 transition-colors flex items-center justify-center" title="Hapus Catatan">
-                <span class="material-symbols-outlined text-sm">delete</span>
+                <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
               </button>
             </div>
           </div>
@@ -2319,7 +2319,7 @@
           <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl flex items-center justify-center ${l.opened ? 'bg-pink-50 text-secondary' : 'bg-primary text-white shadow-xs animate-bounce'}">
-                <span class="material-symbols-outlined text-xl">${l.opened ? 'drafts' : 'mail'}</span>
+                ${l.opened ? '<svg class="w-6 h-6 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/><line x1="12" y1="13" x2="12" y2="20"/></svg>' : '<svg class="w-6 h-6 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'}
               </div>
               <div>
                 <h4 class="font-epilogue font-bold text-xs text-on-surface leading-tight">${l.title}</h4>
@@ -2331,7 +2331,7 @@
                 ${l.opened ? 'Sudah Dibuka' : 'Baru! Segel 🌸'}
               </span>
               <button onclick="event.stopPropagation(); deleteLetter('${l.id}')" class="text-secondary/40 hover:text-red-500 p-1 rounded-full transition-colors" title="Hapus Surat">
-                <span class="material-symbols-outlined text-sm">delete</span>
+                <svg class="w-4 h-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
               </button>
             </div>
           </div>
@@ -2869,7 +2869,7 @@
               <img src="${t.cover}" alt="${t.title}" class="w-full h-full object-cover">
               ${idx === currentTrackIdx && isAudioPlaying ? `
                 <div class="absolute inset-0 bg-primary/40 flex items-center justify-center">
-                  <span class="material-symbols-outlined text-white text-xs animate-bounce">equalizer</span>
+                  <svg class="w-3.5 h-3.5 inline-block text-white animate-bounce" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
                 </div>
               ` : ''}
             </div>
