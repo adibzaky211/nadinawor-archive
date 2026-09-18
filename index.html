@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" class="light">
 <head>
   <meta charset="utf-8"/>
@@ -1551,8 +1551,9 @@
           const cloudUpdatedAt = Number(data.updatedAt) || 0;
           const localLastUpdate = Number(getStored('nadin_last_update', 0)) || 0;
 
-          // Jika perubahan ini berasal dari aksi lokal sendiri yang baru saja di-push, abaikan
-          if (cloudUpdatedAt > 0 && cloudUpdatedAt <= localLastUpdate) {
+          const localHasNoMemories = (!memories || memories.length === 0);
+          // Hanya abaikan jika lokal sudah punya foto/data DAN timestamp cloud tidak lebih baru
+          if (!localHasNoMemories && cloudUpdatedAt > 0 && cloudUpdatedAt <= localLastUpdate) {
             return;
           }
 
@@ -1656,14 +1657,18 @@
           const data = await res.json();
           const serverUpdatedAt = Number(data.updatedAt) || 0;
           const localLastUpdate = Number(getStored('nadin_last_update', 0)) || 0;
-          if (serverUpdatedAt > 0 && serverUpdatedAt <= localLastUpdate) {
+          // Proteksi: jangan ambil update jika server tidak punya timestamp atau data server lebih lama dari lokal
+          if (!serverUpdatedAt || (serverUpdatedAt > 0 && serverUpdatedAt <= localLastUpdate && memories.length > 0)) {
             return;
           }
 
           let hasChanges = false;
           if (data.memories && Array.isArray(data.memories)) {
             const serverMems = data.memories.filter(isCleanMemory);
-            if (JSON.stringify(memories) !== JSON.stringify(serverMems)) {
+            // JANGAN TIMPA jika server kosong tetapi lokal punya foto
+            if (serverMems.length === 0 && memories.length > 0) {
+              // Pertahankan foto lokal
+            } else if (JSON.stringify(memories) !== JSON.stringify(serverMems)) {
               memories = serverMems;
               setStored('nadin_memories', memories);
               hasChanges = true;
@@ -1983,7 +1988,7 @@
       document.getElementById('modalAddMemory').classList.add('flex');
     }
 
-    function compressImage(file, maxDimension = 960, quality = 0.8) {
+    function compressImage(file, maxDimension = 720, quality = 0.7) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e) => {

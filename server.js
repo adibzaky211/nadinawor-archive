@@ -116,7 +116,8 @@ function mergeById(existingList, incomingList) {
           memories: Array.isArray(payload.memories) ? payload.memories : current.memories,
           journals: Array.isArray(payload.journals) ? payload.journals : current.journals,
           letters: Array.isArray(payload.letters) ? payload.letters : current.letters,
-          chats: Array.isArray(payload.chats) ? payload.chats : current.chats
+          chats: Array.isArray(payload.chats) ? payload.chats : current.chats,
+          updatedAt: Number(payload.updatedAt) || Date.now()
         };
         writeDb(updated);
         res.writeHead(200, { 'Content-Type': 'application/json' });
