@@ -68,6 +68,25 @@
   </script>
 
   <style>
+    /* Google Material Symbols Font Style */
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined' !important;
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: 'liga';
+    }
+
     /* Custom Paper & Scrapbook Aesthetics */
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -172,7 +191,7 @@
 
   <!-- ==================== TOP APP BAR ==================== -->
   <header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 px-4 pb-3 safe-top transition-colors">
-    <div class="max-w-md mx-auto flex items-center justify-between">
+    <div class="max-w-md md:max-w-3xl lg:max-w-5xl mx-auto flex items-center justify-between">
       
       <!-- Mascot / Brand -->
       <div class="flex items-center gap-2.5">
@@ -216,88 +235,88 @@
   </header>
 
   <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
-  <main class="flex-1 max-w-md w-full mx-auto pb-24 px-4 pt-3">
+  <main class="flex-1 max-w-md md:max-w-3xl lg:max-w-5xl w-full mx-auto pb-28 px-4 md:px-8 pt-3">
 
     <!-- ======================================================== -->
     <!-- SCREEN 1: HOME (3D Maruko Pink Scrapbook)               -->
     <!-- ======================================================== -->
-    <section id="screen-home" class="app-screen active space-y-4">
+    <section id="screen-home" class="app-screen active space-y-4 md:space-y-6">
       
       <!-- Welcome Hero Card with 3D Maruko Figurine -->
-      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#ffd9e2] via-[#faeeed] to-[#fff0f4] p-5 shadow-clay border border-[#f2ced6]">
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#ffd9e2] via-[#faeeed] to-[#fff0f4] p-5 md:p-8 shadow-clay border border-[#f2ced6]">
         <div class="washi-tape -top-2 right-12 rotate-3"></div>
         
-        <div class="flex items-start justify-between">
-          <div class="space-y-1.5 max-w-[62%]">
-            <div class="inline-flex items-center gap-1 text-[11px] font-bold tracking-wide uppercase text-primary bg-white/70 px-2 py-0.5 rounded-full shadow-xs">
-              <span class="material-symbols-outlined text-[13px]">favorite</span>
+        <div class="flex items-start justify-between gap-4">
+          <div class="space-y-1.5 md:space-y-3 max-w-[65%] md:max-w-[72%]">
+            <div class="inline-flex items-center gap-1 text-[11px] md:text-xs font-bold tracking-wide uppercase text-primary bg-white/70 px-2 py-0.5 rounded-full shadow-xs">
+              <span class="material-symbols-outlined text-[13px] md:text-[15px]">favorite</span>
               Our Private Diary
             </div>
-            <h2 class="font-epilogue font-extrabold text-xl text-on-surface leading-tight">
-              Selamat datang di ruang rahasia kita, <span class="text-primary italic font-handwriting text-2xl font-bold">Nadin!</span> ✨
+            <h2 class="font-epilogue font-extrabold text-xl md:text-3xl text-on-surface leading-tight">
+              Selamat datang di ruang rahasia kita, <span class="text-primary italic font-handwriting text-2xl md:text-4xl font-bold">Nadin!</span> ✨
             </h2>
-            <p class="text-xs text-on-surface-variant leading-relaxed italic font-medium">
+            <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed italic font-medium">
               “Mungkin beberapa perjalanan memang tidak dibuat untuk sampai pada tujuan, melainkan untuk membuat kita tahu siapa yang ingin tetap kita ajak berjalan.”
             </p>
           </div>
 
           <!-- 3D Maruko Figurine Sticker -->
-          <div class="relative w-28 h-28 -mr-1 -mt-1 flex-shrink-0 animate-gentle-bounce">
+          <div class="relative w-28 h-28 md:w-40 md:h-40 -mr-1 -mt-1 flex-shrink-0 animate-gentle-bounce">
             <img src="maruko_figurine.jpg" alt="Maruko 3D Figurine" class="w-full h-full object-cover rounded-2xl shadow-polaroid border-2 border-white transform rotate-2"/>
-            <div class="absolute -bottom-2 -left-2 bg-white px-2 py-0.5 rounded-full text-[10px] font-bold text-primary shadow-sm border border-pink-100 flex items-center gap-0.5">
+            <div class="absolute -bottom-2 -left-2 bg-white px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold text-primary shadow-sm border border-pink-100 flex items-center gap-0.5">
               <span>🌸</span> まる子
             </div>
           </div>
         </div>
 
         <!-- Quick Relationship Counters -->
-        <div class="mt-4 pt-3.5 border-t border-white/60 grid grid-cols-3 gap-2 text-center">
-          <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
-            <p class="text-[10px] text-secondary font-medium">Hari Bersama</p>
-            <p class="font-epilogue font-extrabold text-base text-primary" id="daysCounter">--</p>
-            <p class="text-[8px] text-secondary/80 font-medium">10 Mar 2025 💕</p>
+        <div class="mt-4 md:mt-6 pt-3.5 md:pt-5 border-t border-white/60 grid grid-cols-3 gap-2 md:gap-4 text-center">
+          <div class="bg-white/60 backdrop-blur-sm rounded-xl md:rounded-2xl py-2 md:py-3.5 px-1 md:px-3 border border-white/80">
+            <p class="text-[10px] md:text-xs text-secondary font-medium">Hari Bersama</p>
+            <p class="font-epilogue font-extrabold text-base md:text-2xl text-primary" id="daysCounter">--</p>
+            <p class="text-[8px] md:text-[10px] text-secondary/80 font-medium">10 Mar 2025 💕</p>
           </div>
-          <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
-            <p class="text-[10px] text-secondary font-medium">Kenangan Foto</p>
-            <p class="font-epilogue font-extrabold text-base text-primary" id="memoriesCounter">0</p>
-            <p class="text-[8px] text-secondary/80 font-medium">Scrapbook ✨</p>
+          <div class="bg-white/60 backdrop-blur-sm rounded-xl md:rounded-2xl py-2 md:py-3.5 px-1 md:px-3 border border-white/80">
+            <p class="text-[10px] md:text-xs text-secondary font-medium">Kenangan Foto</p>
+            <p class="font-epilogue font-extrabold text-base md:text-2xl text-primary" id="memoriesCounter">0</p>
+            <p class="text-[8px] md:text-[10px] text-secondary/80 font-medium">Scrapbook ✨</p>
           </div>
-          <div class="bg-white/60 backdrop-blur-sm rounded-xl py-2 px-1 border border-white/80">
-            <p class="text-[10px] text-secondary font-medium">Surat Rahasia</p>
-            <p class="font-epilogue font-extrabold text-base text-primary" id="lettersCounter">0</p>
-            <p class="text-[8px] text-secondary/80 font-medium">Untuk Nadin 💌</p>
+          <div class="bg-white/60 backdrop-blur-sm rounded-xl md:rounded-2xl py-2 md:py-3.5 px-1 md:px-3 border border-white/80">
+            <p class="text-[10px] md:text-xs text-secondary font-medium">Surat Rahasia</p>
+            <p class="font-epilogue font-extrabold text-base md:text-2xl text-primary" id="lettersCounter">0</p>
+            <p class="text-[8px] md:text-[10px] text-secondary/80 font-medium">Untuk Nadin 💌</p>
           </div>
         </div>
       </div>
 
       <!-- Quick Action Shortcuts -->
-      <div class="grid grid-cols-4 gap-2.5">
-        <button onclick="switchTab('memories'); openAddMemoryModal();" class="flex flex-col items-center gap-1 p-2.5 rounded-2xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
-          <div class="w-10 h-10 rounded-xl bg-pink-50 text-primary flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-xl">add_photo_alternate</span>
+      <div class="grid grid-cols-4 gap-2.5 md:gap-4">
+        <button onclick="switchTab('memories'); openAddMemoryModal();" class="flex flex-col items-center gap-1 md:gap-2 p-2.5 md:p-4 rounded-2xl md:rounded-3xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
+          <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-pink-50 text-primary flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl md:text-2xl">add_photo_alternate</span>
           </div>
-          <span class="text-[11px] font-semibold text-on-surface">Foto Baru</span>
+          <span class="text-[11px] md:text-xs font-semibold text-on-surface">Foto Baru</span>
         </button>
 
-        <button onclick="switchTab('journal'); openAddDiaryModal();" class="flex flex-col items-center gap-1 p-2.5 rounded-2xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
-          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-xl">edit_note</span>
+        <button onclick="switchTab('journal'); openAddDiaryModal();" class="flex flex-col items-center gap-1 md:gap-2 p-2.5 md:p-4 rounded-2xl md:rounded-3xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
+          <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl md:text-2xl">edit_note</span>
           </div>
-          <span class="text-[11px] font-semibold text-on-surface">Tulis Diary</span>
+          <span class="text-[11px] md:text-xs font-semibold text-on-surface">Tulis Diary</span>
         </button>
 
-        <button onclick="switchTab('pesan')" class="flex flex-col items-center gap-1 p-2.5 rounded-2xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
-          <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-xl">mark_email_unread</span>
+        <button onclick="switchTab('pesan')" class="flex flex-col items-center gap-1 md:gap-2 p-2.5 md:p-4 rounded-2xl md:rounded-3xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
+          <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl md:text-2xl">mark_email_unread</span>
           </div>
-          <span class="text-[11px] font-semibold text-on-surface">Buka Surat</span>
+          <span class="text-[11px] md:text-xs font-semibold text-on-surface">Buka Surat</span>
         </button>
 
-        <button onclick="switchTab('more'); openVaultModal();" class="flex flex-col items-center gap-1 p-2.5 rounded-2xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
-          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-xl">lock</span>
+        <button onclick="switchTab('more'); openVaultModal();" class="flex flex-col items-center gap-1 md:gap-2 p-2.5 md:p-4 rounded-2xl md:rounded-3xl bg-white/90 border border-outline-variant/30 shadow-sm hover:border-primary/40 active:scale-95 transition-all">
+          <div class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl md:text-2xl">lock</span>
           </div>
-          <span class="text-[11px] font-semibold text-on-surface">Brankas</span>
+          <span class="text-[11px] md:text-xs font-semibold text-on-surface">Brankas</span>
         </button>
       </div>
 
@@ -366,7 +385,7 @@
         </div>
 
         <!-- Polaroid Horizontal Scroll -->
-        <div class="flex gap-3.5 overflow-x-auto no-scrollbar py-2 -mx-4 px-4" id="homePolaroidList">
+        <div class="flex gap-3.5 md:gap-5 overflow-x-auto no-scrollbar py-2 -mx-4 md:-mx-8 px-4 md:px-8" id="homePolaroidList">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -381,27 +400,27 @@
     <!-- ======================================================== -->
     <!-- SCREEN 2: MEMORIES (Photo Scrapbook Gallery)            -->
     <!-- ======================================================== -->
-    <section id="screen-memories" class="app-screen space-y-4">
+    <section id="screen-memories" class="app-screen space-y-4 md:space-y-6">
       
       <!-- Section Header -->
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="font-epilogue font-extrabold text-xl text-on-surface">Scrapbook Kenangan</h2>
-          <p class="text-xs text-secondary">Koleksi foto Polaroid & cerita perjalanan kita</p>
+          <h2 class="font-epilogue font-extrabold text-xl md:text-2xl text-on-surface">Scrapbook Kenangan</h2>
+          <p class="text-xs md:text-sm text-secondary">Koleksi foto Polaroid & cerita perjalanan kita</p>
         </div>
-        <div class="flex items-center gap-1.5">
-          <button onclick="clearAllMemories()" class="p-2 rounded-full text-secondary hover:text-rose-500 hover:bg-pink-100 transition-all" title="Bersihkan Semua Foto">
-            <span class="material-symbols-outlined text-base">delete_sweep</span>
+        <div class="flex items-center gap-1.5 md:gap-2">
+          <button onclick="clearAllMemories()" class="p-2 md:p-2.5 rounded-full text-secondary hover:text-rose-500 hover:bg-pink-100 transition-all" title="Bersihkan Semua Foto">
+            <span class="material-symbols-outlined text-base md:text-lg">delete_sweep</span>
           </button>
-          <button onclick="openAddMemoryModal()" class="flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-sm">add_photo_alternate</span>
+          <button onclick="openAddMemoryModal()" class="flex items-center gap-1 md:gap-1.5 px-3.5 md:px-4 py-1.5 md:py-2 rounded-full bg-primary text-white text-xs md:text-sm font-bold shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-sm md:text-base">add_photo_alternate</span>
             <span>Tambah</span>
           </button>
         </div>
       </div>
 
       <!-- Scrapbook Grid of Polaroids -->
-      <div class="grid grid-cols-2 gap-3.5 pt-1" id="memoriesGridContainer">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3.5 md:gap-5 pt-1" id="memoriesGridContainer">
         <!-- Rendered by JS with interactive polaroids -->
       </div>
 
@@ -410,16 +429,16 @@
     <!-- ======================================================== -->
     <!-- SCREEN 3: JOURNAL (3D Maruko Diary & Notes)             -->
     <!-- ======================================================== -->
-    <section id="screen-journal" class="app-screen space-y-4">
+    <section id="screen-journal" class="app-screen space-y-4 md:space-y-6">
       
       <!-- Section Header -->
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="font-epilogue font-extrabold text-xl text-on-surface">Catatan & Buku Harian</h2>
-          <p class="text-xs text-secondary">Tumpukan pikiran hangat dan doa-doa baik</p>
+          <h2 class="font-epilogue font-extrabold text-xl md:text-2xl text-on-surface">Catatan & Buku Harian</h2>
+          <p class="text-xs md:text-sm text-secondary">Tumpukan pikiran hangat dan doa-doa baik</p>
         </div>
-        <button onclick="openAddDiaryModal()" class="flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-primary text-white text-xs font-bold shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all">
-          <span class="material-symbols-outlined text-sm">edit</span>
+        <button onclick="openAddDiaryModal()" class="flex items-center gap-1 md:gap-1.5 px-3.5 md:px-4 py-1.5 md:py-2 rounded-full bg-primary text-white text-xs md:text-sm font-bold shadow-clay-button hover:bg-primary-hover active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-sm md:text-base">edit</span>
           <span>Tulis Baru</span>
         </button>
       </div>
@@ -428,12 +447,12 @@
       <div class="flex items-center gap-2">
         <div class="relative flex-1">
           <span class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-sm">search</span>
-          <input type="text" id="journalSearchInput" oninput="searchJournals(this.value)" placeholder="Cari tulisan atau perasaan..." class="w-full bg-white/90 border border-outline-variant/40 rounded-xl pl-8 pr-3 py-2 text-xs text-on-surface placeholder:text-secondary/60 focus:outline-none focus:border-primary"/>
+          <input type="text" id="journalSearchInput" oninput="searchJournals(this.value)" placeholder="Cari tulisan atau perasaan..." class="w-full bg-white/90 border border-outline-variant/40 rounded-xl pl-8 pr-3 py-2 text-xs md:text-sm text-on-surface placeholder:text-secondary/60 focus:outline-none focus:border-primary"/>
         </div>
       </div>
 
       <!-- Journal Entries (Notebook Style) -->
-      <div class="space-y-3.5" id="journalEntriesContainer">
+      <div class="space-y-3.5 md:space-y-0 md:grid md:grid-cols-2 md:gap-4" id="journalEntriesContainer">
         <!-- Rendered by JS -->
       </div>
 
@@ -442,22 +461,22 @@
     <!-- ======================================================== -->
     <!-- SCREEN 4: PESAN KITA (Surat & Chat Rahasia)             -->
     <!-- ======================================================== -->
-    <section id="screen-pesan" class="app-screen space-y-4">
+    <section id="screen-pesan" class="app-screen space-y-4 md:space-y-6">
       
       <!-- Section Header -->
       <div>
-        <h2 class="font-epilogue font-extrabold text-xl text-on-surface">Pesan Rahasia Kita</h2>
-        <p class="text-xs text-secondary">Surat tersegel dan ruang bisik rahasia khusus berdua</p>
+        <h2 class="font-epilogue font-extrabold text-xl md:text-2xl text-on-surface">Pesan Rahasia Kita</h2>
+        <p class="text-xs md:text-sm text-secondary">Surat tersegel dan ruang bisik rahasia khusus berdua</p>
       </div>
 
       <!-- Sub Tabs: Surat vs Chat -->
-      <div class="flex p-1 bg-surface-container rounded-2xl border border-outline-variant/30">
-        <button id="tabBtnLetters" onclick="switchPesanSubTab('letters')" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1.5">
-          <span class="material-symbols-outlined text-sm">mail</span>
+      <div class="flex p-1 bg-surface-container rounded-2xl border border-outline-variant/30 max-w-md md:max-w-lg mx-auto">
+        <button id="tabBtnLetters" onclick="switchPesanSubTab('letters')" class="flex-1 py-1.5 md:py-2 text-xs md:text-sm font-bold rounded-xl bg-white text-primary shadow-xs transition-all flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-sm md:text-base">mail</span>
           Surat Tersegel (<span id="letterCountBadge">0</span>)
         </button>
-        <button id="tabBtnChat" onclick="switchPesanSubTab('chat')" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1.5">
-          <span class="material-symbols-outlined text-sm">chat_bubble</span>
+        <button id="tabBtnChat" onclick="switchPesanSubTab('chat')" class="flex-1 py-1.5 md:py-2 text-xs md:text-sm font-bold rounded-xl text-secondary hover:text-on-surface transition-all flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-sm md:text-base">chat_bubble</span>
           Whisper Chat 💬
         </button>
       </div>
@@ -465,31 +484,31 @@
       <!-- SUB TAB A: SEALED LETTERS -->
       <div id="subtab-letters" class="space-y-3">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-secondary">Surat yang belum / sudah kamu buka:</span>
-          <button onclick="openNewLetterModal()" class="text-xs font-bold text-primary hover:underline flex items-center gap-0.5">
-            <span class="material-symbols-outlined text-xs">add</span> Tulis Surat
+          <span class="text-xs md:text-sm font-bold text-secondary">Surat yang belum / sudah kamu buka:</span>
+          <button onclick="openNewLetterModal()" class="text-xs md:text-sm font-bold text-primary hover:underline flex items-center gap-0.5">
+            <span class="material-symbols-outlined text-xs md:text-sm">add</span> Tulis Surat
           </button>
         </div>
 
-        <div class="space-y-3" id="lettersContainer">
+        <div class="space-y-3 md:space-y-0 md:grid md:grid-cols-2 md:gap-4" id="lettersContainer">
           <!-- Rendered by JS -->
         </div>
       </div>
 
       <!-- SUB TAB B: WHISPER CHAT -->
-      <div id="subtab-chat" class="hidden flex flex-col h-[520px] rounded-3xl bg-white/95 border border-outline-variant/40 shadow-clay overflow-hidden">
+      <div id="subtab-chat" class="hidden flex flex-col h-[520px] md:h-[650px] rounded-3xl bg-white/95 border border-outline-variant/40 shadow-clay overflow-hidden max-w-2xl mx-auto">
         <!-- Chat Header -->
         <div class="px-4 py-3 bg-gradient-to-r from-pink-100/90 to-rose-100/90 border-b border-pink-200/60 flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <img src="maruko_figurine.jpg" alt="Maruko" class="w-8 h-8 rounded-full object-cover border-2 border-white"/>
+            <img src="maruko_figurine.jpg" alt="Maruko" class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border-2 border-white"/>
             <div>
-              <p class="text-xs font-bold text-on-surface leading-tight">Maruko's Whisper Room</p>
-              <p class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+              <p class="text-xs md:text-sm font-bold text-on-surface leading-tight">Maruko's Whisper Room</p>
+              <p class="text-[10px] md:text-xs text-emerald-600 font-semibold flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap mendengar ceritamu
               </p>
             </div>
           </div>
-          <span class="text-xs text-primary font-handwriting text-base font-bold">rahasia berdua 🔒</span>
+          <span class="text-xs md:text-sm text-primary font-handwriting text-base md:text-lg font-bold">rahasia berdua 🔒</span>
         </div>
 
         <!-- Quick Reply Prompts -->
@@ -509,15 +528,15 @@
         </div>
 
         <!-- Chat Bubble Thread -->
-        <div id="chatMessageThread" class="flex-1 p-3.5 overflow-y-auto space-y-2.5 text-xs">
+        <div id="chatMessageThread" class="flex-1 p-3.5 md:p-5 overflow-y-auto space-y-2.5 text-xs md:text-sm">
           <!-- Chat messages rendered here -->
         </div>
 
         <!-- Chat Input Bar -->
-        <div class="p-2.5 bg-white border-t border-outline-variant/30 flex items-center gap-2">
-          <input type="text" id="chatTextInput" onkeydown="if(event.key==='Enter') sendChatMessage()" placeholder="Ketik pesan manis untuk Nadin..." class="flex-1 bg-surface-container px-3.5 py-2 rounded-xl text-xs text-on-surface placeholder:text-secondary/60 focus:outline-none focus:ring-1 focus:ring-primary"/>
-          <button onclick="sendChatMessage()" class="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs hover:bg-primary-hover active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-sm">send</span>
+        <div class="p-2.5 md:p-3.5 bg-white border-t border-outline-variant/30 flex items-center gap-2">
+          <input type="text" id="chatTextInput" onkeydown="if(event.key==='Enter') sendChatMessage()" placeholder="Ketik pesan manis untuk Nadin..." class="flex-1 bg-surface-container px-3.5 py-2 md:py-2.5 rounded-xl text-xs md:text-sm text-on-surface placeholder:text-secondary/60 focus:outline-none focus:ring-1 focus:ring-primary"/>
+          <button onclick="sendChatMessage()" class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs hover:bg-primary-hover active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-sm md:text-base">send</span>
           </button>
         </div>
       </div>
@@ -527,30 +546,30 @@
     <!-- ======================================================== -->
     <!-- SCREEN 5: MORE (Vault, Playlist, Photobooth & Setting)   -->
     <!-- ======================================================== -->
-    <section id="screen-more" class="app-screen space-y-4">
+    <section id="screen-more" class="app-screen space-y-4 md:space-y-6">
       
       <!-- Profile & Archive Badge -->
-      <div class="rounded-3xl bg-gradient-to-r from-pink-100 via-rose-50 to-pink-100 border border-pink-200/80 p-4 shadow-clay flex items-center gap-3.5">
-        <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-sm flex-shrink-0 bg-white">
+      <div class="rounded-3xl bg-gradient-to-r from-pink-100 via-rose-50 to-pink-100 border border-pink-200/80 p-4 md:p-6 shadow-clay flex items-center gap-3.5 md:gap-5">
+        <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden border-2 border-white shadow-sm flex-shrink-0 bg-white">
           <img src="images/maruko_companion.jpg" alt="Companion" class="w-full h-full object-cover"/>
         </div>
         <div class="space-y-1">
-          <div class="inline-block bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">ARCHIVE ID #NADIN-2026</div>
-          <h2 class="font-epilogue font-bold text-base text-on-surface">For You: Nadin's Vault</h2>
-          <p class="text-xs text-secondary leading-tight">Private editorial memories curated with love & まる子 aesthetic</p>
+          <div class="inline-block bg-primary text-white text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full">ARCHIVE ID #NADIN-2026</div>
+          <h2 class="font-epilogue font-bold text-base md:text-xl text-on-surface">For You: Nadin's Vault</h2>
+          <p class="text-xs md:text-sm text-secondary leading-tight">Private editorial memories curated with love & まる子 aesthetic</p>
         </div>
       </div>
 
       <!-- Feature Menu Grid -->
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         
         <!-- Feature 1: The Vault (Brankas Rahasia) -->
         <div onclick="openVaultModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
-          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-xl">lock</span>
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-xl md:text-2xl">lock</span>
           </div>
           <h3 class="font-epilogue font-bold text-sm text-on-surface">The Vault</h3>
-          <p class="text-[11px] text-secondary mt-0.5">Brankas foto & catatan terkunci dengan PIN</p>
+          <p class="text-[11px] text-secondary mt-0.5">Brankas foto & catatan terkunci PIN</p>
           <span class="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-2 group-hover:translate-x-1 transition-transform">
             Buka Brankas 🔒 &rarr;
           </span>
@@ -558,11 +577,11 @@
 
         <!-- Feature 2: Playlist Lagu -->
         <div onclick="openPlaylistModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
-          <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-xl">album</span>
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-xl md:text-2xl">album</span>
           </div>
           <h3 class="font-epilogue font-bold text-sm text-on-surface">Playlist Lagu</h3>
-          <p class="text-[11px] text-secondary mt-0.5">Pemutar vinyl & lagu kenangan Nadin</p>
+          <p class="text-[11px] text-secondary mt-0.5">Pemutar vinyl & lagu kenangan</p>
           <span class="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-2 group-hover:translate-x-1 transition-transform">
             Buka Player 🎶 &rarr;
           </span>
@@ -570,11 +589,11 @@
 
         <!-- Feature 3: Vintage Photobooth -->
         <div onclick="openPhotoboothModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
-          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-xl">photo_camera</span>
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-xl md:text-2xl">photo_camera</span>
           </div>
           <h3 class="font-epilogue font-bold text-sm text-on-surface">Photobooth 4-Cut</h3>
-          <p class="text-[11px] text-secondary mt-0.5">Bikin photo-strip gaya purikura Jepang</p>
+          <p class="text-[11px] text-secondary mt-0.5">Photo-strip gaya purikura Jepang</p>
           <span class="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-2 group-hover:translate-x-1 transition-transform">
             Bikin Strip 📸 &rarr;
           </span>
@@ -582,8 +601,8 @@
 
         <!-- Feature 4: Memory Timeline -->
         <div onclick="openTimelineModal()" class="cursor-pointer rounded-2xl bg-white/95 border border-outline-variant/40 p-4 shadow-clay-card hover:border-primary/50 transition-all group">
-          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-xl">timeline</span>
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-xl md:text-2xl">timeline</span>
           </div>
           <h3 class="font-epilogue font-bold text-sm text-on-surface">Milestone Timeline</h3>
           <p class="text-[11px] text-secondary mt-0.5">Perjalanan kisah dari hari pertama</p>
@@ -595,37 +614,37 @@
       </div>
 
       <!-- App Status & PWA Card -->
-      <div class="rounded-2xl bg-white/90 border border-outline-variant/30 p-4 space-y-3">
-        <h3 class="font-epilogue font-bold text-xs text-on-surface uppercase tracking-wider">Aplikasi & Penyimpanan</h3>
+      <div class="rounded-2xl bg-white/90 border border-outline-variant/30 p-4 md:p-6 space-y-3">
+        <h3 class="font-epilogue font-bold text-xs md:text-sm text-on-surface uppercase tracking-wider">Aplikasi & Penyimpanan</h3>
         
-        <div class="flex items-center justify-between text-xs py-1 border-b border-outline-variant/20">
+        <div class="flex items-center justify-between text-xs md:text-sm py-1 border-b border-outline-variant/20">
           <span class="text-secondary flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Mode Offline (PWA)
           </span>
           <span class="font-bold text-emerald-600">Tersedia & Aktif</span>
         </div>
 
-        <div class="flex items-center justify-between text-xs py-1 border-b border-outline-variant/20">
+        <div class="flex items-center justify-between text-xs md:text-sm py-1 border-b border-outline-variant/20">
           <span class="text-secondary">Penyimpanan Lokal</span>
           <span class="font-bold text-on-surface" id="storageUsedStatus">Tersimpan di Browser</span>
         </div>
 
         <!-- Action Buttons -->
-        <div class="grid grid-cols-2 gap-2 pt-1">
-          <button onclick="exportDataBackup()" class="px-3 py-2 rounded-xl bg-surface-container text-secondary text-xs font-bold border border-outline-variant/40 hover:bg-pink-100 transition-colors flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-sm">download</span> Ekspor Data
+        <div class="grid grid-cols-2 gap-2 md:gap-3 pt-1">
+          <button onclick="exportDataBackup()" class="px-3 py-2 rounded-xl bg-surface-container text-secondary text-xs md:text-sm font-bold border border-outline-variant/40 hover:bg-pink-100 transition-colors flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-sm md:text-base">download</span> Ekspor Data
           </button>
-          <button onclick="promptPWAInstall()" id="installPwaBtn" class="px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-clay-button hover:bg-primary-hover transition-colors flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-sm">install_mobile</span> Pasang di HP
+          <button onclick="promptPWAInstall()" id="installPwaBtn" class="px-3 py-2 rounded-xl bg-primary text-white text-xs md:text-sm font-bold shadow-clay-button hover:bg-primary-hover transition-colors flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-sm md:text-base">install_mobile</span> Pasang di HP
           </button>
         </div>
-        <button onclick="forcePurgeAndReload()" class="w-full mt-2 px-3 py-2 rounded-xl bg-pink-50 text-primary text-xs font-bold border border-pink-200 hover:bg-pink-100 transition-colors flex items-center justify-center gap-1">
-          <span class="material-symbols-outlined text-sm">sync</span> Bersihkan Cache & Sinkronkan Ulang
+        <button onclick="forcePurgeAndReload()" class="w-full mt-2 px-3 py-2.5 rounded-xl bg-pink-50 text-primary text-xs md:text-sm font-bold border border-pink-200 hover:bg-pink-100 transition-colors flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-sm md:text-base">sync</span> Bersihkan Cache & Sinkronkan Ulang
         </button>
       </div>
 
       <!-- About Footer -->
-      <div class="text-center text-[11px] text-secondary/80 pt-2 pb-6 space-y-1">
+      <div class="text-center text-[11px] md:text-xs text-secondary/80 pt-2 pb-6 space-y-1">
         <p class="font-epilogue font-bold text-primary">Nadin's Private Editorial Archive · v1.2</p>
         <p>Dibuat dengan segenap rasa sayang, peluk hangat, dan まる子's aesthetic 🌸</p>
       </div>
@@ -635,36 +654,36 @@
   </main>
 
   <!-- ==================== BOTTOM NAVIGATION DOCK ==================== -->
-  <nav class="safe-bottom-nav fixed left-0 right-0 z-40 max-w-md mx-auto px-4 pointer-events-none">
-    <div class="pointer-events-auto bg-white/92 dark:bg-stone-900/92 backdrop-blur-lg border border-pink-200/80 dark:border-stone-800 rounded-3xl p-1.5 shadow-clay flex items-center justify-around">
+  <nav class="safe-bottom-nav fixed left-0 right-0 z-40 max-w-md md:max-w-lg lg:max-w-xl mx-auto px-4 pointer-events-none">
+    <div class="pointer-events-auto bg-white/92 dark:bg-stone-900/92 backdrop-blur-lg border border-pink-200/80 dark:border-stone-800 rounded-3xl p-1.5 md:p-2.5 shadow-clay flex items-center justify-around">
       
       <!-- Nav Item: Home -->
       <button onclick="switchTab('home')" class="nav-tab-btn flex-1 flex flex-col items-center gap-0.5 py-1.5 text-primary transition-transform active:scale-95" data-tab="home">
-        <span class="material-symbols-outlined text-2xl font-variation-fill">cottage</span>
-        <span class="text-[10px] font-bold">Home</span>
+        <span class="material-symbols-outlined text-2xl md:text-[28px] font-variation-fill">cottage</span>
+        <span class="text-[10px] md:text-xs font-bold">Home</span>
       </button>
 
       <!-- Nav Item: Memories -->
       <button onclick="switchTab('memories')" class="nav-tab-btn flex-1 flex flex-col items-center gap-0.5 py-1.5 text-secondary hover:text-primary transition-transform active:scale-95" data-tab="memories">
-        <span class="material-symbols-outlined text-2xl">photo_library</span>
-        <span class="text-[10px] font-bold">Memories</span>
+        <span class="material-symbols-outlined text-2xl md:text-[28px]">photo_library</span>
+        <span class="text-[10px] md:text-xs font-bold">Memories</span>
       </button>
 
       <!-- Central Add Quick Button -->
-      <button onclick="openQuickActionSheet()" class="w-11 h-11 -mt-5 rounded-full bg-gradient-to-tr from-primary to-rose-400 text-white shadow-clay-button flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white">
-        <span class="material-symbols-outlined text-2xl">add</span>
+      <button onclick="openQuickActionSheet()" class="w-11 h-11 md:w-13 md:h-13 -mt-5 md:-mt-6 rounded-full bg-gradient-to-tr from-primary to-rose-400 text-white shadow-clay-button flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white">
+        <span class="material-symbols-outlined text-2xl md:text-[28px]">add</span>
       </button>
 
       <!-- Nav Item: Journal -->
       <button onclick="switchTab('journal')" class="nav-tab-btn flex-1 flex flex-col items-center gap-0.5 py-1.5 text-secondary hover:text-primary transition-transform active:scale-95" data-tab="journal">
-        <span class="material-symbols-outlined text-2xl">auto_stories</span>
-        <span class="text-[10px] font-bold">Journal</span>
+        <span class="material-symbols-outlined text-2xl md:text-[28px]">auto_stories</span>
+        <span class="text-[10px] md:text-xs font-bold">Journal</span>
       </button>
 
       <!-- Nav Item: More -->
       <button onclick="switchTab('more')" class="nav-tab-btn flex-1 flex flex-col items-center gap-0.5 py-1.5 text-secondary hover:text-primary transition-transform active:scale-95" data-tab="more">
-        <span class="material-symbols-outlined text-2xl">apps</span>
-        <span class="text-[10px] font-bold">More</span>
+        <span class="material-symbols-outlined text-2xl md:text-[28px]">apps</span>
+        <span class="text-[10px] md:text-xs font-bold">More</span>
       </button>
 
     </div>
@@ -1928,16 +1947,16 @@
         `;
         return;
       }
-      const recent = memories.slice(0, 4);
+      const recent = memories.slice(0, 8);
       listEl.innerHTML = recent.map((m, idx) => `
-        <div onclick="openMemoryDetail('${m.id}')" class="flex-shrink-0 w-36 bg-white p-2.5 rounded-2xl shadow-polaroid border border-stone-100 transform ${idx % 2 === 0 ? '-rotate-1' : 'rotate-2'} cursor-pointer hover:scale-105 transition-all">
-          <div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-2">
+        <div onclick="openMemoryDetail('${m.id}')" class="flex-shrink-0 w-36 md:w-48 bg-white p-2.5 md:p-3.5 rounded-2xl shadow-polaroid border border-stone-100 transform ${idx % 2 === 0 ? '-rotate-1' : 'rotate-2'} cursor-pointer hover:scale-105 transition-all">
+          <div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-2 md:mb-2.5">
             <img src="${formatImgSrc(m.image)}" alt="${m.title}" class="w-full h-full object-cover"/>
           </div>
-          <p class="font-handwriting font-bold text-base text-on-surface truncate leading-tight">${m.title}</p>
-          <div class="flex items-center justify-between text-[10px] text-secondary mt-1">
+          <p class="font-handwriting font-bold text-base md:text-lg text-on-surface truncate leading-tight">${m.title}</p>
+          <div class="flex items-center justify-between text-[10px] md:text-xs text-secondary mt-1">
             <span>${m.date ? m.date.split('-').slice(1).join('/') : ''}</span>
-            <span class="text-rose-500 flex items-center gap-0.5">❤️ ${m.likes || 1}</span>
+            <span class="text-rose-500 flex items-center gap-0.5 font-semibold">❤️ ${m.likes || 1}</span>
           </div>
         </div>
       `).join('');
@@ -1950,7 +1969,7 @@
 
       if (!memories || memories.length === 0) {
         container.innerHTML = `
-          <div class="col-span-2 text-center py-12 px-5 bg-white/85 rounded-3xl border-2 border-dashed border-pink-200 flex flex-col items-center justify-center space-y-2">
+          <div class="col-span-2 sm:col-span-3 md:col-span-3 lg:col-span-4 text-center py-12 px-5 bg-white/85 rounded-3xl border-2 border-dashed border-pink-200 flex flex-col items-center justify-center space-y-2">
             <div class="w-16 h-16 rounded-full bg-pink-100 text-primary flex items-center justify-center text-3xl mb-1 shadow-xs">
               📸
             </div>
@@ -1969,20 +1988,20 @@
       }
 
       container.innerHTML = memories.map((m, idx) => `
-        <div onclick="openMemoryDetail('${m.id}')" class="bg-white p-3 rounded-2xl shadow-polaroid border border-stone-100 cursor-pointer transform ${idx % 2 === 0 ? '-rotate-1 hover:rotate-0' : 'rotate-1 hover:rotate-0'} transition-all hover:scale-[1.02]">
-          <div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-2.5 relative">
+        <div onclick="openMemoryDetail('${m.id}')" class="bg-white p-3 md:p-3.5 rounded-2xl shadow-polaroid border border-stone-100 cursor-pointer transform ${idx % 2 === 0 ? '-rotate-1 hover:rotate-0' : 'rotate-1 hover:rotate-0'} transition-all hover:scale-[1.02]">
+          <div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-2 md:mb-2.5 relative">
             <img src="${formatImgSrc(m.image)}" alt="${m.title}" class="w-full h-full object-cover"/>
-            <span class="absolute top-1.5 right-1.5 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-rose-500 px-1.5 py-0.5 rounded-full shadow-xs">
+            <span class="absolute top-1.5 right-1.5 bg-white/90 backdrop-blur-xs text-[10px] md:text-xs font-bold text-rose-500 px-1.5 py-0.5 rounded-full shadow-xs">
               ❤️ ${m.likes || 1}
             </span>
           </div>
-          <h4 class="font-handwriting font-bold text-lg text-on-surface truncate leading-tight">${m.title}</h4>
-          <p class="text-[11px] text-secondary truncate mt-0.5">${m.story || ''}</p>
-          <div class="flex items-center justify-between text-[10px] text-secondary font-medium mt-2 pt-1 border-t border-stone-100">
+          <h4 class="font-handwriting font-bold text-lg md:text-xl text-on-surface truncate leading-tight">${m.title}</h4>
+          <p class="text-[11px] md:text-xs text-secondary truncate mt-0.5">${m.story || ''}</p>
+          <div class="flex items-center justify-between text-[10px] md:text-xs text-secondary font-medium mt-2 pt-1 border-t border-stone-100">
             <span>📅 ${m.date || ''}</span>
             <div class="flex items-center gap-1">
               <button onclick="event.stopPropagation(); deleteMemoryCard('${m.id}')" class="text-stone-300 hover:text-rose-500 p-1 rounded-full hover:bg-rose-50 transition-colors" title="Hapus Foto">
-                <span class="material-symbols-outlined text-sm">delete</span>
+                <span class="material-symbols-outlined text-sm md:text-base">delete</span>
               </button>
               <span class="text-primary font-bold">Kenangan ✨</span>
             </div>
