@@ -1476,6 +1476,49 @@
       try {
         localStorage.setItem(key, JSON.stringify(val));
       } catch (e) {}
+      if (key === 'nadin_memories' && nadinIdb) {
+        try {
+          const tx = nadinIdb.transaction('store', 'readwrite');
+          tx.objectStore('store').put(val, 'memories');
+        } catch (err) {}
+      }
+    }
+
+    // Robust IndexedDB cache for large media (bypasses 5MB mobile localStorage quota)
+    let nadinIdb = null;
+    if (typeof indexedDB !== 'undefined') {
+      const openReq = indexedDB.open('nadin_media_db', 1);
+      openReq.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('store')) {
+          db.createObjectStore('store');
+        }
+      };
+      openReq.onsuccess = (e) => {
+        nadinIdb = e.target.result;
+        try {
+          const tx = nadinIdb.transaction('store', 'readonly');
+          const req = tx.objectStore('store').get('memories');
+          req.onsuccess = () => {
+            if (Array.isArray(req.result) && req.result.length > memories.length) {
+              memories = req.result.filter(isCleanMemory);
+              renderMemoriesGrid();
+              renderHomeHighlights();
+              if (typeof renderMilestoneTimeline === 'function') renderMilestoneTimeline();
+            }
+          };
+        } catch (err) {}
+      };
+    }
+
+    function saveMemoriesOffline(mems) {
+      setStored('nadin_memories', mems);
+      if (nadinIdb) {
+        try {
+          const tx = nadinIdb.transaction('store', 'readwrite');
+          tx.objectStore('store').put(mems, 'memories');
+        } catch (err) {}
+      }
     }
 
     function isCleanMemory(m) {
@@ -1551,21 +1594,25 @@
           const cloudUpdatedAt = Number(data.updatedAt) || 0;
           const localLastUpdate = Number(getStored('nadin_last_update', 0)) || 0;
 
-          const localHasNoMemories = (!memories || memories.length === 0);
-          // Hanya abaikan jika lokal sudah punya foto/data DAN timestamp cloud tidak lebih baru
-          if (!localHasNoMemories && cloudUpdatedAt > 0 && cloudUpdatedAt <= localLastUpdate) {
+          let cloudMems = data.memories !== undefined 
+            ? (Array.isArray(data.memories) ? data.memories : Object.values(data.memories)).filter(isCleanMemory)
+            : null;
+
+          // Jika jumlah foto di Cloud berbeda dari lokal (misal di cloud ada 26 foto), JANGAN PERNAH SKIP!
+          const memoryCountDiffers = cloudMems !== null && cloudMems.length !== memories.length;
+
+          // Hanya abaikan jika jumlah foto sama persis DAN timestamp cloud tidak lebih baru
+          if (!memoryCountDiffers && memories.length > 0 && cloudUpdatedAt > 0 && cloudUpdatedAt <= localLastUpdate) {
             return;
           }
 
           let hasChanges = false;
 
           // Memories: update dari cloud
-          if (data.memories !== undefined) {
-            let cloudMems = Array.isArray(data.memories) ? data.memories : (data.memories ? Object.values(data.memories) : []);
-            cloudMems = cloudMems.filter(isCleanMemory);
+          if (cloudMems !== null) {
             if (JSON.stringify(memories) !== JSON.stringify(cloudMems)) {
               memories = cloudMems;
-              setStored('nadin_memories', memories);
+              saveMemoriesOffline(memories);
               hasChanges = true;
             }
           }
